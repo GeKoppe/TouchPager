@@ -24,6 +24,11 @@
 #define TEXTMEDIUM 3
 #define TEXTLARGE 4
 
+typedef struct ScreenParse {
+    int x;
+    int y;
+} ScreenParse;
+
 class Messenger {
     public:
         Messenger(Elegoo_TFTLCD *screen, TouchScreen *ts, VKeys *keys);
@@ -49,11 +54,17 @@ class Messenger {
 
     private:
         uint16_t _keyColor, _textColor, _background, _textSize, _boxColor;
+        int _menuBorderOffset, _minTouch;
         VKeys *_keys;
         Elegoo_TFTLCD *_screen;
         TouchScreen *_ts;
 
-        int showMenu(int menu), mainMenu(void);
+        int showMenu(int menu), mainMenu(void), 
+            getSelection(int menuStart, int menuThickness, int menuOffset, int entries, ScreenParse parse);
+
+        void drawMainMenu(int menuStart, int menuThickness, int menuOffset);
+
+        ScreenParse parseCoords(TSPoint p);
 };
 
 #endif

@@ -78,8 +78,6 @@ String VKeys::getInputChar(TSPoint point) {
     x = point.x;
     y = point.y;
 
-    Serial.println("X: " + String(x) + "Y: " + String(y));
-
     return String(getCharFromCoords(x, y));
 }
 
@@ -101,7 +99,6 @@ String VKeys::getCharFromCoords(int16_t x, int16_t y) {
     // Complete Y: [70,920], range 850, keyboard [70,475], keyboard range of 405, 4 rows so 405/4 = 101.25
     if (y > 475) return String('\0');
     row = (int) ((y - 70)/ 101.25);
-    Serial.println("Row: " + String(row));
 
     // row 0 is spacebar, therefore return escaped space immediately, as nothing else is there.
     if (row == 0) return String('1');
@@ -109,7 +106,6 @@ String VKeys::getCharFromCoords(int16_t x, int16_t y) {
 
     // X Range ca. 120 - 920 for 10 columns, therefore 800 / 10 = 80
     column = (int) ((x - 120)/ 80);
-    Serial.println("Column: " + String(column));
 
     if (column < 11 && column >= 0 && row < 4 && row >0) return String(_rows[(3-row)][column]);
     
