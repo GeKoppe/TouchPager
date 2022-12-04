@@ -2,9 +2,10 @@
 #include <Elegoo_TFTLCD.h> // Hardware-specific library
 #include <TouchScreen.h>
 
-#include "Arduino.h"
-#include "Print.h"
+// #include "Arduino.h"
+// #include "Print.h"
 #include "VKeys.h"
+#include "Messenger.h"
 
 #if defined(__SAM3X8E__)
     #undef __FlashStringHelper::F(string_literal)
@@ -34,6 +35,7 @@ TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 
 Elegoo_TFTLCD tft(LCD_CS, LCD_CD, LCD_WR, LCD_RD, LCD_RESET);
 VKeys keyboard = VKeys("QWERTZ", YELLOW, BLACK, &tft);
+Messenger msg = Messenger(&tft, &ts, &keyboard);
 
 void setup(void) {
     tft.reset();
@@ -70,26 +72,11 @@ void setup(void) {
     }
 
     tft.begin(identifier);
-    tft.fillScreen(BLACK);
-    keyboard.init();
 
     pinMode(13, OUTPUT);
 }
 
 void loop() {
-    unsigned long start = micros();
-    digitalWrite(13, HIGH);
-    TSPoint p = ts.getPoint();
-    digitalWrite(13, LOW);
-
-    pinMode(XM, OUTPUT);
-    pinMode(YP, OUTPUT);
-    
-    if (p.z != 0) {
-        Serial.println("Touch noticed!");
-        keyboard.print(keyboard.getInputChar(p));
-    }
-
-    delay(10);
+    msg.init();
 }
 
