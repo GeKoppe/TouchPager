@@ -43,33 +43,59 @@ void Messenger::init(void) {
     }
 }
 
+void Messenger::reset(void) {
+    _screen->fillScreen(WHITE);
+    init();
+}
+
 String Messenger::writeMessage(void) {
     _keys->init();
-    String msg = "";
+    String msg = "", oldChar = "";
+    TSPoint oldP = _ts->getPoint();
+    int clicks = 0;
 
     while (true) {
+        TSPoint p;
+
+        do {
+            digitalWrite(13, HIGH);
+            p = _ts->getPoint();
+            digitalWrite(13, LOW);
+            
+        } while (oldP.x == p.x && oldP.y == p.y);
         
-        digitalWrite(13, HIGH);
-        TSPoint p = _ts->getPoint();
-        digitalWrite(13, LOW);
+        oldP.x = p.x;
+        oldP.y = p.y;
 
         if (p.z > _minTouch) {
-            msg += String(_keys->getInputChar(p));
+            String newChar = String(_keys->getInputChar(p));
+            
+            if (newChar == oldChar) {
+                if (clicks < 9) {
+                    clicks++;
+                    continue;
+                } else {
+                    oldChar = "";
+                    clicks = 0;
+                }
+            } else {
+                msg += newChar;
+                oldChar = newChar;
+            }
+
+            if (newChar == "*") {
+                msg = msg.substring(0,msg.length()-1);
+            }
             Serial.println(msg);
         }
 
         // Without delay, this thing notices touches 3-5 Times per Touch
-        delay(25);
+        delay(10);
     }
 }
 
 
 /************************ PRIVATE ***************************/
-int Messenger::showMenu(int menu) {
-    int selection = 0;
-    
-}
-
 int Messenger::getSelection(int menuStart, int menuThickness, int menuOffset, int entries, ScreenParse parse) {
     int x, y, selection;
 
@@ -100,7 +126,7 @@ int Messenger::mainMenu(void) {
 
     while (true) {
         int selection = -1;
-
+        
         // Get touchpoint
         digitalWrite(13, HIGH);
         TSPoint p = _ts->getPoint();
