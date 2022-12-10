@@ -6,6 +6,8 @@
 // #include "Print.h"
 #include "VKeys.h"
 #include "Messenger.h"
+#include "ColorChooser.h"
+
 
 #if defined(__SAM3X8E__)
     #undef __FlashStringHelper::F(string_literal)
@@ -36,6 +38,7 @@ TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 Elegoo_TFTLCD tft(LCD_CS, LCD_CD, LCD_WR, LCD_RD, LCD_RESET);
 VKeys keyboard = VKeys("QWERTZ", YELLOW, BLACK, &tft);
 Messenger msg = Messenger(&tft, &ts, &keyboard);
+
 
 void setup(void) {
     tft.reset();
@@ -77,6 +80,19 @@ void setup(void) {
 }
 
 void loop() {
-    msg.init();
+    ColorChooser cc(&tft, &ts, BLACK, WHITE, WHITE);
+    uint16_t selection = cc.choose();
+
+    switch (selection) {
+        case 0: Serial.println("Zurück"); break;
+        case BLUE: Serial.println("BLUE"); break;
+        case RED: Serial.println("RED"); break;
+        case GREEN: Serial.println("GREEN"); break;
+        case CYAN: Serial.println("CYAN"); break;
+        case MAGENTA: Serial.println("MAGENTA"); break;
+        case YELLOW: Serial.println("YELLOW"); break;
+        default: break;
+    }
+    //msg.init();
 }
 
