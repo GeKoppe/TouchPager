@@ -17,7 +17,7 @@ int ColorChooser::choose() {
         digitalWrite(13, LOW);
 
         if (p.z > 20) {
-            ScreenParse parse;
+            Coords parse;
             parse.x = (int) ((p.x - 120) / 3.5);
             parse.y = (int) ((p.y - 70) / 2.66);
 
@@ -31,19 +31,37 @@ int ColorChooser::choose() {
     return selection;
 }
 
-uint16_t ColorChooser::getSelection(ScreenParse coords) {
+/**
+ * @brief 
+ * 
+ * @param coords 
+ * @return uint16_t chosen Color
+ */
+uint16_t ColorChooser::getSelection(Coords coords) {
     int column, row;
 
-    Serial.println("X: " + String(coords.x) + ", Y: " + String(coords.y));
+    Serial.println("CC: X: " + String(coords.x) + ", Y: " + String(coords.y));
     if (320 - coords.y > 250) return 0;
 
     if (coords.x < 35 || coords.x > 215) return -1;
     if (coords.x < 135 && coords.x > 100) return -1;
 
     column = coords.x < 100 ? 0 : 1;
-    row = (int)((320 - coords.y) / 80);
+    row = (int)((320 - coords.y) / 60);
 
-    return _colors[column + (row*2)];
+    uint16_t selection = _colors[column + (row*2)];
+
+    switch (selection) {
+        case BLUE: Serial.println("CC Selection: BLUE"); break;
+        case RED: Serial.println("CC Selection: RED"); break;
+        case GREEN: Serial.println("CC Selection: GREEN"); break;
+        case CYAN: Serial.println("CC Selection: CYAN"); break;
+        case MAGENTA: Serial.println("CC Selection: MAGENTA"); break;
+        case YELLOW: Serial.println("CC Selection: YELLOW"); break;
+        default: Serial.println("CC No selection"); break;
+    }
+
+    return selection;
 }
 
 void ColorChooser::draw() {
@@ -54,9 +72,9 @@ void ColorChooser::draw() {
     // Box Size: 70. Boxes start at y = 10 and end at y = 240, box offset 10
     for (int i = 0; i < 6; i++) {
         _screen->fillRect((i % 2 == 0 ? 35 : 135),
-            ((int) (i / 2))*80 + 10,
+            ((int) (i / 2))*50 + 10,
             70,
-            70,
+            50,
             _colors[i]
         );
     }

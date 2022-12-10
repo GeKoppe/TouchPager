@@ -80,19 +80,7 @@ void setup(void) {
 }
 
 void loop() {
-    ColorChooser cc(&tft, &ts, BLACK, WHITE, WHITE);
-    uint16_t selection = cc.choose();
-
-    switch (selection) {
-        case 0: Serial.println("Zurück"); break;
-        case BLUE: Serial.println("BLUE"); break;
-        case RED: Serial.println("RED"); break;
-        case GREEN: Serial.println("GREEN"); break;
-        case CYAN: Serial.println("CYAN"); break;
-        case MAGENTA: Serial.println("MAGENTA"); break;
-        case YELLOW: Serial.println("YELLOW"); break;
-        default: break;
-    }
-    //msg.init();
+    Serial.println("Kinda started again");
+    msg.init();
 }
 

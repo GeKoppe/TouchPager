@@ -14,6 +14,41 @@
 #define YELLOW  0xFFE0
 #define WHITE   0xFFFF
 
+const char _QWERTZ[3][10] = {
+            {
+                'Q','W','E','R','T','Z','U','I','O','P'
+            },
+            {
+                'A','S','D','F','G','H','J','K','L','#'
+            },
+            {
+                ',','Y','X','C','V','B','N','M','?','*'
+            }
+};
+
+const char _QWERTY[3][10] = {
+            {
+                'Q','W','E','R','T','Y','U','I','O','P'
+            },
+            {
+                'A','S','D','F','G','H','J','K','L','#'
+            },
+            {
+                ',','Z','X','C','V','B','N','M','?','*'
+            }
+};
+
+const char _ABCDE[3][10] = {
+            {
+                'A','B','C','D','E','F','G','H','I','J'
+            },
+            {
+                'K','L','M','N','O','P','Q','R','S','#'
+            },
+            {
+                ',','T','U','V','W','X','Y','Z','?','*'
+            }
+};
 
 class VKeys {
     public:
@@ -25,13 +60,13 @@ class VKeys {
         void setKHeight (int height) { _kHeight = height; };
         int getKHeight () { return _kHeight; };
 
-        void setStyle (String style) { _style = style; };
+        void setStyle (String style);
         String getStyle () { return _style; };
 
-        void setKeyColor (uint16_t color) { _keyColor = color; };
+        void setKeyColor (uint16_t color, uint16_t _background) { _keyColor = (color == _background ? _keyColor : color);};
         uint16_t getKeyColor (void) { return _keyColor; };
 
-        void setTextColor (uint16_t color) { _textColor = color; };
+        void setTextColor (uint16_t color, uint16_t _background) { _textColor = (color == _background ? _textColor : color); };
         uint16_t getTextColor (void) { return _textColor; };
 
         void    init (void),

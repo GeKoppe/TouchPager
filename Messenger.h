@@ -6,6 +6,7 @@
 #include <TouchScreen.h>
 
 #include "VKeys.h"
+#include "ColorChooser.h"
 
 #define	BLACK   0x0000
 #define	BLUE    0x001F
@@ -77,18 +78,22 @@ class Messenger {
         int mainMenu(void),
             getSelection(int menuStart, int menuThickness, int menuOffset, int entries, ScreenParse parse);
         
+        uint16_t backGroundColorMenu(void);
+        
         void    optsMenu(void),
-                colorMenu(void);
+                colorMenu(void),
+                keysMenu(void);
+        String keyStyleMenu(void);
 
         // MENU DRAW FUNCTIONS
         void drawMenu(Menu menu);
 
         // SETTERS
-        void setKeyColor(uint16_t color) { _keyColor = color; };
-        void setTextColor(uint16_t color) { _textColor = color; };
+        void setKeyColor(uint16_t color) { _keyColor = (color == _background ? _keyColor : color); };
+        void setTextColor(uint16_t color) { _textColor = (color == _background ? _keyColor : color); };
         void setTextSize(uint16_t size) { _textSize = size; };
-        void setBoxColor(uint16_t color) { _boxColor = color; };
-        void setBackground(uint16_t color) { _background = color; };
+        void setBoxColor(uint16_t color) { _boxColor = (color == _background ? _keyColor : color); };
+        void setBackground(uint16_t color);
 
         // SPECIALS
         ScreenParse parseCoords(TSPoint p);

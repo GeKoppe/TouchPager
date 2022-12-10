@@ -21,7 +21,7 @@ Messenger::Messenger(Elegoo_TFTLCD *screen, TouchScreen *ts, VKeys *keys) {
     _menuBorderOffset = 10;
     _minTouch = 10;
 
-    _keys->setKeyColor(_keyColor);
+    _keys->setKeyColor(_keyColor, _background);
 }
 
 void Messenger::init(void) {
@@ -147,8 +147,10 @@ int Messenger::mainMenu(void) {
                 default: break;
             }
         }
-        delay(100);
+        delay(10);
     }
+
+    Serial.println("Returning from mainMenu");
 }
 
 void Messenger::optsMenu(void) {
@@ -161,8 +163,8 @@ void Messenger::optsMenu(void) {
     menu.header = "Optionen";
     menu.entries[0] = String("Farben");
     menu.entries[1] = String("Kanaele");
-    menu.entries[2] = String("Zurueck");
-    menu.entries[3] = String("\0");
+    menu.entries[2] = String("Tastatur");
+    menu.entries[3] = String("Zurueck");
     menu.entries[4] = String("\0");
 
     drawMenu(menu);
@@ -179,20 +181,119 @@ void Messenger::optsMenu(void) {
         // If touch was recognized
         if (p.z > _minTouch) {
             // Get selected menu poin
-            selection = getSelection(menu.menuStart, menu.menuThickness, menu.menuOffset, 3, parseCoords(p));
+            selection = getSelection(menu.menuStart, menu.menuThickness, menu.menuOffset, 4, parseCoords(p));
 
             Serial.println("Selection: " + String(selection));
             
             switch (selection) {
                 case -1: break;
-                case 1: colorMenu(); break;
+                case 1: colorMenu(); return;
                 case 2: break;
-                case 3: return;
+                case 3: keysMenu(); return;
+                case 4: return;
                 default: break;
             }
         }
         delay(100);
     }
+
+    Serial.println("Returning from optsMenu");
+}
+
+void Messenger::keysMenu(void) {
+    pinMode(A2, OUTPUT);
+    pinMode(A3, OUTPUT);
+    Menu menu;
+    menu.menuStart = 60;
+    menu.menuThickness = 40;
+    menu.menuOffset = 20;
+    menu.header = "Tastatur";
+    menu.entries[0] = String("Tastenfarbe");
+    menu.entries[1] = String("Buchs.-Far.");
+    menu.entries[2] = String("Stil");
+    menu.entries[3] = String("Zurueck");
+    menu.entries[4] = String("\0");
+
+    drawMenu(menu);
+    delay(100);
+
+    while (true) {
+        int selection = -1;
+        
+        // Get touchpoint
+        digitalWrite(13, HIGH);
+        TSPoint p = _ts->getPoint();
+        digitalWrite(13, LOW);
+
+        // If touch was recognized
+        if (p.z > _minTouch) {
+            // Get selected menu poin
+            selection = getSelection(menu.menuStart, menu.menuThickness, menu.menuOffset, 4, parseCoords(p));
+
+            Serial.println("Selection: " + String(selection));
+
+            ColorChooser cc(_screen, _ts, _background, _boxColor, _textColor);
+            
+            switch (selection) {
+                case -1: break;
+                case 1: _keys->setKeyColor(cc.choose(), _background); return;
+                case 2: _keys->setTextColor(cc.choose(), _background); break;
+                case 3: _keys->setStyle(keyStyleMenu());
+                case 4: return;
+                default: break;
+            }
+        }
+        delay(100);
+    }
+
+    Serial.println("Returning from optsMenu");
+}
+
+String Messenger::keyStyleMenu(void) {
+    pinMode(A2, OUTPUT);
+    pinMode(A3, OUTPUT);
+    Menu menu;
+    menu.menuStart = 60;
+    menu.menuThickness = 40;
+    menu.menuOffset = 20;
+    menu.header = "Tastatur";
+    menu.entries[0] = String("QWERTZ");
+    menu.entries[1] = String("QWERTY");
+    menu.entries[2] = String("ABCDE");
+    menu.entries[3] = String("Zurück");
+    menu.entries[4] = String("\0");
+
+    drawMenu(menu);
+    delay(100);
+
+    while (true) {
+        int selection = -1;
+        
+        // Get touchpoint
+        digitalWrite(13, HIGH);
+        TSPoint p = _ts->getPoint();
+        digitalWrite(13, LOW);
+
+        // If touch was recognized
+        if (p.z > _minTouch) {
+            // Get selected menu poin
+            selection = getSelection(menu.menuStart, menu.menuThickness, menu.menuOffset, 4, parseCoords(p));
+
+            Serial.println("Selection: " + String(selection));
+            
+            switch (selection) {
+                case -1: break;
+                case 1: return String("QWERTZ");
+                case 2: return String("QWERTY");
+                case 3: return String("ABCDE");
+                case 4: return String("\0");
+                default: break;
+            }
+        }
+        delay(100);
+    }
+
+    Serial.println("Returning from optsMenu");
 }
 
 void Messenger::colorMenu(void) {
@@ -227,23 +328,72 @@ void Messenger::colorMenu(void) {
 
             Serial.println("Selection: " + String(selection));
             
+            ColorChooser cc(_screen, _ts, _background, _boxColor, _textColor);
+
             switch (selection) {
                 case -1: break;
-                case 1: break;
-                case 2: break;
-                case 3: break;
+                case 1: setBackground(backGroundColorMenu()); return;
+                case 2: setTextColor(cc.choose()); return;
+                case 3: setBoxColor(cc.choose()); return;
                 case 4: return;
                 default: break;
             }
         }
         delay(10);
     }
+    Serial.println("Returning from colorMenu");
+}
+
+uint16_t Messenger::backGroundColorMenu(void) {
+    Menu menu;
+    menu.menuStart = 60;
+    menu.menuThickness = 70;
+    menu.menuOffset = 20;
+    menu.header = "Hintergrund";
+    menu.entries[0] = String("Dark");
+    menu.entries[1] = String("Light");
+    menu.entries[2] = String("Zurueck");
+    menu.entries[3] = String("\0");
+    menu.entries[4] = String("\0");
+
+    drawMenu(menu);
+    delay(100);
+
+    while (true) {
+        int selection = -1;
+        
+        // Get touchpoint
+        digitalWrite(13, HIGH);
+        TSPoint p = _ts->getPoint();
+        digitalWrite(13, LOW);
+
+        // If touch was recognized
+        if (p.z > _minTouch) {
+            // Get selected menu poin
+            selection = getSelection(menu.menuStart, menu.menuThickness, menu.menuOffset, 2, parseCoords(p));
+
+            Serial.println("Selection: " + String(selection));
+            
+            switch (selection) {
+                case -1: break;
+                case 1: return BLACK;
+                case 2: return WHITE; 
+                case 3: return 0;
+                default: break;
+            }
+        }
+        delay(100);
+    }
+
+    Serial.println("Returning from bgMenu");
 }
 
 /************************ PRIVATE MENU DRAW ***************************/
 
 void Messenger::drawMenu(Menu menu) {
-    _screen->fillScreen(BLACK);
+    pinMode(A2, OUTPUT);
+    pinMode(A3, OUTPUT);
+    _screen->fillScreen(_background);
     // Print header
     _screen->setTextColor(RED);
     _screen->setTextSize(_textSize);
@@ -258,7 +408,7 @@ void Messenger::drawMenu(Menu menu) {
 
         _screen->drawRect(_menuBorderOffset, 
             (int16_t) menu.menuStart + i*(menu.menuThickness + menu.menuOffset), 
-            _screen->width() - _menuBorderOffset, 
+            _screen->width() - 2*_menuBorderOffset, 
             (int16_t) menu.menuThickness, 
             _boxColor
         );
@@ -303,4 +453,16 @@ int Messenger::getSelection(int menuStart, int menuThickness, int menuOffset, in
 
     if (selection < 1 || selection > entries) return -1;
     return selection;
+}
+
+/**
+ * @brief 
+ * 
+ * @param color 
+ */
+void Messenger::setBackground(uint16_t color) {
+    if (color == _textColor) _textColor = (color == WHITE ? BLACK : WHITE);
+    if (color == _boxColor) _boxColor = (color == WHITE ? BLACK : WHITE);
+
+    _background = color;
 }

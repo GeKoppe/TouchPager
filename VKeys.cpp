@@ -52,8 +52,6 @@ void VKeys::init (void) {
  * Resets virtual keyboard. Useful if you want to change the color of the keys.
  */
 void VKeys::reset (void) {
-    _screen->fillRect(_screenY - 3*_kHeight, 0, _screenX, 3*_kHeight, BLACK);
-
     // Default is QWERTZ
     if (_style == "QWERTY") {
         _rows[0][5] = 'Y';
@@ -62,8 +60,6 @@ void VKeys::reset (void) {
         _rows[0][5] = 'Z';
         _rows[2][1] = 'Y';
     }
-
-    init();
 }
 
 /**
@@ -88,6 +84,19 @@ void VKeys::print(String msg) {
     _screen->setCursor(100,100);
     _screen->print(msg);
     // init();
+}
+
+void VKeys::setStyle (String style) { 
+    if (style == "\0") return; 
+    _style = style;
+
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 10; j++) {
+            if (_style == "QWERTZ") _rows[i][j] = _QWERTZ[i][j];
+            else if (_style == "QWERTY") _rows[i][j] = _QWERTY[i][j];
+            else if (_style == "ABCDE") _rows[i][j] = _ABCDE[i][j];
+        }
+    }
 }
 
 

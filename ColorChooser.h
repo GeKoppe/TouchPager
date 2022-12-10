@@ -15,10 +15,10 @@
 #define YELLOW  0xFFE0
 #define WHITE   0xFFFF
 
-// typedef struct ScreenParse {
-//     int x;
-//     int y;
-// } ScreenParse;
+typedef struct Coords {
+    int x;
+    int y;
+} Coords;
 
 class ColorChooser {
     public:
@@ -29,19 +29,19 @@ class ColorChooser {
         uint16_t _bg, _box, _text;
 
         
-        uint16_t _colors[6] = {
+        uint16_t _colors[8] = {
             BLUE,
             RED,
             GREEN,
             CYAN,
             MAGENTA,
-            YELLOW
+            YELLOW,
+            WHITE,
+            BLACK
         };
 
         void draw();
-        uint16_t getSelection(ScreenParse coords);
-        
-        ScreenParse parseCoords(TSPoint p);
+        uint16_t getSelection(Coords coords);
 
         Elegoo_TFTLCD *_screen;
         TouchScreen *_ts;
