@@ -26,7 +26,7 @@ Messenger::Messenger(Elegoo_TFTLCD *screen, TouchScreen *ts, VKeys *keys) {
 
 void Messenger::init(void) {
     int selection = MAINMENU;
-    String message;
+    String message = "";
 
     Serial.println("Screen Width: " + String(_screen->width()) + ", Screen Height: " + String(_screen->height()));
 
@@ -38,7 +38,12 @@ void Messenger::init(void) {
         switch (selection) {
             case MAINMENU: selection = mainMenu(); break;
             case WRITEMESSAGE: message = writeMessage(); selection = MAINMENU; break;
+            case OPTS: optsMenu(); selection = MAINMENU; break;
             default: break; 
+        }
+
+        if (message != "") {
+            // Nachricht versenden
         }
     }
 }
@@ -48,6 +53,11 @@ void Messenger::reset(void) {
     init();
 }
 
+/**
+ * @brief 
+ * 
+ * @return String 
+ */
 String Messenger::writeMessage(void) {
     _keys->init();
     String msg = "", oldChar = "";
@@ -96,33 +106,24 @@ String Messenger::writeMessage(void) {
 
 
 /************************ PRIVATE ***************************/
-int Messenger::getSelection(int menuStart, int menuThickness, int menuOffset, int entries, ScreenParse parse) {
-    int x, y, selection;
 
-    // Screen and touchscreen have different values, parse ts to screen
-    // Get x and y coordinates from point
-    x = (int) parse.x;
-    y = (int) 320 - parse.y;
-
-    Serial.println("X: " + String(x) + ", Y: " + String(y));
-
-    // Check if touch occured out of menu
-    if (y < menuStart || y > menuStart + (entries*menuThickness) + (entries*menuOffset)) return -1;
-    if (x < _menuBorderOffset || x > (_screen->width() - _menuBorderOffset)) return -1;
-
-    y -= menuStart;
-    selection = (int) (y / menuThickness) + 1;
-    selection = selection;
-
-    if (selection < 1 || selection > entries) return -1;
-    return selection;
-}
-
+/************************ PRIVATE MENU FUNCTIONS ***************************/
 
 int Messenger::mainMenu(void) {
-    int menuStart = 100, menuThickness = 80, menuOffset = 20;
+    pinMode(A2, OUTPUT);
+    pinMode(A3, OUTPUT);
+    Menu menu;
+    menu.menuStart = 100;
+    menu.menuThickness = 80;
+    menu.menuOffset = 20;
+    menu.header = "Messenger";
+    menu.entries[0] = String("Schreiben");
+    menu.entries[1] = String("Optionen");
+    menu.entries[2] = String("\0");
+    menu.entries[3] = String("\0");
+    menu.entries[4] = String("\0");
 
-    drawMainMenu(menuStart, menuThickness, menuOffset);
+    drawMenu(menu);
 
     while (true) {
         int selection = -1;
@@ -135,13 +136,103 @@ int Messenger::mainMenu(void) {
         // If touch was recognized
         if (p.z > _minTouch) {
             // Get selected menu poin
-            selection = getSelection(menuStart, menuThickness, menuOffset, 2, parseCoords(p));
+            selection = getSelection(menu.menuStart, menu.menuThickness, menu.menuOffset, 2, parseCoords(p));;
 
             Serial.println("Selection: " + String(selection));
             
             switch (selection) {
                 case -1: break;
                 case 1: return WRITEMESSAGE;
+                case 2: return OPTS;
+                default: break;
+            }
+        }
+        delay(100);
+    }
+}
+
+void Messenger::optsMenu(void) {
+    pinMode(A2, OUTPUT);
+    pinMode(A3, OUTPUT);
+    Menu menu;
+    menu.menuStart = 60;
+    menu.menuThickness = 40;
+    menu.menuOffset = 20;
+    menu.header = "Optionen";
+    menu.entries[0] = String("Farben");
+    menu.entries[1] = String("Kanaele");
+    menu.entries[2] = String("Zurueck");
+    menu.entries[3] = String("\0");
+    menu.entries[4] = String("\0");
+
+    drawMenu(menu);
+    delay(100);
+
+    while (true) {
+        int selection = -1;
+        
+        // Get touchpoint
+        digitalWrite(13, HIGH);
+        TSPoint p = _ts->getPoint();
+        digitalWrite(13, LOW);
+
+        // If touch was recognized
+        if (p.z > _minTouch) {
+            // Get selected menu poin
+            selection = getSelection(menu.menuStart, menu.menuThickness, menu.menuOffset, 3, parseCoords(p));
+
+            Serial.println("Selection: " + String(selection));
+            
+            switch (selection) {
+                case -1: break;
+                case 1: colorMenu(); break;
+                case 2: break;
+                case 3: return;
+                default: break;
+            }
+        }
+        delay(100);
+    }
+}
+
+void Messenger::colorMenu(void) {
+    pinMode(A2, OUTPUT);
+    pinMode(A3, OUTPUT);
+    Menu menu;
+    menu.menuStart = 60;
+    menu.menuThickness = 40;
+    menu.menuOffset = 20;
+    menu.header = "Farben";
+    menu.entries[0] = String("Hintergrund");
+    menu.entries[1] = String("Text");
+    menu.entries[2] = String("Boxen");
+    menu.entries[3] = String("Zurueck");
+    menu.entries[4] = String("\0");
+
+    drawMenu(menu);
+    delay(100);
+
+    while (true) {
+        int selection = -1;
+        
+        // Get touchpoint
+        digitalWrite(13, HIGH);
+        TSPoint p = _ts->getPoint();
+        digitalWrite(13, LOW);
+
+        // If touch was recognized
+        if (p.z > _minTouch) {
+            // Get selected menu poin
+            selection = getSelection(menu.menuStart, menu.menuThickness, menu.menuOffset, 4, parseCoords(p));
+
+            Serial.println("Selection: " + String(selection));
+            
+            switch (selection) {
+                case -1: break;
+                case 1: break;
+                case 2: break;
+                case 3: break;
+                case 4: return;
                 default: break;
             }
         }
@@ -149,26 +240,35 @@ int Messenger::mainMenu(void) {
     }
 }
 
-void Messenger::drawMainMenu(int menuStart, int menuThickness, int menuOffset) {
+/************************ PRIVATE MENU DRAW ***************************/
+
+void Messenger::drawMenu(Menu menu) {
+    _screen->fillScreen(BLACK);
     // Print header
     _screen->setTextColor(RED);
     _screen->setTextSize(_textSize);
     _screen->setCursor(20,10);
-    _screen->print("Messenger");
-    
-    // Print menu boxes
-    _screen->drawRect(_menuBorderOffset, (int16_t) menuStart , _screen->width() - 2*_menuBorderOffset, (int16_t) menuThickness, _boxColor);
-    _screen->drawRect(_menuBorderOffset, (int16_t) (menuStart + menuThickness + menuOffset) , _screen->width() - 2*_menuBorderOffset, (int16_t) menuThickness, _boxColor);
+    _screen->print(menu.header);
 
-    // Print menu Texts
     _screen->setTextColor(_textColor);
-    _screen->setCursor(20,120);
-    _screen->print("Schreiben");
+    
+    // Print menu boxes and texts
+    for (int i = 0; i < 5; i++) {
+        if (menu.entries[i] == "\0") continue;
 
-    _screen->setCursor(20,220);
-    _screen->print("Optionen");
+        _screen->drawRect(_menuBorderOffset, 
+            (int16_t) menu.menuStart + i*(menu.menuThickness + menu.menuOffset), 
+            _screen->width() - _menuBorderOffset, 
+            (int16_t) menu.menuThickness, 
+            _boxColor
+        );
+
+        _screen->setCursor(20,menu.menuStart + i*(menu.menuThickness + menu.menuOffset) + ((int) (menu.menuThickness / _textSize)));
+        _screen->print(menu.entries[i]);
+    }
 }
 
+/************************ PRIVATE SPECIALS ***************************/
 ScreenParse Messenger::parseCoords(TSPoint p) {
     ScreenParse parse;
     
@@ -180,4 +280,27 @@ ScreenParse Messenger::parseCoords(TSPoint p) {
     // Parse Y
     parse.y = (int) ((p.y - 70) / 2.66);
     return parse;
+}
+
+int Messenger::getSelection(int menuStart, int menuThickness, int menuOffset, int entries, ScreenParse parse) {
+    int x, y, selection;
+
+    // Screen and touchscreen have different values, parse ts to screen
+    // Get x and y coordinates from point
+    x = (int) parse.x;
+    // Invert display
+    y = (int) 320 - parse.y;
+
+    Serial.println("X: " + String(x) + ", Y: " + String(y));
+
+    // Check if touch occured out of menu
+    if (y < menuStart || y > menuStart + (entries*menuThickness) + (entries*menuOffset)) return -1;
+    if (x < _menuBorderOffset || x > (_screen->width() - _menuBorderOffset)) return -1;
+
+    y -= menuStart;
+    selection = (int) (y / (menuThickness+menuOffset)) + 1;
+    selection = selection;
+
+    if (selection < 1 || selection > entries) return -1;
+    return selection;
 }

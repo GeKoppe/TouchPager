@@ -38,6 +38,14 @@ typedef struct ScreenParse {
     int y;
 } ScreenParse;
 
+typedef struct Menu {
+    int menuStart;
+    int menuThickness;
+    int menuOffset;
+    String entries[5];
+    String header;
+} Menu;
+
 class Messenger {
     public:
         Messenger(Elegoo_TFTLCD *screen, TouchScreen *ts, VKeys *keys);
@@ -66,11 +74,14 @@ class Messenger {
         TouchScreen *_ts;
 
         // MENU FUNCTIONS
-        int mainMenu(void), 
+        int mainMenu(void),
             getSelection(int menuStart, int menuThickness, int menuOffset, int entries, ScreenParse parse);
+        
+        void    optsMenu(void),
+                colorMenu(void);
 
         // MENU DRAW FUNCTIONS
-        void    drawMainMenu(int menuStart, int menuThickness, int menuOffset);
+        void drawMenu(Menu menu);
 
         // SETTERS
         void setKeyColor(uint16_t color) { _keyColor = color; };
