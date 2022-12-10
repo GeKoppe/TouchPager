@@ -23,7 +23,7 @@ int ColorChooser::choose() {
 
             selection = getSelection(parse);
 
-            if (selection != -1) break;
+            if (selection != -2) break;
         }
 
         delay(10);
@@ -43,13 +43,16 @@ uint16_t ColorChooser::getSelection(Coords coords) {
     Serial.println("CC: X: " + String(coords.x) + ", Y: " + String(coords.y));
     if (320 - coords.y > 250) return 0;
 
-    if (coords.x < 35 || coords.x > 215) return -1;
-    if (coords.x < 135 && coords.x > 100) return -1;
+    if (coords.x < 35 || coords.x > 215) return -2;
+    if (coords.x < 135 && coords.x > 100) return -2;
 
     column = coords.x < 100 ? 0 : 1;
     row = (int)((320 - coords.y) / 60);
 
-    uint16_t selection = _colors[column + (row*2)];
+    // Variable basically only exists, so that we don't try to reach indices the array does not have
+    int safeHandler = column + (row*2);
+
+    uint16_t selection = (safeHandler > 7 ? -2 : _colors[safeHandler]);
 
     switch (selection) {
         case BLUE: Serial.println("CC Selection: BLUE"); break;
@@ -58,6 +61,8 @@ uint16_t ColorChooser::getSelection(Coords coords) {
         case CYAN: Serial.println("CC Selection: CYAN"); break;
         case MAGENTA: Serial.println("CC Selection: MAGENTA"); break;
         case YELLOW: Serial.println("CC Selection: YELLOW"); break;
+        case WHITE: Serial.println("CC Selection: WHITE"); break;
+        case BLACK: Serial.println("CC Selection: BLACK"); break;
         default: Serial.println("CC No selection"); break;
     }
 
@@ -70,7 +75,7 @@ void ColorChooser::draw() {
     _screen->fillScreen(_bg);
 
     // Box Size: 70. Boxes start at y = 10 and end at y = 240, box offset 10
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 8; i++) {
         _screen->fillRect((i % 2 == 0 ? 35 : 135),
             ((int) (i / 2))*50 + 10,
             70,
