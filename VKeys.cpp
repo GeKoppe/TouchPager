@@ -33,8 +33,12 @@ void VKeys::init (void) {
     _screen->setTextSize(_textSize - 1);
 
     // Spacebar
-    _screen->fillRect(0, _screen->height() - (_kHeight - 1), _screen->width(), _kHeight - 1, _keyColor);
+    _screen->fillRect(0, _screen->height() - (_kHeight - 1), (_screen->width() / 4) - 1, _kHeight - 1, _keyColor);
+    _screen->fillRect((_screen->width() / 4), _screen->height() - (_kHeight - 1), 2*(_screen->width() / 4) - 1, _kHeight - 1, _keyColor);
+    _screen->fillRect(3*(_screen->width() / 4), _screen->height() - (_kHeight - 1), (_screen->width() / 4) - 1, _kHeight - 1, _keyColor);
     _screen->setCursor((int16_t)(_screen->width() / 4), (int16_t)(_screen->height() - (_kHeight - 4)));
+
+    _screen->setCursor((_screen->width() / 4) + 15, 291);    
     _screen->print((char*)"SPACE");
 
     _screen->setTextSize(_textSize);

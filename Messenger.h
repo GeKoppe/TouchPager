@@ -98,6 +98,7 @@ class Messenger {
         // SPECIALS
         ScreenParse parseCoords(TSPoint p);
         String writeMessage(void);
+        void printMessageOnDisplay(String msg);
 };
 
 #endif

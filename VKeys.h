@@ -12,7 +12,7 @@
 #define CYAN    0x07FF
 #define MAGENTA 0xF81F
 #define YELLOW  0xFFE0
-#define WHITE   0xFFFF
+#define WHITE   0xF0EDD8
 
 const char _QWERTZ[3][10] = {
             {

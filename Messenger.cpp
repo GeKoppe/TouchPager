@@ -19,7 +19,7 @@ Messenger::Messenger(Elegoo_TFTLCD *screen, TouchScreen *ts, VKeys *keys) {
     _keyColor = BLUE;
     _textSize = TEXTMEDIUM;
     _menuBorderOffset = 10;
-    _minTouch = 10;
+    _minTouch = 3;
 
     _keys->setKeyColor(_keyColor, _background);
 }
@@ -53,56 +53,6 @@ void Messenger::reset(void) {
     init();
 }
 
-/**
- * @brief 
- * 
- * @return String 
- */
-String Messenger::writeMessage(void) {
-    _keys->init();
-    String msg = "", oldChar = "";
-    TSPoint oldP = _ts->getPoint();
-    int clicks = 0;
-
-    while (true) {
-        TSPoint p;
-
-        do {
-            digitalWrite(13, HIGH);
-            p = _ts->getPoint();
-            digitalWrite(13, LOW);
-            
-        } while (oldP.x == p.x && oldP.y == p.y);
-        
-        oldP.x = p.x;
-        oldP.y = p.y;
-
-        if (p.z > _minTouch) {
-            String newChar = String(_keys->getInputChar(p));
-            
-            if (newChar == oldChar) {
-                if (clicks < 9) {
-                    clicks++;
-                    continue;
-                } else {
-                    oldChar = "";
-                    clicks = 0;
-                }
-            } else {
-                msg += newChar;
-                oldChar = newChar;
-            }
-
-            if (newChar == "*") {
-                msg = msg.substring(0,msg.length()-1);
-            }
-            Serial.println(msg);
-        }
-
-        // Without delay, this thing notices touches 3-5 Times per Touch
-        delay(10);
-    }
-}
 
 
 /************************ PRIVATE ***************************/
@@ -194,7 +144,7 @@ void Messenger::optsMenu(void) {
                 default: break;
             }
         }
-        delay(100);
+        delay(10);
     }
 
     Serial.println("Returning from optsMenu");
@@ -243,7 +193,7 @@ void Messenger::keysMenu(void) {
                 default: break;
             }
         }
-        delay(100);
+        delay(10);
     }
 
     Serial.println("Returning from optsMenu");
@@ -290,7 +240,7 @@ String Messenger::keyStyleMenu(void) {
                 default: break;
             }
         }
-        delay(100);
+        delay(10);
     }
 
     Serial.println("Returning from optsMenu");
@@ -382,7 +332,7 @@ uint16_t Messenger::backGroundColorMenu(void) {
                 default: break;
             }
         }
-        delay(100);
+        delay(10);
     }
 
     Serial.println("Returning from bgMenu");
@@ -465,4 +415,76 @@ void Messenger::setBackground(uint16_t color) {
     if (color == _boxColor) _boxColor = (color == WHITE ? BLACK : WHITE);
 
     _background = color;
+}
+
+void Messenger::printMessageOnDisplay(String msg) {
+    pinMode(A2, OUTPUT);
+    pinMode(A3, OUTPUT);
+    _screen->fillRect(0,0,_screen->width(), 90, _background);
+    _screen->setCursor(5,5);
+    _screen->setTextSize(TEXTMEDIUM);
+    _screen->setTextColor(_textColor);
+    _screen->print(msg);
+}
+
+
+/**
+ * @brief 
+ * 
+ * @return String 
+ */
+String Messenger::writeMessage(void) {
+    _keys->init();
+
+    String msg = "", oldChar = "";
+    TSPoint oldP = _ts->getPoint();
+    int clicks = 0;
+
+    while (true) {
+        TSPoint p;
+
+        do {
+            digitalWrite(13, HIGH);
+            p = _ts->getPoint();
+            digitalWrite(13, LOW);
+            
+        } while (oldP.x == p.x && oldP.y == p.y);
+        
+        oldP.x = p.x;
+        oldP.y = p.y;
+
+        if (p.z > _minTouch) {
+            bool hasChanged = false;
+            String newChar = String(_keys->getInputChar(p));
+            
+            if (newChar == oldChar) {
+                if (clicks < 9) {
+                    clicks++;
+                    continue;
+                } else {
+                    oldChar = "";
+                    newChar = "";
+                    clicks = 0;
+                }
+            } else {
+                msg += newChar;
+                oldChar = newChar;
+                hasChanged = true;
+            }
+
+            if (newChar == "*") {
+                msg = msg.substring(0,msg.length()-1);
+                hasChanged = true;
+            }
+
+            if (hasChanged) {
+                printMessageOnDisplay(msg);
+            }
+
+            Serial.println(msg);
+        }
+
+        // Without delay, this thing notices touches 3-5 Times per Touch
+        delay(10);
+    }
 }
