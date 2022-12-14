@@ -15,7 +15,7 @@
 #define CYAN    0x07FF
 #define MAGENTA 0xF81F
 #define YELLOW  0xFFE0
-#define WHITE   0xFFFF
+#define WHITE   0xFFFE
 
 #define MAINMENU 0
 #define WRITEMESSAGE 1

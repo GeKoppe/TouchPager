@@ -12,17 +12,17 @@
 #define CYAN    0x07FF
 #define MAGENTA 0xF81F
 #define YELLOW  0xFFE0
-#define WHITE   0xF0EDD8
+#define WHITE   0xFFFE
 
 const char _QWERTZ[3][10] = {
             {
                 'Q','W','E','R','T','Z','U','I','O','P'
             },
             {
-                'A','S','D','F','G','H','J','K','L','#'
+                'A','S','D','F','G','H','J','K','L','~'
             },
             {
-                ',','Y','X','C','V','B','N','M','?','*'
+                's','Y','X','C','V','B','N','M','?','#'
             }
 };
 
@@ -31,10 +31,10 @@ const char _QWERTY[3][10] = {
                 'Q','W','E','R','T','Y','U','I','O','P'
             },
             {
-                'A','S','D','F','G','H','J','K','L','#'
+                'A','S','D','F','G','H','J','K','L','~'
             },
             {
-                ',','Z','X','C','V','B','N','M','?','*'
+                's','Z','X','C','V','B','N','M','?','#'
             }
 };
 
@@ -43,10 +43,10 @@ const char _ABCDE[3][10] = {
                 'A','B','C','D','E','F','G','H','I','J'
             },
             {
-                'K','L','M','N','O','P','Q','R','S','#'
+                'K','L','M','N','O','P','Q','R','S','~'
             },
             {
-                ',','T','U','V','W','X','Y','Z','?','*'
+                's','T','U','V','W','X','Y','Z','?','#'
             }
 };
 
@@ -60,6 +60,9 @@ class VKeys {
         void setKHeight (int height) { _kHeight = height; };
         int getKHeight () { return _kHeight; };
 
+        void setSpecial (bool special) { _special = special; };
+        bool getSpecial () { return _special; };
+
         void setStyle (String style);
         String getStyle () { return _style; };
 
@@ -71,6 +74,8 @@ class VKeys {
 
         void    init (void),
                 reset (void);
+
+        void switchKeys();
         
         String getInputChar(TSPoint point);
         void print(String msg);
@@ -86,6 +91,8 @@ class VKeys {
         int _kWidth = (_screenX / 10) - 1;
         int _screenY = 300;
 
+        bool _special = false;
+
         char _rows[3][10] = {
             {
                 'Q','W','E','R','T','Z','U','I','O','P'
@@ -94,7 +101,19 @@ class VKeys {
                 'A','S','D','F','G','H','J','K','L','#'
             },
             {
-                ',','Y','X','C','V','B','N','M','?','*'
+                's','Y','X','C','V','B','N','M','?','*'
+            }
+        };
+
+        char _specialChars[3][10] = {
+            {
+                '@',34,'#','$','%','&',39,'\0','\0','\0'
+            },
+            {
+                '\0','\0','\0','\0','\0','\0','\0','\0','\0','~'
+            },
+            {
+                's','\0','\0','\0','\0','\0','\0','\0','\0','\0'
             }
         };
 

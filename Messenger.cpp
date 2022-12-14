@@ -16,12 +16,13 @@ Messenger::Messenger(Elegoo_TFTLCD *screen, TouchScreen *ts, VKeys *keys) {
     _background = BLACK;
     _textColor = WHITE;
     _boxColor = WHITE;
-    _keyColor = BLUE;
+    _keyColor = WHITE;
     _textSize = TEXTMEDIUM;
     _menuBorderOffset = 10;
     _minTouch = 3;
 
     _keys->setKeyColor(_keyColor, _background);
+    _keys->setTextColor(BLACK, _background);
 }
 
 void Messenger::init(void) {
@@ -458,7 +459,7 @@ String Messenger::writeMessage(void) {
             String newChar = String(_keys->getInputChar(p));
             
             if (newChar == oldChar) {
-                if (clicks < 9) {
+                if (clicks < 5) {
                     clicks++;
                     continue;
                 } else {
@@ -472,13 +473,20 @@ String Messenger::writeMessage(void) {
                 hasChanged = true;
             }
 
-            if (newChar == "*") {
-                msg = msg.substring(0,msg.length()-1);
-                hasChanged = true;
-            }
-
-            if (hasChanged) {
+            if (newChar == "~") {
+                msg = msg.substring(0,msg.length()-2);
                 printMessageOnDisplay(msg);
+            } else if (newChar == "s") {
+                _keys->switchKeys();
+            } else if (newChar == "DONE") {
+                break;
+            } else if (newChar == "BACK") {
+                msg = "";
+                break;
+            } else {
+                if (hasChanged) {
+                    printMessageOnDisplay(msg);
+                }
             }
 
             Serial.println(msg);
@@ -487,4 +495,6 @@ String Messenger::writeMessage(void) {
         // Without delay, this thing notices touches 3-5 Times per Touch
         delay(10);
     }
+
+    return msg;
 }
