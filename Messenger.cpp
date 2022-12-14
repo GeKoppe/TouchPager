@@ -418,6 +418,11 @@ void Messenger::setBackground(uint16_t color) {
     _background = color;
 }
 
+/**
+ * @brief Prints the current message to the display
+ * 
+ * @param msg {String} Current message 
+ */
 void Messenger::printMessageOnDisplay(String msg) {
     pinMode(A2, OUTPUT);
     pinMode(A3, OUTPUT);

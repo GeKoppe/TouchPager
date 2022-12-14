@@ -78,7 +78,6 @@ class VKeys {
         void switchKeys();
         
         String getInputChar(TSPoint point);
-        void print(String msg);
 
     private:
         String _style;

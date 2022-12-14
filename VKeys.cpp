@@ -38,7 +38,7 @@ void VKeys::init (void) {
     _screen->setTextColor(_textColor);
     _screen->setTextSize(_textSize - 1);
 
-    // Spacebar
+    // Spacebar, Done and Back
     _screen->fillRect(0, _screen->height() - (_kHeight - 1), (_screen->width() / 4) - 1, _kHeight - 1, _keyColor);
     _screen->fillRect((_screen->width() / 4), _screen->height() - (_kHeight - 1), 2*(_screen->width() / 4) - 1, _kHeight - 1, _keyColor);
     _screen->fillRect(3*(_screen->width() / 4), _screen->height() - (_kHeight - 1), (_screen->width() / 4) - 1, _kHeight - 1, _keyColor);
@@ -101,15 +101,6 @@ String VKeys::getInputChar(TSPoint point) {
     return String(getCharFromCoords(x, y));
 }
 
-void VKeys::print(String msg) {
-    // _screen->fillScreen(BLACK);
-    _screen->setTextColor(WHITE);
-    _screen->setTextSize(_textSize);
-    _screen->setCursor(100,100);
-    _screen->print(msg);
-    // init();
-}
-
 void VKeys::setStyle (String style) { 
     if (style == "\0") return; 
     _style = style;
@@ -141,7 +132,7 @@ String VKeys::getCharFromCoords(int16_t x, int16_t y) {
     // row 0 is spacebar, therefore return escaped space immediately, as nothing else is there.
     if (row == 0) {
         int tempX = (int)((x - 120) / 3.5);
-        
+
         if (tempX < (_screen->width() / 4)) {
             return String("BACK");
         } else if (tempX > 3*(_screen->width() / 4)) {
