@@ -68,6 +68,8 @@ class Messenger {
         // CONFIG FIELDS
         uint16_t _keyColor, _textColor, _background, _textSize, _boxColor;
         int _menuBorderOffset, _minTouch;
+
+        byte adress[6];
         
         // PARTS
         VKeys *_keys;

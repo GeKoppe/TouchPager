@@ -1,0 +1,136 @@
+\documentclass[a4paper, 11pt]{scrartcl}
+
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+
+\usepackage{mathptmx}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2cm]{geometry}
+\usepackage[singlespacing]{setspace}
+
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{floatflt,epsfig}
+\usepackage{scrlayer-scrpage}
+\usepackage{hyperref}
+\usepackage{float}
+
+\usepackage{xcolor}
+\usepackage{floatflt,epsfig}
+% \usepackage[fleqn]{amsmath}
+\usepackage{listings}
+\usepackage{color}
+%\usepackage{minted}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+% \lstset{frame=tb,
+%   language=C,
+%   aboveskip=3mm,
+%   belowskip=3mm,
+%   showstringspaces=false,
+%   columns=flexible,
+%   basicstyle={\small\ttfamily},
+%   numbers=none,
+%   numberstyle=\tiny\color{gray},
+%   keywordstyle=\color{mauve},
+%   commentstyle=\color{dkgreen},
+%   stringstyle=\color{blue},
+%   breaklines=true,
+%   breakatwhitespace=true,
+%   tabsize=3,
+%   morekeywords={
+    
+%   }
+%   %morecomment=[s][\color{dkgreen}]{//}
+% }
+\lstset{language=C++,
+    basicstyle=\ttfamily,
+    keywordstyle=\color{blue}\ttfamily,
+    stringstyle=\color{red}\ttfamily,
+    commentstyle=\color{green}\ttfamily,
+    morecomment=[l][\color{magenta}]{\#}
+    morekeywords={
+        Messenger,Elegoo_TFTLCD,TouchScreen,VKeys % TODO hier müssen noch die restlichen Keywords eingepflegt werden
+    }
+}
+
+\begin{document}
+\thispagestyle{empty}
+\ihead{
+    \begin{footnotesize}
+        Dokumentation Arduino Pager
+    \end{footnotesize}
+}
+\chead{
+    \begin{footnotesize}
+        Lernfeld 7: Cyberphysische Systeme ergänzen
+    \end{footnotesize}
+}
+\ohead{
+    \begin{footnotesize}
+        Thilo Drehlmann, Gerrit Koppe
+    \end{footnotesize}
+}
+\vspace{0.2\textheight}
+\begin{center}
+    \begin{figure}[H]
+        \begin{minipage}{0.3\textwidth}
+            \includegraphics[scale=0.6]{Bilder/BBS}
+        \end{minipage}
+        \hspace{0.4\textwidth}
+        \begin{minipage}{0.3\textwidth}
+            \includegraphics[scale=0.6]{Bilder/sievers.png}
+        \end{minipage}
+    \end{figure}
+    \vspace{1cm}
+    \begin{Huge}
+        \textbf{Dokumentation Arduino Pager} 
+    \end{Huge}
+    \\
+    \vspace{0.1\textheight}
+    \begin{Large}
+        Autoren: Thilo Drehlmann, Gerrit Koppe
+    \end{Large}
+    \\
+    \vspace{0.5cm}
+    \begin{Large}
+        Ausbildungsberuf: Fachinformatiker für Anwendungsentwicklung
+    \end{Large}
+    \\
+    \vspace{0.5cm}
+    \begin{Large}
+        \today
+    \end{Large}
+\end{center}
+\newpage
+\thispagestyle{empty}
+\tableofcontents
+\newpage
+\clearpage
+\pagenumbering{arabic}
+\section{Einleitung}
+
+\section{Formulierung des Themas}
+
+\section{Ressourcen und Ablaufplanung}
+
+\section{Durchführung}
+
+\section{Projektergebnis}
+
+\newpage
+\section{Anlagen}
+
+
+\newpage
+\section{Glossar}
+\section{Quellenverzeichnis}
+
+
+\end{document}
