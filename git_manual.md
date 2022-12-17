@@ -14,4 +14,4 @@
    6. Entspannen
    7. Wenn alles bereinigt ist, noch einmal Schritte 4-6 durchführen
    8. Wenn alles scheitern sollte, Gerrit anschreiben.
-   9. Sollte tatsächlich wirklich alles kaputt gehen: Diesen Ordner löschen und das Repo neu herunterladen
+   9. Sollte tatsächlich wirklich alles kaputt gehen sollte: Diesen Ordner löschen und das Repo neu herunterladen
