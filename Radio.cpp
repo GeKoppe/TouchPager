@@ -10,7 +10,7 @@ Radio::Radio(uint16_t ce, uint16_t csn, byte adress[6]) {
     _ce = ce;
     _csn = csn;
     _readingPipe = 1;
-
+    
     for (int i = 0; i < 6; i++) {
         _adress[i] = adress[i];
     }
