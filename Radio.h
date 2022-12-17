@@ -12,6 +12,9 @@ class Radio {
         uint16_t    getCE (void) { return _ce; };
         uint16_t    getCSN (void) { return _csn; };
 
+        uint8_t     getPALevel(void) { return _level; };
+        void        setPALevel(String level);
+
         int         getReadingPipe (void) { return _readingPipe; };
 
         byte*       getAdress (void) { return _adress; };

@@ -25,6 +25,19 @@ Radio::Radio(uint16_t ce, uint16_t csn, byte adress[6]) {
     _antenna.startListening();
 }
 
+void Radio::setPALevel(String level) {
+    if (level == "MIN") {
+        _level = RF24_PA_MIN;
+    } else if (level == "LOW") {
+        _level = RF24_PA_LOW;
+    } else if (level == "HIGH") {
+        _level = RF24_PA_HIGH;
+    } else if (level == "MAX") {
+        _level = RF24_PA_MAX;
+    } else {
+        _level = RF24_PA_MIN;
+    }
+}
 
 void Radio::switchState() {
     _listening = !_listening;
