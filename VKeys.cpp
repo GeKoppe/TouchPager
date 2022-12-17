@@ -146,7 +146,7 @@ String VKeys::getCharFromCoords(int16_t x, int16_t y) {
     // X Range ca. 120 - 920 for 10 columns, therefore 800 / 10 = 80
     column = (int) ((x - 120)/ 80);
 
-    if (column < 11 && column >= 0 && row < 4 && row >0) return String(_rows[(3-row)][column]);
+    if (column < 11 && column >= 0 && row < 4 && row >0) return String(_special ? _specialChars[(3-row)][column] : _rows[(3-row)][column]);
     
     return String('-');
 }

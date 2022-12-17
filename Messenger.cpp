@@ -473,7 +473,9 @@ String Messenger::writeMessage(void) {
                     clicks = 0;
                 }
             } else {
-                msg += newChar;
+                if (newChar != "~" && newChar != "s") {
+                    msg += newChar;
+                }
                 oldChar = newChar;
                 hasChanged = true;
             }
