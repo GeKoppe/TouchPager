@@ -211,7 +211,7 @@ String Messenger::keyStyleMenu(void) {
     menu.entries[0] = String("QWERTZ");
     menu.entries[1] = String("QWERTY");
     menu.entries[2] = String("ABCDE");
-    menu.entries[3] = String("Zurück");
+    menu.entries[3] = String("Zurueck");
     menu.entries[4] = String("\0");
 
     drawMenu(menu);
