@@ -90,12 +90,12 @@ String Radio::receiveMessage(void) {
 
     msg = String((char*)buffer);
 
-    if (msg == _acknowledge) {
+    if (msg == String(_acknowledge)) {
         acknowledge();
         return "\0";
     }
 
-    if (msg == _jam) {
+    if (msg == String(_jam)) {
         return String(_jam);
     }
 
