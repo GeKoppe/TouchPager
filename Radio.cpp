@@ -54,6 +54,10 @@ void Radio::switchState() {
     _antenna.setPALevel(_level);
 }
 
+bool Radio::available(void) {
+    return _antenna.available();
+}
+
 /**
  * @brief 
  * Checks, whether there are devices available nearby

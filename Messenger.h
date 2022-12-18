@@ -7,6 +7,7 @@
 
 #include "VKeys.h"
 #include "ColorChooser.h"
+#include "Radio.h"
 
 #define	BLACK   0x0000
 #define	BLUE    0x001F
@@ -19,7 +20,8 @@
 
 #define MAINMENU 0
 #define WRITEMESSAGE 1
-#define OPTS 2
+#define READ 2
+#define OPTS 3
 
 #define COLOR_OPTS 21
 #define CHANNEL_OPTS 22
@@ -45,6 +47,7 @@ typedef struct Menu {
     int menuOffset;
     String entries[5];
     String header;
+    String extraText;
 } Menu;
 
 class Messenger {
@@ -75,6 +78,11 @@ class Messenger {
         VKeys *_keys;
         Elegoo_TFTLCD *_screen;
         TouchScreen *_ts;
+        //Radio *_radio;
+
+        String _messages[3] = {
+            "\0", "\0", "\0"
+        };
 
         // MENU FUNCTIONS
         int mainMenu(void),
@@ -99,8 +107,16 @@ class Messenger {
 
         // SPECIALS
         ScreenParse parseCoords(TSPoint p);
+        
         String writeMessage(void);
-        void printMessageOnDisplay(String msg);
+        
+        void    printMessageOnDisplay(String msg),
+                cacheMessage(String msg),
+                clearMessageCache();
+        
+        String  checkCache();
+        
+        String receiveMessage();
 };
 
 #endif

@@ -12,6 +12,7 @@ Messenger::Messenger(Elegoo_TFTLCD *screen, TouchScreen *ts, VKeys *keys) {
     _screen = screen;
     _ts = ts;
     _keys = keys;
+    // _radio = r;
 
     _background = BLACK;
     _textColor = WHITE;
@@ -40,7 +41,7 @@ void Messenger::init(void) {
             case MAINMENU: selection = mainMenu(); break;
             case WRITEMESSAGE: message = writeMessage(); selection = MAINMENU; break;
             case OPTS: optsMenu(); selection = MAINMENU; break;
-            default: break; 
+            default: selection = mainMenu(); 
         }
 
         if (message != "") {
@@ -65,12 +66,13 @@ int Messenger::mainMenu(void) {
     pinMode(A3, OUTPUT);
     Menu menu;
     menu.menuStart = 100;
-    menu.menuThickness = 80;
-    menu.menuOffset = 20;
+    menu.menuThickness = 60;
+    menu.menuOffset = 10;
     menu.header = "Messenger";
+    menu.extraText = "Test";
     menu.entries[0] = String("Schreiben");
-    menu.entries[1] = String("Optionen");
-    menu.entries[2] = String("\0");
+    menu.entries[1] = String("Lesen");
+    menu.entries[2] = String("Optionen");
     menu.entries[3] = String("\0");
     menu.entries[4] = String("\0");
 
@@ -87,14 +89,15 @@ int Messenger::mainMenu(void) {
         // If touch was recognized
         if (p.z > _minTouch) {
             // Get selected menu poin
-            selection = getSelection(menu.menuStart, menu.menuThickness, menu.menuOffset, 2, parseCoords(p));;
+            selection = getSelection(menu.menuStart, menu.menuThickness, menu.menuOffset, 3, parseCoords(p));;
 
             Serial.println("Selection: " + String(selection));
             
             switch (selection) {
                 case -1: break;
                 case 1: return WRITEMESSAGE;
-                case 2: return OPTS;
+                case 2: return READ;
+                case 3: return OPTS;
                 default: break;
             }
         }
@@ -367,6 +370,14 @@ void Messenger::drawMenu(Menu menu) {
         _screen->setCursor(20,menu.menuStart + i*(menu.menuThickness + menu.menuOffset) + ((int) (menu.menuThickness / _textSize)));
         _screen->print(menu.entries[i]);
     }
+
+    if (menu.extraText != "") {
+        int y = (10 + menu.menuStart) / 2;
+        _screen->setTextSize(_textSize - 1);
+        _screen->setTextColor(_textColor);
+        _screen->setCursor(20,y);
+        _screen->print(menu.extraText);
+    }
 }
 
 /************************ PRIVATE SPECIALS ***************************/
@@ -504,4 +515,67 @@ String Messenger::writeMessage(void) {
     }
 
     return msg;
+}
+
+/**
+ * @brief 
+ * 
+ * @return String 
+ */
+String Messenger::receiveMessage() {
+    String msg = "\0";
+    // String msg = _radio->receiveMessage();
+    if (msg == "\0") return "\0";
+
+    cacheMessage(msg);
+    return msg;
+}
+
+/**
+ * @brief 
+ * Caches incoming messages in message cache
+ * 
+ * @param msg 
+ */
+void Messenger::cacheMessage(String msg) {
+    int counter = 0;
+    for (int i = 0; i < 3; i++) {
+        if (_messages[i] != "\0") {
+            counter++;
+            continue;
+        } else {
+            break;
+        }
+    }
+
+    if (counter != 3) {
+        _messages[counter] = msg;
+        return;
+    } else {
+        _messages[2] = "\0";
+        for (int i = 0; i < 2; i++) {
+            _messages[i + 1] = _messages[i];
+        }
+        _messages[0] = msg;
+        return;
+    }
+}
+
+void Messenger::clearMessageCache() {
+    for (int i = 0; i < 3; i++) {
+        _messages[i] = "\0";
+    }
+}
+
+String Messenger::checkCache() {
+    int number = 0;
+    for (int i = 0; i < 3; i++) {
+        if (_messages[i] == "\0") {
+            number++;
+        }
+    }
+
+    if (number == 0) return "";
+
+    return String(number) + String(" Nachrichten");
 }

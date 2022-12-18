@@ -28,6 +28,7 @@ class Radio {
         void        switchState(void);
 
         String      receiveMessage(void);
+        bool        available(void);
 
     private:
         uint16_t _ce, _csn, _readingPipe, _paLevel;
