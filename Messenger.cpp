@@ -30,19 +30,22 @@ Messenger::Messenger(Elegoo_TFTLCD *screen, TouchScreen *ts, VKeys *keys) {
 
 /**
  * @brief 
+ * Initializes the Messenger object and starts the infinite loop
  * 
  */
 void Messenger::init(void) {
     int selection = MAINMENU;
-    String message = "";
+    String message = ""; // Message to send
 
     Serial.println("Screen Width: " + String(_screen->width()) + ", Screen Height: " + String(_screen->height()));
 
     while (true) {
+        // Pinmodes because TS and Screen share these pins
         pinMode(A2, OUTPUT);
         pinMode(A3, OUTPUT);
         _screen->fillScreen(_background);
 
+        // Start the corresponding menu
         switch (selection) {
             case MAINMENU: selection = mainMenu(); break;
             case WRITEMESSAGE: message = writeMessage(); selection = MAINMENU; break;
@@ -59,6 +62,11 @@ void Messenger::init(void) {
     }
 }
 
+/**
+ * @deprecated
+ * @brief 
+ * 
+ */
 void Messenger::reset(void) {
     _screen->fillScreen(WHITE);
     init();
@@ -70,9 +78,17 @@ void Messenger::reset(void) {
 
 /************************ PRIVATE MENU FUNCTIONS ***************************/
 
+/**
+ * @brief
+ * Shows the main menu and handles the input
+ * 
+ * @return int 
+ */
 int Messenger::mainMenu(void) {
     pinMode(A2, OUTPUT);
     pinMode(A3, OUTPUT);
+
+    // Build menu defintion
     Menu menu;
     menu.menuStart = 100;
     menu.menuThickness = 60;
@@ -85,6 +101,7 @@ int Messenger::mainMenu(void) {
     menu.entries[3] = String("\0");
     menu.entries[4] = String("\0");
 
+    // Draw menu
     drawMenu(menu);
 
     while (true) {
@@ -102,6 +119,7 @@ int Messenger::mainMenu(void) {
 
             Serial.println("Selection: " + String(selection));
             
+            // Return the seection
             switch (selection) {
                 case -1: break;
                 case 1: return WRITEMESSAGE;
@@ -353,10 +371,17 @@ uint16_t Messenger::backGroundColorMenu(void) {
 
 /************************ PRIVATE MENU DRAW ***************************/
 
+/**
+ * @brief 
+ * Draws the menu from definition passed in argument
+ * 
+ * @param menu Definition of the menu
+ */
 void Messenger::drawMenu(Menu menu) {
     pinMode(A2, OUTPUT);
     pinMode(A3, OUTPUT);
     _screen->fillScreen(_background);
+    
     // Print header
     _screen->setTextColor(RED);
     _screen->setTextSize(_textSize);
@@ -380,6 +405,7 @@ void Messenger::drawMenu(Menu menu) {
         _screen->print(menu.entries[i]);
     }
 
+    // Print extra text, if it exists
     if (menu.extraText != "") {
         int y = (10 + menu.menuStart) / 2;
         _screen->setTextSize(_textSize - 1);
@@ -389,6 +415,11 @@ void Messenger::drawMenu(Menu menu) {
     }
 }
 
+/**
+ * @brief 
+ * Menu for reading received messages
+ * 
+ */
 void Messenger::readMenu(void) {
     int currentMessage = 0;
 
@@ -402,12 +433,14 @@ void Messenger::readMenu(void) {
     _screen->setTextSize(_textSize);
     _screen->setTextColor(_textColor);
 
+    // If there are no new messages, return
     if (checkCache() == "") {
         _screen->print("Keine neuen\nNachrichten");
         delay(3000);
         return;
     }
 
+    // Print first message
     _screen->print(_messages[currentMessage]);
     while (true) {
         continue;
