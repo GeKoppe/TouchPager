@@ -41,11 +41,13 @@ void Messenger::init(void) {
             case MAINMENU: selection = mainMenu(); break;
             case WRITEMESSAGE: message = writeMessage(); selection = MAINMENU; break;
             case OPTS: optsMenu(); selection = MAINMENU; break;
+            case READ: readMenu(); selection = MAINMENU; break;
             default: selection = mainMenu(); 
         }
 
         if (message != "") {
-            // Nachricht versenden
+            // TODO get real message here and send it, this stuff is just for testing!
+            cacheMessage(message);
         }
     }
 }
@@ -69,7 +71,7 @@ int Messenger::mainMenu(void) {
     menu.menuThickness = 60;
     menu.menuOffset = 10;
     menu.header = "Messenger";
-    menu.extraText = "Test";
+    menu.extraText = checkCache();
     menu.entries[0] = String("Schreiben");
     menu.entries[1] = String("Lesen");
     menu.entries[2] = String("Optionen");
@@ -324,7 +326,7 @@ uint16_t Messenger::backGroundColorMenu(void) {
         // If touch was recognized
         if (p.z > _minTouch) {
             // Get selected menu poin
-            selection = getSelection(menu.menuStart, menu.menuThickness, menu.menuOffset, 2, parseCoords(p));
+            selection = getSelection(menu.menuStart, menu.menuThickness, menu.menuOffset, 3, parseCoords(p));
 
             Serial.println("Selection: " + String(selection));
             
@@ -377,6 +379,28 @@ void Messenger::drawMenu(Menu menu) {
         _screen->setTextColor(_textColor);
         _screen->setCursor(20,y);
         _screen->print(menu.extraText);
+    }
+}
+
+void Messenger::readMenu(void) {
+    int currentMessage = 0;
+
+    pinMode(A2, OUTPUT);
+    pinMode(A3, OUTPUT);
+    _screen->fillScreen(_background);
+    _screen->setTextSize(_textSize);
+    _screen->setTextColor(_textColor);
+    _screen->setCursor(0,10);
+
+    if (checkCache() == "") {
+        _screen->print("Keine neuen\nNachrichten");
+        delay(3000);
+        return;
+    }
+
+    _screen->print(_messages[currentMessage]);
+    while (true) {
+        continue;
     }
 }
 
@@ -484,7 +508,7 @@ String Messenger::writeMessage(void) {
                     clicks = 0;
                 }
             } else {
-                if (newChar != "~" && newChar != "s") {
+                if (newChar != "~" && newChar != "s" && newChar != "DONE" && newChar != "BACK") {
                     msg += newChar;
                 }
                 oldChar = newChar;
@@ -570,7 +594,8 @@ void Messenger::clearMessageCache() {
 String Messenger::checkCache() {
     int number = 0;
     for (int i = 0; i < 3; i++) {
-        if (_messages[i] == "\0") {
+        if (String(_messages[i]) != String("\0")) {
+            Serial.println("Cache Analysis, Message " + String(i) + ": " + String(_messages[i]));
             number++;
         }
     }
