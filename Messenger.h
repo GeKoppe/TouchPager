@@ -93,7 +93,8 @@ class Messenger {
         void    optsMenu(void),
                 colorMenu(void),
                 keysMenu(void),
-                readMenu(void);
+                readMenu(void),
+                drawReadMenu(void);
 
 
         String keyStyleMenu(void);
@@ -113,13 +114,16 @@ class Messenger {
         
         String writeMessage(void);
         
-        void    printMessageOnDisplay(String msg),
-                cacheMessage(String msg),
-                clearMessageCache();
-        
-        String  checkCache();
+        void    printMessageOnDisplay(String msg);
         
         String receiveMessage();
+
+        // CACHE
+        void    cacheMessage(String msg),
+                clearMessageCache(),
+                deleteMessage(int num);
+        
+        String  checkCache();
 };
 
 #endif

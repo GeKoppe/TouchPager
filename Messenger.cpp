@@ -4,9 +4,9 @@
 /**
  * @brief Construct a new Messenger:: Messenger object
  * 
- * @param screen 
- * @param ts 
- * @param keys 
+ * @param screen Pointer to the LCD
+ * @param ts Pointer to the touchscreen
+ * @param keys pointer to the virtual keys
  */
 Messenger::Messenger(Elegoo_TFTLCD *screen, TouchScreen *ts, VKeys *keys) {
     _screen = screen;
@@ -14,6 +14,7 @@ Messenger::Messenger(Elegoo_TFTLCD *screen, TouchScreen *ts, VKeys *keys) {
     _keys = keys;
     // _radio = r;
 
+    // Set defaults
     _background = BLACK;
     _textColor = WHITE;
     _boxColor = WHITE;
@@ -22,10 +23,15 @@ Messenger::Messenger(Elegoo_TFTLCD *screen, TouchScreen *ts, VKeys *keys) {
     _menuBorderOffset = 10;
     _minTouch = 3;
 
+    // Set Defaults on the keys
     _keys->setKeyColor(_keyColor, _background);
     _keys->setTextColor(BLACK, _background);
 }
 
+/**
+ * @brief 
+ * 
+ */
 void Messenger::init(void) {
     int selection = MAINMENU;
     String message = "";
@@ -48,6 +54,7 @@ void Messenger::init(void) {
         if (message != "") {
             // TODO get real message here and send it, this stuff is just for testing!
             cacheMessage(message);
+            message = String("");
         }
     }
 }
@@ -387,10 +394,13 @@ void Messenger::readMenu(void) {
 
     pinMode(A2, OUTPUT);
     pinMode(A3, OUTPUT);
-    _screen->fillScreen(_background);
+    
+    drawReadMenu();
+
+    _screen->setCursor(0,10);
+
     _screen->setTextSize(_textSize);
     _screen->setTextColor(_textColor);
-    _screen->setCursor(0,10);
 
     if (checkCache() == "") {
         _screen->print("Keine neuen\nNachrichten");
@@ -402,6 +412,28 @@ void Messenger::readMenu(void) {
     while (true) {
         continue;
     }
+}
+
+void Messenger::drawReadMenu(void) {
+    pinMode(A2, OUTPUT);
+    pinMode(A3, OUTPUT);
+    _screen->fillScreen(_background);
+    _screen->setTextSize(_textSize -1);
+    _screen->setTextColor(_textColor);
+
+    _screen->drawRect(_menuBorderOffset, 180, 100, 50, _boxColor);
+    _screen->drawRect(_screen->width() - _menuBorderOffset - 100, 180, 100, 50, _boxColor);
+    _screen->drawRect(_menuBorderOffset, 240, 100, 50, _boxColor);
+    _screen->drawRect(_screen->width() - _menuBorderOffset - 100, 240, 100, 50, _boxColor);
+
+    _screen->setCursor(_menuBorderOffset + 40, 195);
+    _screen->print("<");
+
+    _screen->setCursor(_screen->width() - _menuBorderOffset - 100 + 48, 195);
+    _screen->print(">");
+
+    _screen->setCursor(_menuBorderOffset + 10, 255);
+    _screen->print("DEL");
 }
 
 /************************ PRIVATE SPECIALS ***************************/
@@ -555,13 +587,16 @@ String Messenger::receiveMessage() {
     return msg;
 }
 
+/********************************** PRIVATE CACHE METHODS ********************************************/
+
 /**
  * @brief 
  * Caches incoming messages in message cache
  * 
- * @param msg 
+ * @param msg String to be cached
  */
 void Messenger::cacheMessage(String msg) {
+    // Check, how many messages are in cache
     int counter = 0;
     for (int i = 0; i < 3; i++) {
         if (_messages[i] != "\0") {
@@ -572,28 +607,71 @@ void Messenger::cacheMessage(String msg) {
         }
     }
 
-    if (counter != 3) {
+    // If there are less than 3 messages, just cache the newest message on last position
+    if (counter < 3) {
         _messages[counter] = msg;
         return;
     } else {
+        // If there are 3 messages, clear the last message
         _messages[2] = "\0";
+
+        // Push every other message one to the back
         for (int i = 0; i < 2; i++) {
             _messages[i + 1] = _messages[i];
         }
+
+        // Put new Message as first in the array
         _messages[0] = msg;
         return;
     }
 }
 
+/**
+ * @brief
+ * Clears the whole message cache. Every message is deleted!
+ * 
+ */
 void Messenger::clearMessageCache() {
     for (int i = 0; i < 3; i++) {
         _messages[i] = "\0";
     }
 }
 
+/**
+ * @brief 
+ * Deletes a certain message from cache.
+ * 
+ * @param num Number of message to be deleted. Has to be between 0 and 2!
+ */
+void Messenger::deleteMessage(int num) {
+    if (num < 0 || num > 2) return;
+
+    // Delete requested message from cache
+    _messages[num] = String("\0");
+
+    // For every message, that is listed after the requested message: move upwards in array
+    for (int i = num; i < 3; i++) {
+        if (i != 2) {
+            if (_messages[i + 1] != String("\0")) {
+                _messages[i] = String(_messages[i+1]);
+            }
+        }
+    }
+}
+
+/**
+ * @brief 
+ * Checks, whether there are messages in cache and returns a String for the main Menu screen.
+ * 
+ * @return String 
+ */
 String Messenger::checkCache() {
+    // Counter for the number of messages
     int number = 0;
+
+    // Iterate through all messages
     for (int i = 0; i < 3; i++) {
+        // Increment counter for every message, that isn't \0
         if (String(_messages[i]) != String("\0")) {
             Serial.println("Cache Analysis, Message " + String(i) + ": " + String(_messages[i]));
             number++;
@@ -602,5 +680,6 @@ String Messenger::checkCache() {
 
     if (number == 0) return "";
 
+    // Return message
     return String(number) + String(" Nachrichten");
 }
