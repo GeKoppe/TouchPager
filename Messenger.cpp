@@ -415,6 +415,8 @@ void Messenger::drawMenu(Menu menu) {
     }
 }
 
+/****************************** PRIVATE READ MENU STUFF ****************************/
+
 /**
  * @brief 
  * Menu for reading received messages
@@ -443,6 +445,31 @@ void Messenger::readMenu(void) {
     // Print first message
     _screen->print(_messages[currentMessage]);
     while (true) {
+        int selection = -1;
+        
+        // Get touchpoint
+        digitalWrite(13, HIGH);
+        TSPoint p = _ts->getPoint();
+        digitalWrite(13, LOW);
+
+        if (p.z > _minTouch) {
+            // Get selected menu poin
+            // selection = getSelection(menu.menuStart, menu.menuThickness, menu.menuOffset, 3, parseCoords(p));
+            selection = readMenuSelection(parseCoords(p));
+
+            Serial.println("Selection: " + String(selection));
+            
+            switch (selection) {
+                case -1: break;
+                case 1: switchMessageToRead(&currentMessage, false); break;
+                case 2: switchMessageToRead(&currentMessage, true); break;
+                case 3: ;
+                case 4: return;
+                default: break;
+            }
+            delay(10);
+        }
+
         continue;
     }
 }
@@ -467,8 +494,46 @@ void Messenger::drawReadMenu(void) {
 
     _screen->setCursor(_menuBorderOffset + 10, 255);
     _screen->print("DEL");
+
+    _screen->setCursor(_menuBorderOffset + 140, 255);
+    _screen->print("BACK");
 }
 
+void Messenger::switchMessageToRead(int *msgCounter, bool plus) {
+    int tempCounter = *msgCounter;
+    plus ? tempCounter++ : tempCounter--;
+
+    if (tempCounter > 2 || tempCounter < 0) return;
+
+    if (_messages[tempCounter] == "\0") return;
+
+    *msgCounter = tempCounter;
+
+    pinMode(A2, OUTPUT);
+    pinMode(A3, OUTPUT);
+    _screen->fillRect(0,0,_screen->width(), 170, _background);
+    _screen->setCursor(0,0);
+    _screen->setTextColor(_textColor);
+    _screen->setTextSize(_textSize);
+    _screen->print(_messages[*msgCounter]);
+}
+
+int Messenger::readMenuSelection(ScreenParse parse) {
+    int selection = 1;
+    int y = 320 - parse.y;
+
+    Serial.println("Y: " + String(y) + "; parse.y: " + String(parse.y));
+
+    if (y < 180) return -1;
+    if (y > 290) return -1;
+    if (parse.x < _menuBorderOffset) return -1;
+    if (parse.x > _screen->width() - _menuBorderOffset) return -1;
+
+    selection += (y > 235 ? 2 : 0);
+    selection += (parse.x > (_screen->width() / 2) ? 1 : 0);
+
+    return selection;
+}
 /************************ PRIVATE SPECIALS ***************************/
 ScreenParse Messenger::parseCoords(TSPoint p) {
     ScreenParse parse;
@@ -527,8 +592,8 @@ void Messenger::printMessageOnDisplay(String msg) {
     pinMode(A2, OUTPUT);
     pinMode(A3, OUTPUT);
     _screen->fillRect(0,0,_screen->width(), 90, _background);
-    _screen->setCursor(5,5);
-    _screen->setTextSize(TEXTMEDIUM);
+    _screen->setCursor(0,0);
+    _screen->setTextSize(_textSize);
     _screen->setTextColor(_textColor);
     _screen->print(msg);
 }

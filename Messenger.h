@@ -92,12 +92,16 @@ class Messenger {
         
         void    optsMenu(void),
                 colorMenu(void),
-                keysMenu(void),
-                readMenu(void),
-                drawReadMenu(void);
+                keysMenu(void);
 
+        String  keyStyleMenu(void);
 
-        String keyStyleMenu(void);
+        // READ
+        void    readMenu(void),
+                drawReadMenu(void),
+                switchMessageToRead(int *msgCounter, bool plus);
+
+        int readMenuSelection(ScreenParse parse);
 
         // MENU DRAW FUNCTIONS
         void drawMenu(Menu menu);
