@@ -461,9 +461,9 @@ void Messenger::readMenu(void) {
             
             switch (selection) {
                 case -1: break;
-                case 1: switchMessageToRead(&currentMessage, false); break;
-                case 2: switchMessageToRead(&currentMessage, true); break;
-                case 3: ;
+                case 1: switchMessageToRead(&currentMessage, false, false); break;
+                case 2: switchMessageToRead(&currentMessage, true, false); break;
+                case 3: deleteMessage(currentMessage); switchMessageToRead(&currentMessage, false, true); break;
                 case 4: return;
                 default: break;
             }
@@ -499,22 +499,43 @@ void Messenger::drawReadMenu(void) {
     _screen->print("BACK");
 }
 
-void Messenger::switchMessageToRead(int *msgCounter, bool plus) {
-    int tempCounter = *msgCounter;
-    plus ? tempCounter++ : tempCounter--;
-
-    if (tempCounter > 2 || tempCounter < 0) return;
-
-    if (_messages[tempCounter] == "\0") return;
-
-    *msgCounter = tempCounter;
-
+void Messenger::switchMessageToRead(int *msgCounter, bool plus, bool afterDelete) {
     pinMode(A2, OUTPUT);
     pinMode(A3, OUTPUT);
     _screen->fillRect(0,0,_screen->width(), 170, _background);
     _screen->setCursor(0,0);
     _screen->setTextColor(_textColor);
     _screen->setTextSize(_textSize);
+
+    int tempCounter = *msgCounter;
+    int noMessages = 0;
+    plus ? tempCounter++ : tempCounter--;
+
+    for (int i = 0; i < 3; i++) {
+        if (String(_messages[i]) != String("\0")) noMessages++;
+    }
+
+    if (noMessages == 3) {
+        *msgCounter = 0;
+        _screen->print("Keine neuen\nNachrichten");
+        return;
+    }
+
+    if (afterDelete) {
+        for (int i = 0; i < 3; i++) {
+            if (String(_messages[i]) == String("\0")) {
+                tempCounter = i-1; 
+                if (tempCounter > 2 || tempCounter < 0) tempCounter = 0;
+                break; 
+            }
+        }
+    }
+
+    if (tempCounter > 2 || tempCounter < 0) return;
+
+    if (String(_messages[tempCounter]) == String("\0")) return;
+
+    *msgCounter = tempCounter;
     _screen->print(_messages[*msgCounter]);
 }
 
@@ -752,6 +773,7 @@ void Messenger::deleteMessage(int num) {
         if (i != 2) {
             if (_messages[i + 1] != String("\0")) {
                 _messages[i] = String(_messages[i+1]);
+                _messages[i+1] = String("\0");
             }
         }
     }

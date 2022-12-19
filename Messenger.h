@@ -99,7 +99,7 @@ class Messenger {
         // READ
         void    readMenu(void),
                 drawReadMenu(void),
-                switchMessageToRead(int *msgCounter, bool plus);
+                switchMessageToRead(int *msgCounter, bool plus, bool afterDelete);
 
         int readMenuSelection(ScreenParse parse);
 
