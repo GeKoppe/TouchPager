@@ -105,12 +105,10 @@ int Messenger::mainMenu(void) {
     drawMenu(menu);
 
     while (true) {
+        Serial.println("Receiving message");
         String inc = receiveMessage();
+        Serial.println("Receiving message end. Message gotten: " + String(inc));
 
-        if (inc != "\0") {
-            cacheMessage(inc);
-            return MAINMENU;
-        }
         int selection = -1;
         
         // Get touchpoint
@@ -704,8 +702,7 @@ String Messenger::writeMessage(void) {
  * @return String 
  */
 String Messenger::receiveMessage() {
-    String msg = "\0";
-    // String msg = _radio->receiveMessage();
+    String msg = _radio->receiveMessage();
     if (msg == "\0") return "\0";
 
     cacheMessage(msg);

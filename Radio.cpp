@@ -97,11 +97,14 @@ bool Radio::checkNearbyDevices(void) {
 }
 
 String Radio::receiveMessage(void) {
+    Serial.println("receiveMessage Start");
     void *buffer = malloc(255*sizeof(char));
     String msg;
 
+    Serial.println("Listening State: " + _listening);
     if (!_listening) switchState();
 
+    Serial.println("Antenna available: " + _antenna.available());
     // Universal break character
     if (!_antenna.available()) return "\0";
 
@@ -109,6 +112,7 @@ String Radio::receiveMessage(void) {
 
     msg = String((char*)buffer);
 
+    Serial.println("Gotten msg: " + msg);
     if (msg == String(_acknowledge)) {
         acknowledge();
         return "\0";
@@ -131,9 +135,14 @@ void Radio::acknowledge(void) {
 }
 
 bool Radio::sendMessage(String msg) {
+    Serial.println("Sending message: " + msg);
+    Serial.println("Listening State: " + String((_listening ? "listening" : "writing")));
     if (_listening) switchState();
+    Serial.println("Listening State: " + String((_listening ? "listening" : "writing")));
 
-    _antenna.write(&msg, msg.length());
+    Serial.println(String(_antenna.write(&msg, msg.length()) ? "Successful" : "Unsuccessful"));
 
+    Serial.println("Returning from sending");
+    switchState();
     return true;
 }
