@@ -67,14 +67,17 @@ bool Radio::available(void) {
  * @return false otherwise
  */
 bool Radio::checkNearbyDevices(void) {
-    void *buffer = malloc(255*sizeof(char));
+    char buffer[256];
     String msg;
+
     if (_listening) {
         switchState();
     }
+    
+    convertStringToCharArray(_acknowledge, buffer);
 
     for (int i = 0; i < 3; i++) {
-        _antenna.write(&_acknowledge, sizeof(_acknowledge));
+        _antenna.write(buffer, sizeof(buffer));
         delay(10);
     }
 
@@ -88,8 +91,8 @@ bool Radio::checkNearbyDevices(void) {
         continue;
     }
 
-    _antenna.read(buffer, 255*sizeof(char));
-    msg = String((char*)buffer);
+    _antenna.read(buffer, sizeof(buffer));
+    msg = convertCharArrayToString(buffer);
 
     if (msg == _acknowledge) return true;
 
@@ -97,7 +100,7 @@ bool Radio::checkNearbyDevices(void) {
 }
 
 String Radio::receiveMessage(void) {
-    char *buffer;
+    char buffer[256];
     String msg;
 
     if (!_listening) switchState();
@@ -106,9 +109,9 @@ String Radio::receiveMessage(void) {
     if (!_antenna.available()) return "\0";
     Serial.println("Receiving: Antenna available");
 
-    _antenna.read(buffer, 255*sizeof(char));
+    _antenna.read(buffer, sizeof(buffer));
 
-    msg = String(*buffer);
+    msg = convertCharArrayToString(buffer);
 
     if (msg == String(_acknowledge)) {
         acknowledge();
@@ -116,6 +119,7 @@ String Radio::receiveMessage(void) {
     }
 
     if (msg == String(_jam)) {
+        acknowledge();
         return String(_jam);
     }
 
@@ -123,23 +127,62 @@ String Radio::receiveMessage(void) {
 }
 
 void Radio::acknowledge(void) {
+    char buffer[256];
     if (_listening) switchState();
 
+    convertStringToCharArray(_acknowledge, buffer);
+
     for (int i = 0; i < 3; i++) {
-        _antenna.write(&_acknowledge, sizeof(_acknowledge));
+        _antenna.write(buffer, sizeof(buffer));
         delay(10);
     }
 }
 
 bool Radio::sendMessage(String msg) {
+    char buffer[256];
+    
     Serial.println("Sending message: " + msg);
     Serial.println("Listening State: " + String((_listening ? "listening" : "writing")));
+
     if (_listening) switchState();
+    
     Serial.println("Listening State: " + String((_listening ? "listening" : "writing")));
 
-    Serial.println(String(_antenna.write(&msg, msg.length()) ? "Successful" : "Unsuccessful"));
+    convertStringToCharArray(msg, buffer);
+    Serial.println(String(_antenna.write(buffer, sizeof(buffer)) ? "Successful" : "Unsuccessful"));
 
     Serial.println("Returning from sending");
     switchState();
     return true;
+}
+
+/**
+ * @brief
+ * Converts a given String s to a char array and saves it to given pointer a
+ * 
+ * @param s 
+ * @param a 
+ */
+void Radio::convertStringToCharArray(String s, char a[256]) {
+    int counter = 0;
+
+    for (int i = 0; i < s.length(); i++) {
+        a[i] = s.charAt(i);
+        counter++;
+    }
+
+    for (int i = counter + 1; i < 256; i++) {
+        a[i] = '\0';
+    }
+}
+
+String Radio::convertCharArrayToString(char a[256]) {
+    String s = "";
+
+    for (int i = 0; i < 256; i++) {
+        if (a[i] == '\0') continue;
+        s += String(a[i]);
+    }
+
+    return s;
 }

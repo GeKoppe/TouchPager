@@ -52,6 +52,9 @@ class Radio {
 
         bool checkNearbyDevices(void);
         void acknowledge(void);
+
+        void convertStringToCharArray(String s, char a[256]);
+        String convertCharArrayToString(char a[256]);
 };
 
 #endif
