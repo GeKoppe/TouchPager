@@ -77,6 +77,9 @@ void setup(void) {
 
 void loop() {
     Serial.println("Kinda started again");
-    msg.init();
+    radio.init();
+    radio.sendMessage(String("Test1234"));
+
+    delay(5000);
 }
 
