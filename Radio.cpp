@@ -137,7 +137,7 @@ bool Radio::sendMessage(String msg) {
     if (_listening) switchState();
     Serial.println("Listening State: " + String((_listening ? "listening" : "writing")));
 
-    Serial.println(String(_antenna.write(&msg, msg.length()) ? "Successful" : "Unsuccessful"));
+    Serial.println(String(_antenna.write(&msg, sizeof(msg)) ? "Successful" : "Unsuccessful"));
 
     Serial.println("Returning from sending");
     switchState();

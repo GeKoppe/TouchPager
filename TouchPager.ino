@@ -1,6 +1,9 @@
 #include <Elegoo_GFX.h>    // Core graphics library
 #include <Elegoo_TFTLCD.h> // Hardware-specific library
 #include <TouchScreen.h>
+#include <SPI.h>
+#include <nRF24L01.h>
+#include <RF24.h>
 
 // #include "Arduino.h"
 // #include "Print.h"
@@ -35,10 +38,13 @@ TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 // optional
 #define LCD_RESET A4
 
+byte adress[6] = "00001";
+
 
 Elegoo_TFTLCD tft(LCD_CS, LCD_CD, LCD_WR, LCD_RD, LCD_RESET);
 VKeys keyboard = VKeys("QWERTZ", WHITE, BLACK, &tft);
 Radio radio = Radio(43, 42);
+RF24 antenna = RF24(43,42);
 Messenger msg = Messenger(&tft, &ts, &keyboard, &radio);
 
 
@@ -70,16 +76,21 @@ void setup(void) {
     
     }
 
+    antenna.openReadingPipe(0, adress);
+    antenna.setPALevel(RF24_PA_MIN);
+    antenna.startListening();
+
     tft.begin(identifier);
 
     pinMode(13, OUTPUT);
 }
 
 void loop() {
-    Serial.println("Kinda started again");
-    radio.init();
-    radio.sendMessage(String("Test1234"));
-
-    delay(5000);
+    
+    if (antenna.available()) {
+        String text;
+        antenna.read(&text, sizeof(text));
+        Serial.println(text);
+    }
 }
 
