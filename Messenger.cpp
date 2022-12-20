@@ -105,9 +105,7 @@ int Messenger::mainMenu(void) {
     drawMenu(menu);
 
     while (true) {
-        Serial.println("Receiving message");
         String inc = receiveMessage();
-        Serial.println("Receiving message end. Message gotten: " + String(inc));
 
         int selection = -1;
         
@@ -704,7 +702,7 @@ String Messenger::writeMessage(void) {
 String Messenger::receiveMessage() {
     String msg = _radio->receiveMessage();
     if (msg == "\0") return "\0";
-
+    Serial.println("Received message: " + String(msg));
     cacheMessage(msg);
     return msg;
 }

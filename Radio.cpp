@@ -97,14 +97,11 @@ bool Radio::checkNearbyDevices(void) {
 }
 
 String Radio::receiveMessage(void) {
-    Serial.println("receiveMessage Start");
     void *buffer = malloc(255*sizeof(char));
     String msg;
 
-    Serial.println("Listening State: " + _listening);
     if (!_listening) switchState();
 
-    Serial.println("Antenna available: " + _antenna.available());
     // Universal break character
     if (!_antenna.available()) return "\0";
 
@@ -112,7 +109,6 @@ String Radio::receiveMessage(void) {
 
     msg = String((char*)buffer);
 
-    Serial.println("Gotten msg: " + msg);
     if (msg == String(_acknowledge)) {
         acknowledge();
         return "\0";
