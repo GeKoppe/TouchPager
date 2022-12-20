@@ -8,11 +8,11 @@
  * @param ts Pointer to the touchscreen
  * @param keys pointer to the virtual keys
  */
-Messenger::Messenger(Elegoo_TFTLCD *screen, TouchScreen *ts, VKeys *keys) {
+Messenger::Messenger(Elegoo_TFTLCD *screen, TouchScreen *ts, VKeys *keys, Radio *r) {
     _screen = screen;
     _ts = ts;
     _keys = keys;
-    // _radio = r;
+    _radio = r;
 
     // Set defaults
     _background = BLACK;

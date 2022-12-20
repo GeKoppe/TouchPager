@@ -1,5 +1,5 @@
-#ifndef radio
-#define radio
+#ifndef radio_h
+#define radio_h
 
 #include <SPI.h>
 #include <nRF24L01.h>

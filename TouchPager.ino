@@ -7,6 +7,7 @@
 #include "VKeys.h"
 #include "Messenger.h"
 #include "ColorChooser.h"
+#include "Radio.h"
 
 
 #if defined(__SAM3X8E__)
@@ -37,7 +38,9 @@ TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 
 Elegoo_TFTLCD tft(LCD_CS, LCD_CD, LCD_WR, LCD_RD, LCD_RESET);
 VKeys keyboard = VKeys("QWERTZ", WHITE, BLACK, &tft);
-Messenger msg = Messenger(&tft, &ts, &keyboard);
+byte adress[6] = "00001";
+Radio radio = Radio((uint16_t) 43, (uint16_t) 42, adress);
+Messenger msg = Messenger(&tft, &ts, &keyboard, &radio);
 
 
 void setup(void) {

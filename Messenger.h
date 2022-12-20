@@ -52,7 +52,7 @@ typedef struct Menu {
 
 class Messenger {
     public:
-        Messenger(Elegoo_TFTLCD *screen, TouchScreen *ts, VKeys *keys);
+        Messenger(Elegoo_TFTLCD *screen, TouchScreen *ts, VKeys *keys, Radio *r);
 
         // MAIN FUNCTION
         void init(void);
@@ -78,7 +78,7 @@ class Messenger {
         VKeys *_keys;
         Elegoo_TFTLCD *_screen;
         TouchScreen *_ts;
-        //Radio *_radio;
+        Radio *_radio;
 
         String _messages[3] = {
             "\0", "\0", "\0"
