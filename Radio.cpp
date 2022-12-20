@@ -17,12 +17,14 @@ Radio::Radio(uint16_t ce, uint16_t csn) {
     _level = RF24_PA_MIN;
 
     _antenna = RF24(_ce, _csn);
-    
+    Serial.println("We out of Radio Constructor");
+}
+
+void Radio::init() {
     _antenna.begin();
     _antenna.openReadingPipe(_readingPipe, _adress);
     _antenna.setPALevel(_level);
     _antenna.startListening();
-    Serial.println("We out of Radio Constructor");
 }
 
 void Radio::setPALevel(String level) {

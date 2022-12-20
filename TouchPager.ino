@@ -43,11 +43,11 @@ Messenger msg = Messenger(&tft, &ts, &keyboard, &radio);
 
 
 void setup(void) {
-    Serial.println("We in Radio Constructor");
+    radio.init();
     tft.reset();
     uint16_t identifier = tft.readID();
-
-    Serial.begin(115200);
+    Serial.begin(9600);
+    Serial.println("We in Radio Constructor");
     if(identifier == 0x9325) {
       Serial.println(F("Found ILI9325 LCD driver"));
     } else if(identifier == 0x9328) {

@@ -30,6 +30,7 @@ class Radio {
 
         String      receiveMessage(void);
         bool        available(void);
+        void        init();
 
         bool        sendMessage(String msg);
 
@@ -40,7 +41,9 @@ class Radio {
 
         bool _listening = true;
 
-        String _adress = "00001";
+        byte _adress[6] = {
+            0,0,0,0,1,'\0'
+        };
 
         String _jam = "1337";
         String _acknowledge = "4269";
