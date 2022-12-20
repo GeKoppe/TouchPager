@@ -4,10 +4,11 @@
 #include <SPI.h>
 #include <nRF24L01.h>
 #include <RF24.h>
+#include <Arduino.h>
 
 class Radio {
     public:
-        Radio(uint16_t ce, uint16_t csn, byte adress[6]);
+        Radio(uint16_t ce, uint16_t csn);
 
         uint16_t    getCE (void) { return _ce; };
         uint16_t    getCSN (void) { return _csn; };
@@ -39,10 +40,10 @@ class Radio {
 
         bool _listening = true;
 
-        byte _adress[6];
+        String _adress = "00001";
 
-        char* _jam = "1337";
-        char* _acknowledge = "4269";
+        String _jam = "1337";
+        String _acknowledge = "4269";
 
         RF24 _antenna;
 

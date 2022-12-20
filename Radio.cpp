@@ -1,12 +1,14 @@
 #include <SPI.h>
 #include <nRF24L01.h>
 #include <RF24.h>
+#include <Arduino.h>
 
 // Local includes
 #include "Radio.h"
 
 /************************* PUBLIC *****************************/
-Radio::Radio(uint16_t ce, uint16_t csn, byte adress[6]) {
+Radio::Radio(uint16_t ce, uint16_t csn) {
+    Serial.println("We in Radio Constructor");
     _ce = ce;
     _csn = csn;
     _readingPipe = 1;
@@ -14,16 +16,13 @@ Radio::Radio(uint16_t ce, uint16_t csn, byte adress[6]) {
     _listening = true;
     _level = RF24_PA_MIN;
 
-    for (int i = 0; i < 6; i++) {
-        _adress[i] = adress[i];
-    }
-
     _antenna = RF24(_ce, _csn);
     
     _antenna.begin();
     _antenna.openReadingPipe(_readingPipe, _adress);
     _antenna.setPALevel(_level);
     _antenna.startListening();
+    Serial.println("We out of Radio Constructor");
 }
 
 void Radio::setPALevel(String level) {
@@ -73,7 +72,7 @@ bool Radio::checkNearbyDevices(void) {
     }
 
     for (int i = 0; i < 3; i++) {
-        _antenna.write(_acknowledge, sizeof(_acknowledge));
+        _antenna.write(&_acknowledge, sizeof(_acknowledge));
         delay(10);
     }
 
@@ -90,7 +89,7 @@ bool Radio::checkNearbyDevices(void) {
     _antenna.read(buffer, 255*sizeof(char));
     msg = String((char*)buffer);
 
-    if (msg == String(_acknowledge)) return true;
+    if (msg == _acknowledge) return true;
 
     return false;
 }
@@ -124,7 +123,7 @@ void Radio::acknowledge(void) {
     if (_listening) switchState();
 
     for (int i = 0; i < 3; i++) {
-        _antenna.write(_acknowledge, sizeof(_acknowledge));
+        _antenna.write(&_acknowledge, sizeof(_acknowledge));
         delay(10);
     }
 }

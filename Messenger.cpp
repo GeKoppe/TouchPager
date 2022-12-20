@@ -54,11 +54,11 @@ void Messenger::init(void) {
             default: selection = mainMenu(); 
         }
 
-        if (message != "") {
-            // TODO get real message here and send it, this stuff is just for testing!
-            _radio->sendMessage(message);
-            message = "";
-        }
+        // if (message != "") {
+        //     // TODO get real message here and send it, this stuff is just for testing!
+        //     _radio->sendMessage(message);
+        //     message = "";
+        // }
     }
 }
 
@@ -105,12 +105,12 @@ int Messenger::mainMenu(void) {
     drawMenu(menu);
 
     while (true) {
-        String inc = receiveMessage();
+        // String inc = receiveMessage();
 
-        if (inc != "\0") {
-            cacheMessage(inc);
-            return MAINMENU;
-        }
+        // if (inc != "\0") {
+        //     cacheMessage(inc);
+        //     return MAINMENU;
+        // }
         int selection = -1;
         
         // Get touchpoint
