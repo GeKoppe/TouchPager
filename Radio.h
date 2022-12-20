@@ -30,6 +30,8 @@ class Radio {
         String      receiveMessage(void);
         bool        available(void);
 
+        bool        sendMessage(String msg);
+
     private:
         uint16_t _ce, _csn, _readingPipe, _paLevel;
         

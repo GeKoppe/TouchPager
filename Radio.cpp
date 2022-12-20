@@ -128,3 +128,11 @@ void Radio::acknowledge(void) {
         delay(10);
     }
 }
+
+bool Radio::sendMessage(String msg) {
+    if (_listening) switchState();
+
+    _antenna.write(&msg, msg.length());
+
+    return true;
+}
