@@ -37,7 +37,7 @@ class Radio {
     private:
         uint16_t _ce, _csn, _readingPipe, _paLevel;
         
-        uint8_t _level = RF24_PA_MIN;
+        uint8_t _level = RF24_PA_LOW;
 
         bool _listening = true;
 
