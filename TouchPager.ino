@@ -38,7 +38,7 @@ TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 
 Elegoo_TFTLCD tft(LCD_CS, LCD_CD, LCD_WR, LCD_RD, LCD_RESET);
 VKeys keyboard = VKeys("QWERTZ", WHITE, BLACK, &tft);
-Radio radio = Radio(43, 42);
+Radio radio = Radio(43, 53);
 Messenger msg = Messenger(&tft, &ts, &keyboard, &radio);
 
 

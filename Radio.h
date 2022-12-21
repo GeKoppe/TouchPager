@@ -41,9 +41,7 @@ class Radio {
 
         bool _listening = true;
 
-        byte _adress[6] = {
-            0,0,0,0,1,'\0'
-        };
+        byte _adress[6] = "00001";
 
         String _jam = "1337";
         String _acknowledge = "4269";
