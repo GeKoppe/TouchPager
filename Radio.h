@@ -18,8 +18,6 @@ class Radio {
 
         int         getReadingPipe (void) { return _readingPipe; };
 
-        const byte*       getAdress (void) { return _adress; };
-
         void        setCE (uint16_t ce) { _ce = ce; };
         void        setCSN (uint16_t csn) { _csn = csn; };
         void        setListening (bool listen) { _listening = listen; };
@@ -41,7 +39,7 @@ class Radio {
 
         bool _listening = true;
 
-        const byte _adress[6] = "00001";
+        // const byte _adress[6] = "00001";
 
         String _jam = "1337";
         String _acknowledge = "4269";
