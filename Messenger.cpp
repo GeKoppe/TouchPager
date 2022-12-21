@@ -501,6 +501,14 @@ void Messenger::drawReadMenu(void) {
     _screen->print("BACK");
 }
 
+/**
+ * @brief 
+ * Writes new message to display, after it has been switched
+ * 
+ * @param msgCounter Pointer to the current messagenumber
+ * @param plus Message +1 or -1?
+ * @param afterDelete Triggered after a message has been deleted?
+ */
 void Messenger::switchMessageToRead(int *msgCounter, bool plus, bool afterDelete) {
     pinMode(A2, OUTPUT);
     pinMode(A3, OUTPUT);
@@ -541,22 +549,34 @@ void Messenger::switchMessageToRead(int *msgCounter, bool plus, bool afterDelete
     _screen->print(_messages[*msgCounter]);
 }
 
+/**
+ * @brief 
+ * Gets selection in the read menu
+ * 
+ * @param parse x and y coordinates of pressed point
+ * @return int 1: top left, 2: top right, 3: bottom left, 4: bottom right
+ */
 int Messenger::readMenuSelection(ScreenParse parse) {
     int selection = 1;
     int y = 320 - parse.y;
 
     Serial.println("Y: " + String(y) + "; parse.y: " + String(parse.y));
 
+    // Check, if point is outside of menu
     if (y < 180) return -1;
     if (y > 290) return -1;
     if (parse.x < _menuBorderOffset) return -1;
     if (parse.x > _screen->width() - _menuBorderOffset) return -1;
 
+    // Get row and add 2, if second row. Works because of numbering of menu entries
     selection += (y > 235 ? 2 : 0);
+
+    // Get column and add 1, if second column
     selection += (parse.x > (_screen->width() / 2) ? 1 : 0);
 
     return selection;
 }
+
 /************************ PRIVATE SPECIALS ***************************/
 ScreenParse Messenger::parseCoords(TSPoint p) {
     ScreenParse parse;
@@ -571,6 +591,17 @@ ScreenParse Messenger::parseCoords(TSPoint p) {
     return parse;
 }
 
+/**
+ * @brief 
+ * Gets number of menupoint selected
+ * 
+ * @param menuStart y-Value, where the menu starts
+ * @param menuThickness how thick one menupoint is
+ * @param menuOffset how far the menu entries are apart
+ * @param entries number of entries
+ * @param parse x and y values of the pressed point
+ * @return int number of the menu entry selected
+ */
 int Messenger::getSelection(int menuStart, int menuThickness, int menuOffset, int entries, ScreenParse parse) {
     int x, y, selection;
 
@@ -586,6 +617,7 @@ int Messenger::getSelection(int menuStart, int menuThickness, int menuOffset, in
     if (y < menuStart || y > menuStart + (entries*menuThickness) + (entries*menuOffset)) return -1;
     if (x < _menuBorderOffset || x > (_screen->width() - _menuBorderOffset)) return -1;
 
+    // translate y to the start of the menu and get selection
     y -= menuStart;
     selection = (int) (y / (menuThickness+menuOffset)) + 1;
     selection = selection;
@@ -596,8 +628,9 @@ int Messenger::getSelection(int menuStart, int menuThickness, int menuOffset, in
 
 /**
  * @brief 
+ * Sets private field _background to color that you want
  * 
- * @param color 
+ * @param color Color you want to set the background to
  */
 void Messenger::setBackground(uint16_t color) {
     if (color == _textColor) _textColor = (color == WHITE ? BLACK : WHITE);
@@ -612,9 +645,14 @@ void Messenger::setBackground(uint16_t color) {
  * @param msg {String} Current message 
  */
 void Messenger::printMessageOnDisplay(String msg) {
+    // Set pinmodes
     pinMode(A2, OUTPUT);
     pinMode(A3, OUTPUT);
+
+    // Print a filled rect over old message
     _screen->fillRect(0,0,_screen->width(), 90, _background);
+    
+    // Set config values for text and print it
     _screen->setCursor(0,0);
     _screen->setTextSize(_textSize);
     _screen->setTextColor(_textColor);
@@ -624,62 +662,82 @@ void Messenger::printMessageOnDisplay(String msg) {
 
 /**
  * @brief 
+ * Function to write a message that you want to send
  * 
- * @return String 
+ * @return String Written message
  */
 String Messenger::writeMessage(void) {
+    // Initialize the keypad (draw it on screen)
     _keys->init();
 
+    // Initialize variables and get initial touchpoint
     String msg = "", oldChar = "";
     TSPoint oldP = _ts->getPoint();
+    
+    // Clicks: Counter for how long since current char has been pressed. It works, I forgot how
     int clicks = 0;
 
     while (true) {
         TSPoint p;
 
         do {
+            // Get touchpoint, until the point differs from last touched point on display
             digitalWrite(13, HIGH);
             p = _ts->getPoint();
-            digitalWrite(13, LOW);
-            
+            digitalWrite(13, LOW);     
         } while (oldP.x == p.x && oldP.y == p.y);
         
+        // Save new point in old point for later comparison
         oldP.x = p.x;
         oldP.y = p.y;
 
         if (p.z > _minTouch) {
+            // hasChanged: records, whether the new char differs from last char
             bool hasChanged = false;
+
+            // Get character from pressed point
             String newChar = String(_keys->getInputChar(p));
             
+            // Check, if pressed char differs from last pressed char
             if (newChar == oldChar) {
-                if (clicks < 5) {
+                // if they don't differ, count how many times we have been at this point
+                if (clicks < 3) {
                     clicks++;
                     continue;
                 } else {
+                    // else reset all variables
                     oldChar = "";
                     newChar = "";
                     clicks = 0;
                 }
             } else {
+                // Unless a special key was pressed, add new char to message
                 if (newChar != "~" && newChar != "s" && newChar != "DONE" && newChar != "BACK") {
                     msg += newChar;
                 }
+
+                // record, that something has changed 
                 oldChar = newChar;
                 hasChanged = true;
             }
 
+            // If delete was pressed, delete last char from message
             if (newChar == "~") {
                 msg = msg.substring(0,msg.length()-2);
                 printMessageOnDisplay(msg);
             } else if (newChar == "s") {
+                // small s means, that we want to switch to special keys (numbers and non-alpha-numeric)
                 _keys->switchKeys();
             } else if (newChar == "DONE") {
+                // If done, break infinite loop to return the message
                 break;
             } else if (newChar == "BACK") {
+                // If cancelled, reset message and break infinite loop
                 msg = "";
                 break;
             } else {
                 if (hasChanged) {
+                    // If the input char has changed, print message to display
                     printMessageOnDisplay(msg);
                 }
             }
@@ -695,15 +753,20 @@ String Messenger::writeMessage(void) {
 }
 
 /**
- * @brief 
+ * @brief
+ * Gets message that was sent from other device
  * 
- * @return String 
+ * @return String received message
  */
 String Messenger::receiveMessage() {
+    // Try to get message and return, if message is \0
     String msg = _radio->receiveMessage();
     if (msg == "\0") return "\0";
+
+    // Cache that message and return it
     Serial.println("Received message: " + String(msg));
     cacheMessage(msg);
+    
     return msg;
 }
 

@@ -171,7 +171,7 @@ void Radio::convertStringToCharArray(String s, char a[256]) {
         counter++;
     }
 
-    for (int i = counter + 1; i < 256; i++) {
+    for (int i = counter; i < 256; i++) {
         a[i] = '\0';
     }
 }
