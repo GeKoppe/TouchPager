@@ -422,18 +422,20 @@ void Messenger::drawMenu(Menu menu) {
 /**
  * @brief 
  * Menu for reading received messages
- * 
  */
 void Messenger::readMenu(void) {
+    // Couunter for which message screen is on
     int currentMessage = 0;
 
+    // Set pinmodes
     pinMode(A2, OUTPUT);
     pinMode(A3, OUTPUT);
     
+    // Draw the menu
     drawReadMenu();
 
+    // Set text config
     _screen->setCursor(0,10);
-
     _screen->setTextSize(_textSize);
     _screen->setTextColor(_textColor);
 
@@ -476,18 +478,27 @@ void Messenger::readMenu(void) {
     }
 }
 
+/**
+ * @brief 
+ * Method for drawing the read menu on screen
+ */
 void Messenger::drawReadMenu(void) {
+    // Set pinmodes
     pinMode(A2, OUTPUT);
     pinMode(A3, OUTPUT);
+
+    // Fill screen and set text config
     _screen->fillScreen(_background);
     _screen->setTextSize(_textSize -1);
     _screen->setTextColor(_textColor);
 
+    // Draw function buttons
     _screen->drawRect(_menuBorderOffset, 180, 100, 50, _boxColor);
     _screen->drawRect(_screen->width() - _menuBorderOffset - 100, 180, 100, 50, _boxColor);
     _screen->drawRect(_menuBorderOffset, 240, 100, 50, _boxColor);
     _screen->drawRect(_screen->width() - _menuBorderOffset - 100, 240, 100, 50, _boxColor);
 
+    // Fill function buttons
     _screen->setCursor(_menuBorderOffset + 40, 195);
     _screen->print("<");
 
@@ -510,27 +521,36 @@ void Messenger::drawReadMenu(void) {
  * @param afterDelete Triggered after a message has been deleted?
  */
 void Messenger::switchMessageToRead(int *msgCounter, bool plus, bool afterDelete) {
+    // Set pinmodes
     pinMode(A2, OUTPUT);
     pinMode(A3, OUTPUT);
+
+    // Overprint old message and set text configuration
     _screen->fillRect(0,0,_screen->width(), 170, _background);
     _screen->setCursor(0,0);
     _screen->setTextColor(_textColor);
     _screen->setTextSize(_textSize);
 
+    // Set tempCounter for later comparison
     int tempCounter = *msgCounter;
     int noMessages = 0;
+
+    // Modify tempcounter
     plus ? tempCounter++ : tempCounter--;
 
+    // Check, how many empty messages are in cache
     for (int i = 0; i < 3; i++) {
         if (String(_messages[i]) != String("\0")) noMessages++;
     }
 
+    // If message cache is empty, set msgCounter back to 0 and print, that there are no messages
     if (noMessages == 3) {
         *msgCounter = 0;
         _screen->print("Keine neuen\nNachrichten");
         return;
     }
 
+    // If method was called after deletion, do it a little differently
     if (afterDelete) {
         for (int i = 0; i < 3; i++) {
             if (String(_messages[i]) == String("\0")) {
@@ -541,10 +561,12 @@ void Messenger::switchMessageToRead(int *msgCounter, bool plus, bool afterDelete
         }
     }
 
+    // Handle tempcounter being outside of array indices
     if (tempCounter > 2 || tempCounter < 0) return;
 
     if (String(_messages[tempCounter]) == String("\0")) return;
 
+    // Set msg counter and print message
     *msgCounter = tempCounter;
     _screen->print(_messages[*msgCounter]);
 }
