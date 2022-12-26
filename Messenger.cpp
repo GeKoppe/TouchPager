@@ -126,6 +126,8 @@ int Messenger::mainMenu(void) {
     while (true) {
         String inc = receiveMessage();
 
+        Serial.println(inc);
+        
         int selection = -1;
         
         // Get touchpoint

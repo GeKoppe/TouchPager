@@ -33,24 +33,22 @@ class Radio {
         bool        sendMessage(String msg);
 
     private:
-        uint16_t _ce, _csn, _readingPipe, _paLevel;
+        uint16_t    _ce, _csn, _readingPipe, _paLevel;
         
-        uint8_t _level = RF24_PA_LOW;
+        uint8_t     _level = RF24_PA_MIN;
 
-        bool _listening = true;
+        bool        _listening = true;
 
-        // const byte _adress[6] = "00001";
+        String      _jam = "1337";
+        String      _acknowledge = "4269";
 
-        String _jam = "1337";
-        String _acknowledge = "4269";
+        RF24        _antenna;
 
-        RF24 _antenna;
+        bool        checkNearbyDevices(void);
+        void        acknowledge(void);
 
-        bool checkNearbyDevices(void);
-        void acknowledge(void);
-
-        void convertStringToCharArray(String s, char a[256]);
-        String convertCharArrayToString(char a[256]);
+        void        convertStringToCharArray(String s, char a[256]);
+        String      convertCharArrayToString(char a[256]);
 };
 
 #endif
