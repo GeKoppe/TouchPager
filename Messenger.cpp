@@ -79,10 +79,29 @@ void Messenger::reset(void) {
 /************************ PRIVATE MENU FUNCTIONS ***************************/
 
 /**
+ * All menu functions work the exact same, therefore not all of them are commented. This comment
+ * shows the function of menu methods
+ * 
+ *  1. Configure the menu with a menu struct
+ *      1.1 menuStart: Y-Value where the menu starts on display
+ *      1.2 menuThickness: How thick are the menu entries
+ *      1.3 menuOffset: how far are entries apart
+ *      1.4 header: Header text of the menu
+ *      1.5 extraText: smaller text below menu header
+ *      1.6 entries[5]: Text shown in the menu entries
+ *  2. Draw the menu
+ *  3. Infinite loop
+ *      3.1 Check, if messages are available on the air
+ *      3.2 Get touchpoint
+ *      3.3 analyse touchpoint
+ *      3.4 Call method or return value according to selection and break
+ */
+
+/**
  * @brief
  * Shows the main menu and handles the input
  * 
- * @return int 
+ * @return int Selection in menu
  */
 int Messenger::mainMenu(void) {
     pinMode(A2, OUTPUT);
@@ -107,6 +126,8 @@ int Messenger::mainMenu(void) {
     while (true) {
         String inc = receiveMessage();
 
+        Serial.println(inc);
+        
         int selection = -1;
         
         // Get touchpoint
@@ -136,6 +157,11 @@ int Messenger::mainMenu(void) {
     Serial.println("Returning from mainMenu");
 }
 
+/**
+ * @brief 
+ * Options menu
+ * 
+ */
 void Messenger::optsMenu(void) {
     pinMode(A2, OUTPUT);
     pinMode(A3, OUTPUT);
@@ -183,6 +209,11 @@ void Messenger::optsMenu(void) {
     Serial.println("Returning from optsMenu");
 }
 
+/**
+ * @brief
+ * Submenu for all things keyboard related
+ * 
+ */
 void Messenger::keysMenu(void) {
     pinMode(A2, OUTPUT);
     pinMode(A3, OUTPUT);
@@ -232,6 +263,12 @@ void Messenger::keysMenu(void) {
     Serial.println("Returning from optsMenu");
 }
 
+/**
+ * @brief 
+ * Menu for selecting layout of keys
+ * 
+ * @return String Layout of the keys
+ */
 String Messenger::keyStyleMenu(void) {
     pinMode(A2, OUTPUT);
     pinMode(A3, OUTPUT);
@@ -279,6 +316,11 @@ String Messenger::keyStyleMenu(void) {
     Serial.println("Returning from optsMenu");
 }
 
+/**
+ * @brief 
+ * Submenu for different color menus
+ * 
+ */
 void Messenger::colorMenu(void) {
     pinMode(A2, OUTPUT);
     pinMode(A3, OUTPUT);
@@ -327,6 +369,12 @@ void Messenger::colorMenu(void) {
     Serial.println("Returning from colorMenu");
 }
 
+/**
+ * @brief 
+ * Menu to set either light or dark mode
+ * 
+ * @return uint16_t WHITE or BLACK
+ */
 uint16_t Messenger::backGroundColorMenu(void) {
     Menu menu;
     menu.menuStart = 60;
@@ -465,9 +513,9 @@ void Messenger::readMenu(void) {
             
             switch (selection) {
                 case -1: break;
-                case 1: switchMessageToRead(&currentMessage, false, false); break;
-                case 2: switchMessageToRead(&currentMessage, true, false); break;
-                case 3: deleteMessage(currentMessage); switchMessageToRead(&currentMessage, false, true); break;
+                case 1: switchMessageToRead(&currentMessage, false, false); break; // Message back
+                case 2: switchMessageToRead(&currentMessage, true, false); break; // Message forward
+                case 3: deleteMessage(currentMessage); switchMessageToRead(&currentMessage, false, true); break; // Delete current
                 case 4: return;
                 default: break;
             }

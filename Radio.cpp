@@ -22,6 +22,7 @@ Radio::Radio(uint16_t ce, uint16_t csn) {
 
 void Radio::init() {
     _antenna.begin();
+    byte _adress[6] = "00001";
     _antenna.openReadingPipe(_readingPipe, _adress);
     _antenna.setPALevel(_level);
     _antenna.startListening();
@@ -42,6 +43,7 @@ void Radio::setPALevel(String level) {
 }
 
 void Radio::switchState() {
+    byte _adress[6] = "00001";
     _listening = !_listening;
 
     if (_listening) {
