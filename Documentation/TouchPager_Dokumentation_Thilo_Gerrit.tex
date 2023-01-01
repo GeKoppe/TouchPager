@@ -115,10 +115,43 @@
 \clearpage
 \pagenumbering{arabic}
 \section{Einleitung}
+In dieser Dokumentation wird die Konzeptionierung, Umsetzung, sowie 
 
 \section{Formulierung des Themas}
 
 \section{Ressourcen und Ablaufplanung}
+
+\subsection{Benötigte Hardware}
+In Anhang Tabelle~\ref{tab:hardware} findet sich eine detaillierte, tabellarische Auflistung aller Komponenten, ihrer Aufgaben und ihrer Preise.
+Alle Komponenten werden zwei mal benötigt, da eine Kommunikation zwischen zwei identischen Geräten hergestellt werden soll.
+
+
+
+
+\subsection{Planung der Umsetzung}
+
+
+\subsubsection{Teilziele}
+Folgende Teilziele wurden für das Projekt definiert:
+\begin{enumerate}
+    \item \textit{Vordefinierte Nachricht unidirektional übertragen}: Zunächst soll eine statisch eingestellte Nachricht zwischen zwei Arduino Mega mittels nRF24L01+ Transceiver
+            Übertragen werden können, um zu prüfen, ob die Verbindung hergestellt werden kann.
+    \item \textit{}
+\end{enumerate}
+
+\subsubsection{Erwartete Schwierigkeiten}
+Im Folgenden werden alle Schwierigkeiten aufgelistet und erklärt, die während der Umsetzung des Projekts erwartet werden.
+\begin{enumerate}
+    \item \textit{Fehlersuche bei fehlerhafter Übertragung}: Da dieses Projekt darauf basiert, Funksignale zu versenden und zu empfangen und wir keine Gerätschaft
+            besitzen, Funkwellen und Signalstärken dieser zu messen, wird es schwierig, den Fehler zu identifizieren, sollte eine Übertragung fehlschlagen.
+    \item \textit{Distanzregulierung}: Die nRF24L01+ Transceiver können in verschiedenen Signalstärken senden, die programmatisch eingestellt werden müssen.
+            Wird eine zu hohe Signalstärke konfiguriert, leidet darunter allerdings die Übertragungsqualität bei niedrigen Distanzen. Hier muss ein gutes Mittelmaß
+            gefunden werden.
+    \item \textit{Wechsel zwischen Empfang und Senden}: Da die Nachrichten bidirektional versendet werden sollen, die nRF24L01+ Transceiver aber nur halbduplex arbeiten,
+            müssen wir einen rechtzeitigen Wechsel der Antenne zwischen Senden und Empfang garantieren. Sollten beide Geräte gleichzeitig Senden, werden beide Nachrichten
+            verloren gehen.
+    \item \textit{Empfang garantieren}: Da die Möglichkeit bestehen soll, gleich 
+\end{enumerate}
 
 \section{Durchführung}
 
@@ -126,6 +159,49 @@
 
 \newpage
 \section{Anlagen}
+
+
+\begin{table}[H]
+    \caption{Benötigte Hardware}\label{tab:hardware}
+    \begin{tabular}{|p{0.4\textwidth}|p{0.4\textwidth}|p{0.1\textwidth}|}
+        \hline
+        \textbf{Hardware} & \textbf{Aufgabe} & \textbf{Kosten}
+        \\
+        \hline\hline
+        Arduino Mega 2560 
+        & 
+        \begin{itemize}
+            \item Zentrale Schnittstelle aller Komponenten
+            \item Verwaltung der Logik / Programmierbarkeit
+            \item 
+        \end{itemize} 
+        & 
+        21,99€
+        \\
+        \hline
+        Elegoo Uno TFT Touchscreen 2,8''
+        &
+        \begin{itemize}
+            \item Anzeige von Nachrichten
+            \item Eingabe von Nachrichten
+            \item User Interface
+        \end{itemize}
+        &
+        19,99€
+        \\
+        \hline
+        nRF24L01+ Wireless Transceiver Modul
+        &
+        \begin{itemize}
+            \item Nachrichten Übertragen und Empfangen
+            \item Überprüfung Verfügbarkeit anderer Geräte
+        \end{itemize}
+        &
+        5,-€
+        \\
+        \hline
+    \end{tabular}
+\end{table}
 
 
 \newpage
