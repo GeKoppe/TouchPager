@@ -115,16 +115,21 @@
 \clearpage
 \pagenumbering{arabic}
 \section{Einleitung}
-In dieser Dokumentation wird die Konzeptionierung, Umsetzung, sowie 
+In dieser Dokumentation wird die Umsetzung eines bidirektionalen Pagers auf Basis der Arduino Plattform beschrieben. Zunächst werden Thema und Ziel des Projekts formuliert.
+Anschließend werden wir auf die Planung der Ressourcen und des Ablaufs, sowie auf die benötigten Komponenten eingehen.
 
 \section{Formulierung des Themas}
 
 \section{Ressourcen und Ablaufplanung}
+\subsection{Ressourcen}
 
-\subsection{Benötigte Hardware}
+\subsubsection{Benötigte Hardware}
 In Anhang Tabelle~\ref{tab:hardware} findet sich eine detaillierte, tabellarische Auflistung aller Komponenten, ihrer Aufgaben und ihrer Preise.
 Alle Komponenten werden zwei mal benötigt, da eine Kommunikation zwischen zwei identischen Geräten hergestellt werden soll.
 
+\subsubsection{Benötigte Software}
+Zur Umsetzung des Projekts wird, um die Programmierung zu vereinfachen und den Quellcode schlanker zu halten, auf verschiedene externe Bibliotheken zurückgegriffen.
+Eine detaillierte Auflistung dieser Bibliotheken findet sich im Anhang Tabelle~\ref{tab:software}.
 
 
 
@@ -155,15 +160,16 @@ Im Folgenden werden alle Schwierigkeiten aufgelistet und erklärt, die während 
 
 \section{Durchführung}
 
+
 \section{Projektergebnis}
 
 \newpage
 \section{Anlagen}
-
+\begin{small}
 
 \begin{table}[H]
     \caption{Benötigte Hardware}\label{tab:hardware}
-    \begin{tabular}{|p{0.4\textwidth}|p{0.4\textwidth}|p{0.1\textwidth}|}
+    \begin{tabular}{|p{0.3\textwidth}|p{0.5\textwidth}|p{0.1\textwidth}|}
         \hline
         \textbf{Hardware} & \textbf{Aufgabe} & \textbf{Kosten}
         \\
@@ -203,7 +209,67 @@ Im Folgenden werden alle Schwierigkeiten aufgelistet und erklärt, die während 
     \end{tabular}
 \end{table}
 
+\begin{table}[H]
+    \caption{Benötigte Software}\label{tab:software}
+    \begin{tabular}{|p{0.2\textwidth}|p{0.5\textwidth}|p{0.2\textwidth}|}
+        \hline
+        \textbf{Bibliothek} & \textbf{Aufgabe} & \textbf{Quelle}
+        \\
+        \hline\hline
+        Elegoo\text{\_}GFX.h 
+        & 
+        Kern Grafikbibliothek des Elegoo Uno TFT Touchscreens. Ermöglicht das Drucken von Zeichen / Formen auf TFT Display.
+        &
+        Mitgeliefert auf CD bei TFT Touchscreen
+        \\
+        \hline
+        Elegoo\text{\_}TFTLCD.h
+        &
+        Hardware-Bibliothek des Elegoo Uno TFT Touchscreens. Verantwortlich für die Kommunikation des Programms mit der Hardware.
+        &
+        Mitgeliefert auf CD bei TFT Touchscreen
+        \\
+        \hline
+        TouchScreen.h
+        &
+        Bibliothek des Touchscreens des Elegoo Uno TFT Touchscreens. Erlaubt das erkennen von Berührungen des Touchscreens und die Lokalisierung der
+        Berührung.
+        &
+        Mitgeliefert auf CD bei TFT Touchscreen
+        \\
+        \hline
+        SPI.h
+        &
+        Erlaubt die Kommunikation des Programms mit dem SPI Bus des Arduino Board
+        &
+        In Arduino IDE inkludiert
+        \\
+        \hline
+        nRF24L01.h
+        &
+        Hardware Bibliothek der nRF24L01+ Transceiver. Erlaubt Kommunikation des Moduls mit dem Arduino Board
+        &
+        Github %TODO die Quellen ALLE noch mal checken und anpassen
+        \\
+        \hline
+        RF24.h
+        &
+        Programmierbare Schnittstelle der nRF24L01+ Transceiver. 
+        &
+        Github
+        \\
+        \hline
+        Arduino.h
+        &
+        Liefert Kernfunktionen der Arduino Boards.0
+        &
+        In Arduino IDE inkludiert
+        \\
+        \hline
+    \end{tabular}
+\end{table}
 
+\end{small}
 \newpage
 \section{Glossar}
 \section{Quellenverzeichnis}
