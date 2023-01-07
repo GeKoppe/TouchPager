@@ -20,6 +20,11 @@ Radio::Radio(uint16_t ce, uint16_t csn) {
     Serial.println("We out of Radio Constructor");
 }
 
+/**
+ * @brief
+ * Initializes the object. Should be called before doing anything else!
+ * 
+ */
 void Radio::init() {
     _antenna.begin();
     byte _adress[6] = "00001";
@@ -28,6 +33,12 @@ void Radio::init() {
     _antenna.startListening();
 }
 
+/**
+ * @brief
+ * Sets PA-Level / Reach of antenna
+ * 
+ * @param level MIN, LOW, HIGH or MAX, depending on the level that is supposed to be used
+ */
 void Radio::setPALevel(String level) {
     if (level == "MIN") {
         _level = RF24_PA_MIN;
@@ -42,10 +53,17 @@ void Radio::setPALevel(String level) {
     }
 }
 
+/**
+ * @brief 
+ * Switches from listening to sending and the other way around
+ * 
+ */
 void Radio::switchState() {
     byte _adress[6] = "00001";
+    // Invert listening
     _listening = !_listening;
 
+    // If listening: Prepare antenna for listening. Otherwise: Prepare antenna for sending
     if (_listening) {
         _antenna.openReadingPipe(_readingPipe, _adress);
         _antenna.startListening();
@@ -72,19 +90,22 @@ bool Radio::checkNearbyDevices(void) {
     char buffer[256];
     String msg;
 
-    if (_listening) {
-        switchState();
-    }
+    // Switch from listening to sending
+    if (_listening) switchState();
     
+    // Convert _acknowledge message to char array
     convertStringToCharArray(_acknowledge, buffer);
 
+    // Send acknowledge message 3 times
     for (int i = 0; i < 3; i++) {
         _antenna.write(buffer, sizeof(buffer));
         delay(10);
     }
 
+    // Switch back to listening
     switchState();
 
+    // Wait for payload being available
     int counter = 0;
     while (!_antenna.available()) {
         counter++;
@@ -93,33 +114,45 @@ bool Radio::checkNearbyDevices(void) {
         continue;
     }
 
+    // Read payload and convert it back to String
     _antenna.read(buffer, sizeof(buffer));
     msg = convertCharArrayToString(buffer);
 
+    // If payload was the acknowlege String, that means there are devices nearby.
     if (msg == _acknowledge) return true;
 
     return false;
 }
 
+/**
+ * @brief 
+ * Receives message from radio frequency
+ * 
+ * @return String received message or \0, if nothing was gotten
+ */
 String Radio::receiveMessage(void) {
     char buffer[256];
     String msg;
 
+    // Switch from sending to listening
     if (!_listening) switchState();
 
-    // Universal break character
+    // If no message is available, return universal break character
     if (!_antenna.available()) return "\0";
     Serial.println("Receiving: Antenna available");
 
+    // Read available payload
     _antenna.read(buffer, sizeof(buffer));
 
+    // Convert received message to String
     msg = convertCharArrayToString(buffer);
 
+    // THIS IS DEPRECATED AND USELESS 
     if (msg == String(_acknowledge)) {
-        acknowledge();
         return "\0";
     }
 
+    // THIS MOST PROBABLY IS DEPRECATED AND USELESS AS WELL
     if (msg == String(_jam)) {
         acknowledge();
         return String(_jam);
@@ -128,18 +161,36 @@ String Radio::receiveMessage(void) {
     return msg;
 }
 
+/**
+ * @brief 
+ * Sends acknowledgement message
+ * 
+ */
 void Radio::acknowledge(void) {
     char buffer[256];
+
+    // Switch from listening state to sending state
     if (_listening) switchState();
 
+    // convert the acknowledge payload to a char array
     convertStringToCharArray(_acknowledge, buffer);
 
+    // Send acknowledgement 3 times, to make sure partner gets the message
     for (int i = 0; i < 3; i++) {
         _antenna.write(buffer, sizeof(buffer));
         delay(10);
     }
 }
 
+/**
+ * @brief 
+ * Sends message given in param
+ * 
+ * @param msg Message to be sent
+ * @return true If sending was successful
+ * @return false
+ * TODO return false somewhere, why should it be bool otherwise
+ */
 bool Radio::sendMessage(String msg) {
     char buffer[256];
     
@@ -162,25 +213,35 @@ bool Radio::sendMessage(String msg) {
  * @brief
  * Converts a given String s to a char array and saves it to given pointer a
  * 
- * @param s 
- * @param a 
+ * @param s Strung to be converted to char array
+ * @param a Pointer to char array
  */
 void Radio::convertStringToCharArray(String s, char a[256]) {
     int counter = 0;
 
+    // Iterate through entire String and add character to char array
     for (int i = 0; i < s.length(); i++) {
         a[i] = s.charAt(i);
         counter++;
     }
 
+    // Fill up char array with empty values
     for (int i = counter; i < 256; i++) {
         a[i] = '\0';
     }
 }
 
+/**
+ * @brief 
+ * Converts a given char array to a String and returns it
+ * 
+ * @param a Char array to be converted to a String
+ * @return String 
+ */
 String Radio::convertCharArrayToString(char a[256]) {
     String s = "";
 
+    // Iterate through the whole array and add every character to empty string
     for (int i = 0; i < 256; i++) {
         if (a[i] == '\0') continue;
         s += String(a[i]);

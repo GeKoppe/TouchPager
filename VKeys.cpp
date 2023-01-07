@@ -5,10 +5,11 @@
 
 /**
  * @brief Construct a new VKeys::VKeys object
- *  
- * @param style 
- * @param keyColor 
- * @param tScreen 
+ * 
+ * @param style Style of the keyboard. Possible Configurations: QWERTZ, QWERTY, ABCDE
+ * @param keyColor Color of the keys. 
+ * @param textColor Color of the text on the keys
+ * @param tScreen Pointer to the touchscreen to be used
  */
 VKeys::VKeys (String style, uint16_t keyColor, uint16_t textColor, Elegoo_TFTLCD *tScreen) {
     _style = style;
@@ -18,6 +19,7 @@ VKeys::VKeys (String style, uint16_t keyColor, uint16_t textColor, Elegoo_TFTLCD
     _textSize = 4;
     _special = false;
 
+    // Set rows to passed configuration
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 10; j++) {
             if (_style == "QWERTZ") _rows[i][j] = _QWERTZ[i][j];
@@ -29,7 +31,7 @@ VKeys::VKeys (String style, uint16_t keyColor, uint16_t textColor, Elegoo_TFTLCD
 
 /**
  * @brief 
- * Initializes the keyboard on the touchscreen
+ * Initializes and draws the keyboard on the touchscreen
  * 
  */
 void VKeys::init (void) {
@@ -54,12 +56,17 @@ void VKeys::init (void) {
     _screen->setCursor(8, 291);    
     _screen->print((char*)"Back");
 
+    // Draw the keyboard
     _screen->setTextSize(_textSize);
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 10; j++) {
+            // Draw the button
             _screen->fillRect(j*(_kWidth + 1), (int) _screen->height() - (4-i)*(_kHeight + 1), _kWidth, _kHeight, _keyColor);
+            
+            // Set cursor and draw character into current button
             _screen->setCursor((int16_t)(j*(_kWidth + 1) +2), (int16_t)((int) _screen->height() - (4-i)*(_kHeight + 1) + 2));
             
+            // If special is selected, draw the special characters, otherwise draw alphabetic characters from current config
             if (_special) {
                 if (_specialChars[i][j] != '\0') {
                     _screen->print(_specialChars[i][j]);
