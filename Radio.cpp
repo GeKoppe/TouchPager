@@ -145,8 +145,8 @@ String Radio::receiveMessage(void) {
     _antenna.read(&buffer, sizeof(buffer));
 
     for (int i = 0; i < 128; i++) {
-        if (buffer[i] == '\0') continue;
         msg += String(buffer[i]);
+        if (buffer[i] == '\0') break;
     }
 
     Serial.println("Receiving: Received char Array: " + msg);
@@ -202,7 +202,7 @@ bool Radio::sendMessage(String msg) {
     String sendTest = "";
     bool tx_ok, tx_fail, rx_ready, test = true;
     char buffer[128];
-    msg.toCharArray(buffer, 128);
+    msg.toCharArray(buffer, msg.length() + 1);
     
     Serial.println("Sending message: " + msg);
     Serial.println("Listening State: " + String((_listening ? "listening" : "writing")));
