@@ -116,7 +116,7 @@
 \pagenumbering{arabic}
 \section{Einleitung}
 In dieser Dokumentation wird die Umsetzung eines bidirektionalen Pagers auf Basis der Arduino Plattform beschrieben. Zunächst werden Thema und Ziel des Projekts formuliert.
-Anschließend werden wir auf die Planung der Ressourcen und des Ablaufs, sowie auf die benötigten Komponenten eingehen. Im Anschluss wird das Vorgehen während des Projektes dokumentiert
+Anschließend wird auf die Planung der Ressourcen und des Ablaufs, sowie auf die benötigten Komponenten eingegangen. Im Anschluss wird das Vorgehen während des Projektes dokumentiert
 und abschließend das Ergebnis der Durchführung präsentiert.
 
 \section{Formulierung des Themas}
@@ -152,23 +152,43 @@ b. Es soll möglich sein, zu überprüfen, ob empfangsbereite Geräte in der Nä
 
 
 \section{Ressourcen und Ablaufplanung}
+\subsection{Planung der Umsetzung}\label{ch:planning}
+Das Projekt besteht aus zwei Teilen, der drahtlosen Kommunikation zweier Arduino Geräte miteinander und dem User Interface / der menschlichen Schnittstelle mit der
+Hardware, über die Nachrichten angezeigt, aber auch eingegeben und versendet werden können. Für die Planung ist also zunächst relevant, welche Hardware Komponenten benötigt werden, 
+um beide Projektteile umzusetzen.
+\\
+Für die drahtlose Kommunikation kann auf verschiedene Technologien wie Bluetooth oder Radio-Frequenz zurückgegriffen werden. Da Bluetooth nur eine sehr eingeschränkte
+Reichweite besitzt und eine Kopplung der Geräte notwendig ist, haben wir uns dafür entschieden, die drahtlose Übertragung per Radiofrequenz durchzuführen. Außerdem existieren
+für eine solche Übertragung kostengünstige Hardware und fertige API-Bibliotheken für die Hardware. Aus diesen Gründen wurde sich für die nRF24L01+ Transceiver 
+(im Folgenden als \glqq Antenne\grqq{} oder \glqq Transceiver\grqq{} bezeichnet) entschieden.\footnote{Vgl. Hardware Link~\ref{itm:transceiverlink}}
+\\
+Für die Umsetzung der menschlichen Schnittstelle sollten zunächst ein Numpad, sowie ein 16x2 Liquid Crystal Display verwendet werden. Aufgrund der stark eingeschränkten Nutzbarkeit des LCD,
+sowie umständlicher Eingabe über das Numpad, wurde sich stattdessen entschieden, einen Touchscreen zu verwenden. Da bereits Arduino Uno R3 Boards der Marke Elegoo zur Verfügung standen,
+wurde sich hier für den Elegoo TFT 2,8'' Touchscreen (im Folgenden als \glqq TFT\grqq{} oder \glqq Touchschreen\grqq{} bezeichnet) entschieden.\footnote{Vgl. Hardware Link~\ref{itm:tftlink}} Dieser
+hat außerdem den Vorteil, dass Elegoo Bibliotheken mitliefert, um den Touchscreen zu programmieren.
+\\
+Schlussendlich musste noch entschieden werden, welches Arduino Board verwendet werden sollte. Aufgrund guter Erfahrung mit der Marke Elegoo in Hinsicht auf Zuverlässigkeit und Nutzbarkeit, wurde sich für
+ebenjene Marke entschieden. Da der Touchscreen als Shield\footnote{Vgl. Glossar~\ref{def:shield}: Shield} für Arduino Uno Boards konzipiert ist, wäre es bei einem Arduino Uno nicht mehr möglich,
+weitere Hardware Komponenten anzuschließen. Entsprechend fiel die Entscheidung auf den Elegoo Arduino Mega R3\footnote{Vgl. Hardware Link~\ref{itm:arduinolink}}, da dieser deutlich mehr Pinouts zur Verfügung
+stellt, als ein Arduino Uno. Weitere Gründe für diese Entscheidung sind, dass der Transceiver über den SPI Bus des Arduinos kommuniziert, dieser wäre bei einem Arduino Uno aber durch den TFT blockiert. Außerdem
+wird viel Quellcode erwartet, was bedeutet, dass der Programmierspeicher des Arduino Uno zu klein sein könnte, auch hier hat der Arduino Mega mehr Ressourcen.
+
 \subsection{Ressourcen}
 
 \subsubsection{Benötigte Hardware}
-In Anhang Tabelle~\ref{tab:hardware} findet sich eine detaillierte, tabellarische Auflistung aller Komponenten, ihrer Aufgaben und ihrer Preise.
+In Anhang Tabelle~\ref{tab:hardware} findet sich eine detaillierte, tabellarische Auflistung aller in Kapitel~\ref{ch:planning} genannten Komponenten, ihrer Aufgaben und ihrer Preise.
 Alle Komponenten werden zwei mal benötigt, da eine Kommunikation zwischen zwei identischen Geräten hergestellt werden soll.
 
 \subsubsection{Benötigte Software}
 Zur Umsetzung des Projekts wird, um die Programmierung zu vereinfachen und den Quellcode schlanker zu halten, auf verschiedene externe Bibliotheken zurückgegriffen.
 Eine detaillierte Auflistung dieser Bibliotheken findet sich im Anhang Tabelle~\ref{tab:software}.
 
-
-
 \subsection{Planung der Umsetzung}
-
+Um das Projekt sinnvoll zu strukturieren, wurden zunächst Teilziele definiert, die nacheinander umgesetzt werden sollen.
+\\
+Als erstes sollen grundlegende Funktionalitäten entwickelt werden, wie zum Beispiel das  
 
 \subsubsection{Teilziele}
-Folgende Teilziele wurden für das Projekt definiert:
 \begin{enumerate}
     \item \textit{Vordefinierte Nachricht unidirektional übertragen}: Zunächst soll eine statisch eingestellte Nachricht zwischen zwei Arduino Mega mittels nRF24L01+ Transceiver
             Übertragen werden können, um zu prüfen, ob die Verbindung hergestellt werden kann.
@@ -178,20 +198,22 @@ Folgende Teilziele wurden für das Projekt definiert:
 \subsubsection{Erwartete Schwierigkeiten}
 Im Folgenden werden alle Schwierigkeiten aufgelistet und erklärt, die während der Umsetzung des Projekts erwartet werden.
 \begin{enumerate}
-    \item \textit{Fehlersuche bei fehlerhafter Übertragung}: Da dieses Projekt darauf basiert, Funksignale zu versenden und zu empfangen und wir keine Gerätschaft
+    \item \textit{Fehlersuche bei fehlerhafter Übertragung}: Da dieses Projekt darauf basiert, Funksignale zu versenden und zu empfangen und die Umsetzenden keine Gerätschaft
             besitzen, Funkwellen und Signalstärken dieser zu messen, wird es schwierig, den Fehler zu identifizieren, sollte eine Übertragung fehlschlagen.
-    \item \textit{Distanzregulierung}: Die nRF24L01+ Transceiver können in verschiedenen Signalstärken senden, die programmatisch eingestellt werden müssen.
+    \item \textit{Distanzregulierung}: Die Transceiver können in verschiedenen Signalstärken senden, die programmatisch eingestellt werden müssen.
             Wird eine zu hohe Signalstärke konfiguriert, leidet darunter allerdings die Übertragungsqualität bei niedrigen Distanzen. Hier muss ein gutes Mittelmaß
             gefunden werden.
-    \item \textit{Wechsel zwischen Empfang und Senden}: Da die Nachrichten bidirektional versendet werden sollen, die nRF24L01+ Transceiver aber nur halbduplex arbeiten,
-            müssen wir einen rechtzeitigen Wechsel der Antenne zwischen Senden und Empfang garantieren. Sollten beide Geräte gleichzeitig Senden, werden beide Nachrichten
+    \item \textit{Wechsel zwischen Empfang und Senden}: Da die Nachrichten bidirektional versendet werden sollen, die Transceiver aber nur halbduplex arbeiten,
+            muss ein rechtzeitiger Wechsel der Antenne zwischen Senden und Empfang garantiert werden. Sollten beide Geräte gleichzeitig Senden, werden beide Nachrichten
             verloren gehen.
     \item \textit{Empfang garantieren}: Da die Möglichkeit bestehen soll, gleich 
-    \item \textit{Kein Multithreading}: Da Arduinos nicht Multithreading-fähig\footnote{vgl. Glossar~\ref{def:multithreading}: Multithreading} sind
+    \item \textit{Kein Multithreading}: Da Arduinos nicht Multithreading-fähig\footnote{vgl. Glossar~\ref{def:multithreading}: Multithreading} sind, wird eine Schwierigkeit
+            darin bestehen, permanent gleichzeitig die Nutzung des Geräts und den Empfang eingehender Nachrichten zu gewährleisten.
 \end{enumerate}
 
 \subsubsection{Zeitliche Planung}
 
+\subsubsection{Arbeitsaufteilung}
 
 \section{Durchführung}
 
@@ -243,6 +265,7 @@ Im Folgenden werden alle Schwierigkeiten aufgelistet und erklärt, die während 
         \hline
     \end{tabular}
 \end{table}
+Links zur genutzten Hardware sind in Kapitel~\ref{ch:hardwarelinks} aufgeführt.
 
 \begin{table}[H]
     \caption{Benötigte Software}\label{tab:software}
@@ -303,6 +326,8 @@ Im Folgenden werden alle Schwierigkeiten aufgelistet und erklärt, die während 
         \hline
     \end{tabular}
 \end{table}
+Links zur genutzten Software sind in Kapitel~\ref{ch:softwarelinks} aufgeführt.
+
 
 \end{small}
 \newpage
@@ -311,14 +336,30 @@ Im Folgenden werden alle Schwierigkeiten aufgelistet und erklärt, die während 
 \textbf{Multithreading\label{def:multithreading}}
 \\
 Unter Multithreading versteht man in der Informatik den Prozess, ein Programm in mehrere Teilstränge aufzuteilen, die parallel 
-ausgeführt werden.\footnote{Vgl. Quelle~\ref{itm:multithread}}
-
+ausgeführt werden.\footnote{Vgl. Internetquelle~\ref{itm:multithread}}
+\subsection{Arduino Begriffe}
+\textbf{Shield\label{def:shield}}
+\\
+Ein Shield ist ein Schaltplatte, die die Funtkionalität eines Arduinos erweitern kann und meistens so konzeptioniert ist, dass sie direkt in den Arduino gesteckt werden kann und diesen somit
+zum Teil oder vollständig abdeckt.\footnote{Vgl. Internetquelle~\ref{itm:shield}}
 \newpage
 \section{Quellenverzeichnis}
 \subsection{Internetquellen}
 \begin{enumerate}
     \item Storage Insider: Was ist Multithreading - Online unter \url{https://www.storage-insider.de/was-ist-multithreading-a-1017586/} $\left[\text{07.01.2023}\right]$ \label{itm:multithread}
+    \item Computer Hope: Arduino Shield - Online unter \url{https://www.shorturl.at/bFKNO} $\left[\text{07.01.2023}\right]$ \label{itm:shield}
 \end{enumerate}
 
+\subsection{Links genutzter Hardware}\label{ch:hardwarelinks}
+\begin{enumerate}
+    \item nRF24L01+ Transceiver: \url{https://www.shorturl.at/fuLX0}\label{itm:transceiverlink}
+    \item Elegoo Arduino Mega R3: \url{https://www.shorturl.at/XZ238}\label{itm:arduinolink}
+    \item Elegoo TFT Touchscreen: \url{https://www.shorturl.at/dvXY7}\label{itm:tftlink}
+\end{enumerate}
+
+\subsection{Links genutzter Software}\label{ch:softwarelinks}
+\begin{enumerate}
+    \item 
+\end{enumerate}
 
 \end{document}
