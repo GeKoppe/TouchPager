@@ -125,11 +125,7 @@ int Messenger::mainMenu(void) {
 
     while (true) {
         String inc = receiveMessage();
-
-        if (inc != "\0") {
-            Serial.println(inc);
-            cacheMessage(inc);
-        }
+        if (inc != "\0") Serial.println(inc);
         
         int selection = -1;
         
@@ -183,6 +179,8 @@ void Messenger::optsMenu(void) {
     delay(100);
 
     while (true) {
+        String inc = receiveMessage();
+        if (inc != "\0") Serial.println(inc);
         int selection = -1;
         
         // Get touchpoint
@@ -235,6 +233,9 @@ void Messenger::keysMenu(void) {
     delay(100);
 
     while (true) {
+        String inc = receiveMessage();
+        if (inc != "\0") Serial.println(inc);
+
         int selection = -1;
         
         // Get touchpoint
@@ -290,6 +291,9 @@ String Messenger::keyStyleMenu(void) {
     delay(100);
 
     while (true) {
+        String inc = receiveMessage();
+        if (inc != "\0") Serial.println(inc);
+        
         int selection = -1;
         
         // Get touchpoint
@@ -342,6 +346,9 @@ void Messenger::colorMenu(void) {
     delay(100);
 
     while (true) {
+        String inc = receiveMessage();
+        if (inc != "\0") Serial.println(inc);
+        
         int selection = -1;
         
         // Get touchpoint
@@ -394,6 +401,9 @@ uint16_t Messenger::backGroundColorMenu(void) {
     delay(100);
 
     while (true) {
+        String inc = receiveMessage();
+        if (inc != "\0") Serial.println(inc);
+        
         int selection = -1;
         
         // Get touchpoint
@@ -500,6 +510,9 @@ void Messenger::readMenu(void) {
     // Print first message
     _screen->print(_messages[currentMessage]);
     while (true) {
+        String inc = receiveMessage();
+        if (inc != "\0") Serial.println(inc);
+        
         int selection = -1;
         
         // Get touchpoint
@@ -861,6 +874,11 @@ void Messenger::cacheMessage(String msg) {
         } else {
             break;
         }
+    }
+
+    // If message already is in cache, return
+    for (int i = 0; i < counter; i++) {
+        if (msg == _messages[i]) return;
     }
 
     // If there are less than 3 messages, just cache the newest message on last position
