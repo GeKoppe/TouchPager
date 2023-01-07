@@ -8,7 +8,7 @@
 \usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2cm]{geometry}
 \usepackage[singlespacing]{setspace}
 
-\usepackage{hyperref}
+% \usepackage{hyperref}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{graphicx}
@@ -116,9 +116,40 @@
 \pagenumbering{arabic}
 \section{Einleitung}
 In dieser Dokumentation wird die Umsetzung eines bidirektionalen Pagers auf Basis der Arduino Plattform beschrieben. Zunächst werden Thema und Ziel des Projekts formuliert.
-Anschließend werden wir auf die Planung der Ressourcen und des Ablaufs, sowie auf die benötigten Komponenten eingehen.
+Anschließend werden wir auf die Planung der Ressourcen und des Ablaufs, sowie auf die benötigten Komponenten eingehen. Im Anschluss wird das Vorgehen während des Projektes dokumentiert
+und abschließend das Ergebnis der Durchführung präsentiert.
 
 \section{Formulierung des Themas}
+\subsection{Beschreibung des Projektes}
+Das Thema des Projektes ist es, eine bidirektionale Kommunikation zwischen zwei Geräten auf Arduino-Basis zu gewährleisten. Es soll die Möglichkeit bestehen,
+Nachrichten zu verfassen, zu versenden und ebenso Nachrichten zu empfangen, die von einem anderen Arduino Gerät versendet wurden.
+
+\subsection{Definition der Ziele, erwartetes Ergebnis}
+Im Folgenden werden die allgemein Ziele des Projektes näher definiert.
+\\
+\\
+1. Es soll möglich sein, mittels eines Touchscreens und einer virtuellen Tastatur, Zeichenketten auf einem, an den Arduino angeschlossenen Touchscreen, zu schreiben.
+\\
+2. Die eingegebenen Zeichenketten sollen, mittels Funkwellen, an ein anderes Gerät übertragen werden können.
+\\
+3. Das Gerät soll in der Lage sein, Funkwellen zu empfangen.
+\\
+4. Das Gerät soll außerdem in der Lage sein, die empfangenen Funkwellen wieder zu einer Zeichenkette zu übersetzen und auf einem Touchscreen anzuzeigen.
+\\
+5. Es soll ein graphisches User Interface auf dem Touchscreen geben.
+\\
+6. Es soll möglich sein, empfangene Nachrichten zwischenzuspeichern, damit neu empfangene Nachrichten nicht die vorherigen Nachrichten überschreiben.
+\\
+7. Es soll möglich sein, den Zwischenspeicher der Nachrichten über einen eigenen Menüpunkt abzurufen und die empfangenen Nachrichten zu verwalten.
+\\
+\\
+Außerdem gibt es folgende, optionale Ziele:
+\\
+\\
+a. Das User Interface soll farblich angepasst werden können.
+\\
+b. Es soll möglich sein, zu überprüfen, ob empfangsbereite Geräte in der Nähe sind.
+
 
 \section{Ressourcen und Ablaufplanung}
 \subsection{Ressourcen}
@@ -156,7 +187,11 @@ Im Folgenden werden alle Schwierigkeiten aufgelistet und erklärt, die während 
             müssen wir einen rechtzeitigen Wechsel der Antenne zwischen Senden und Empfang garantieren. Sollten beide Geräte gleichzeitig Senden, werden beide Nachrichten
             verloren gehen.
     \item \textit{Empfang garantieren}: Da die Möglichkeit bestehen soll, gleich 
+    \item \textit{Kein Multithreading}: Da Arduinos nicht Multithreading-fähig\footnote{vgl. Glossar~\ref{def:multithreading}: Multithreading} sind
 \end{enumerate}
+
+\subsubsection{Zeitliche Planung}
+
 
 \section{Durchführung}
 
@@ -261,7 +296,7 @@ Im Folgenden werden alle Schwierigkeiten aufgelistet und erklärt, die während 
         \hline
         Arduino.h
         &
-        Liefert Kernfunktionen der Arduino Boards.0
+        Liefert Kernfunktionen der Arduino Boards.
         &
         In Arduino IDE inkludiert
         \\
@@ -272,7 +307,18 @@ Im Folgenden werden alle Schwierigkeiten aufgelistet und erklärt, die während 
 \end{small}
 \newpage
 \section{Glossar}
+\subsection{Technische Begriffe}
+\textbf{Multithreading\label{def:multithreading}}
+\\
+Unter Multithreading versteht man in der Informatik den Prozess, ein Programm in mehrere Teilstränge aufzuteilen, die parallel 
+ausgeführt werden.\footnote{Vgl. Quelle~\ref{itm:multithread}}
+
+\newpage
 \section{Quellenverzeichnis}
+\subsection{Internetquellen}
+\begin{enumerate}
+    \item Storage Insider: Was ist Multithreading - Online unter \url{https://www.storage-insider.de/was-ist-multithreading-a-1017586/} $\left[\text{07.01.2023}\right]$ \label{itm:multithread}
+\end{enumerate}
 
 
 \end{document}
