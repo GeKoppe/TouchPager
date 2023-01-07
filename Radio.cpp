@@ -87,7 +87,7 @@ bool Radio::available(void) {
  * @return false otherwise
  */
 bool Radio::checkNearbyDevices(void) {
-    char buffer[256];
+    char buffer[128];
     String msg;
 
     // Switch from listening to sending
@@ -131,8 +131,8 @@ bool Radio::checkNearbyDevices(void) {
  * @return String received message or \0, if nothing was gotten
  */
 String Radio::receiveMessage(void) {
-    char buffer[256];
-    String msg;
+    char buffer[128] = "";
+    String msg = "";
 
     // Switch from sending to listening
     if (!_listening) switchState();
@@ -142,10 +142,17 @@ String Radio::receiveMessage(void) {
     Serial.println("Receiving: Antenna available");
 
     // Read available payload
-    _antenna.read(buffer, sizeof(buffer));
+    _antenna.read(&buffer, sizeof(buffer));
+
+    for (int i = 0; i < 128; i++) {
+        if (buffer[i] == '\0') continue;
+        msg += String(buffer[i]);
+    }
+
+    Serial.println("Receiving: Received char Array: " + msg);
 
     // Convert received message to String
-    msg = convertCharArrayToString(buffer);
+    // msg = convertCharArrayToString(buffer);
 
     // THIS IS DEPRECATED AND USELESS 
     if (msg == String(_acknowledge)) {
@@ -167,7 +174,7 @@ String Radio::receiveMessage(void) {
  * 
  */
 void Radio::acknowledge(void) {
-    char buffer[256];
+    char buffer[128];
 
     // Switch from listening state to sending state
     if (_listening) switchState();
@@ -192,7 +199,10 @@ void Radio::acknowledge(void) {
  * TODO return false somewhere, why should it be bool otherwise
  */
 bool Radio::sendMessage(String msg) {
-    char buffer[256];
+    String sendTest = "";
+    bool tx_ok, tx_fail, rx_ready, test = true;
+    char buffer[128];
+    msg.toCharArray(buffer, 128);
     
     Serial.println("Sending message: " + msg);
     Serial.println("Listening State: " + String((_listening ? "listening" : "writing")));
@@ -201,8 +211,19 @@ bool Radio::sendMessage(String msg) {
     
     Serial.println("Listening State: " + String((_listening ? "listening" : "writing")));
 
-    convertStringToCharArray(msg, buffer);
-    Serial.println(String(_antenna.write(buffer, sizeof(buffer)) ? "Successful" : "Unsuccessful"));
+    // convertStringToCharArray(msg, buffer);
+    for (int i = 0; i < msg.length(); i++) {
+        sendTest += String(buffer[i]);
+    }
+    Serial.println("Sending: Char Arr after conversion: " + sendTest);
+    
+    test = _antenna.write(&buffer, sizeof(buffer));
+
+    if (!test) {
+        Serial.println("Sending unseccessful");
+        _antenna.whatHappened(tx_ok, tx_fail, rx_ready);
+        Serial.println("OK: " + String((tx_ok ? "Yes" : "No")) + ", FAIL: " + String((tx_fail ? "Yes" : "No")) + ", READY: " + String((rx_ready ? "Yes" : "No")));
+    }
 
     Serial.println("Returning from sending");
     switchState();
@@ -216,7 +237,7 @@ bool Radio::sendMessage(String msg) {
  * @param s Strung to be converted to char array
  * @param a Pointer to char array
  */
-void Radio::convertStringToCharArray(String s, char a[256]) {
+void Radio::convertStringToCharArray(String s, char a[128]) {
     int counter = 0;
 
     // Iterate through entire String and add character to char array
@@ -226,9 +247,11 @@ void Radio::convertStringToCharArray(String s, char a[256]) {
     }
 
     // Fill up char array with empty values
-    for (int i = counter; i < 256; i++) {
+    for (int i = counter; i < 128; i++) {
         a[i] = '\0';
     }
+
+    Serial.println("Char Arr after conversion: " + String(a));
 }
 
 /**
@@ -238,14 +261,16 @@ void Radio::convertStringToCharArray(String s, char a[256]) {
  * @param a Char array to be converted to a String
  * @return String 
  */
-String Radio::convertCharArrayToString(char a[256]) {
+String Radio::convertCharArrayToString(char a[128]) {
     String s = "";
 
     // Iterate through the whole array and add every character to empty string
-    for (int i = 0; i < 256; i++) {
+    for (int i = 0; i < 128; i++) {
         if (a[i] == '\0') continue;
         s += String(a[i]);
     }
+
+    Serial.println("String after conversion: " + s);
 
     return s;
 }

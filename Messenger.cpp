@@ -126,7 +126,10 @@ int Messenger::mainMenu(void) {
     while (true) {
         String inc = receiveMessage();
 
-        Serial.println(inc);
+        if (inc != "\0") {
+            Serial.println(inc);
+            cacheMessage(inc);
+        }
         
         int selection = -1;
         
