@@ -125,8 +125,10 @@ int Messenger::mainMenu(void) {
 
     while (true) {
         String inc = receiveMessage();
-        if (inc != "\0") Serial.println(inc);
-        
+        if (inc != "\0") {
+            Serial.println(inc);
+            return -42;
+        }
         int selection = -1;
         
         // Get touchpoint
@@ -170,10 +172,9 @@ void Messenger::optsMenu(void) {
     menu.menuOffset = 20;
     menu.header = "Optionen";
     menu.entries[0] = String("Farben");
-    menu.entries[1] = String("Kanaele");
-    menu.entries[2] = String("Tastatur");
-    menu.entries[3] = String("Zurueck");
-    menu.entries[4] = String("\0");
+    menu.entries[1] = String("Tastatur");
+    menu.entries[2] = String("Zurueck");
+    menu.entries[3] = String("\0");
 
     drawMenu(menu);
     delay(100);
@@ -191,16 +192,15 @@ void Messenger::optsMenu(void) {
         // If touch was recognized
         if (p.z > _minTouch) {
             // Get selected menu poin
-            selection = getSelection(menu.menuStart, menu.menuThickness, menu.menuOffset, 4, parseCoords(p));
+            selection = getSelection(menu.menuStart, menu.menuThickness, menu.menuOffset, 3, parseCoords(p));
 
             Serial.println("Selection: " + String(selection));
             
             switch (selection) {
                 case -1: break;
                 case 1: colorMenu(); return;
-                case 2: break;
-                case 3: keysMenu(); return;
-                case 4: return;
+                case 2: keysMenu(); return;
+                case 3: return;
                 default: break;
             }
         }
@@ -664,6 +664,14 @@ int Messenger::readMenuSelection(ScreenParse parse) {
 }
 
 /************************ PRIVATE SPECIALS ***************************/
+
+/**
+ * @brief 
+ * Parses Coordinates from touchpoint to screen coordinates
+ * 
+ * @param p TSPoint, Point the user touched on display
+ * @return ScreenParse Struct containing parsed screen coordinates
+ */
 ScreenParse Messenger::parseCoords(TSPoint p) {
     ScreenParse parse;
     
@@ -778,6 +786,12 @@ String Messenger::writeMessage(void) {
         oldP.y = p.y;
 
         if (p.z > _minTouch) {
+            if (msg.length() >= 80) {
+                printMessageOnDisplay("Maximal 80\nZeichen!");
+                delay(1000);
+                printMessageOnDisplay(msg);
+                continue;
+            }
             // hasChanged: records, whether the new char differs from last char
             bool hasChanged = false;
 

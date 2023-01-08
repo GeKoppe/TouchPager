@@ -160,7 +160,7 @@ b. Es soll möglich sein, zu überprüfen, ob empfangsbereite Geräte in der Nä
 
 
 \section{Ressourcen und Ablaufplanung}
-\subsection{Planung der Umsetzung}\label{ch:planning}
+\subsection{Allgemeine und Ressourcenplanung}\label{ch:planning}
 Das Projekt besteht aus zwei Teilen, der drahtlosen Kommunikation zweier Arduino Geräte miteinander und dem User Interface / der menschlichen Schnittstelle mit der
 Hardware, über die Nachrichten angezeigt, aber auch eingegeben und versendet werden können. Für die Planung ist also zunächst relevant, welche Hardware Komponenten benötigt werden, 
 um beide Projektteile umzusetzen.
@@ -227,7 +227,13 @@ Im Folgenden werden alle Schwierigkeiten aufgelistet und erklärt, die während 
 
 
 \section{Projektergebnis}
+\subsection{Erreichte Ziele}
 
+
+\subsection{Nicht erreichte Ziele und Gründe}
+
+
+\subsection{Fazit}
 \newpage
 \section{Anlagen}
 \subsection{Auflistung der Komponenten}
@@ -248,7 +254,7 @@ Im Folgenden werden alle Schwierigkeiten aufgelistet und erklärt, die während 
             \item 
         \end{itemize} 
         & 
-        21,99€
+        2 x 21,99€
         \\
         \hline
         Elegoo Uno TFT Touchscreen 2,8''
@@ -259,7 +265,7 @@ Im Folgenden werden alle Schwierigkeiten aufgelistet und erklärt, die während 
             \item User Interface
         \end{itemize}
         &
-        19,99€
+        2 x 19,99€
         \\
         \hline
         nRF24L01+ Wireless Transceiver Modul
@@ -269,7 +275,7 @@ Im Folgenden werden alle Schwierigkeiten aufgelistet und erklärt, die während 
             \item Überprüfung Verfügbarkeit anderer Geräte
         \end{itemize}
         &
-        5,-€
+        2 x 5,-€
         \\
         \hline
     \end{tabular}
@@ -345,8 +351,15 @@ Links zur genutzten Software sind in Kapitel~\ref{ch:softwarelinks} aufgeführt.
 
 
 
-\subsection{Quellcode Auszüge}
-\textbf{Konvertierung Touchscreen zu Screen Koordinaten}
+\subsection{Git Repository und Quellcode Auszüge}
+Das Repository mit dem gesamten Quellcode diesees Projektes befindet sich unter
+\\
+\url{https://github.com/LeichtMatrosee/TouchPager}
+\\
+Im Folgenden sind in der Dokumentation benannte Funktionen und Methoden angefügt.
+\\
+\\
+\textbf{Konvertierung Touchscreen zu Screen Koordinaten}\label{code:screenparse}
 \begin{lstlisting}
 /**
  * @brief 
@@ -367,7 +380,7 @@ ScreenParse Messenger::parseCoords(TSPoint p) {
     parse.y = (int) ((p.y - 70) / 2.66);
     return parse;
 }
-\end{lstlisting}\label{lst:screenparse}
+\end{lstlisting}
 
 \end{small}
 \newpage
