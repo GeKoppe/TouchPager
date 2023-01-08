@@ -50,13 +50,21 @@
 %   %morecomment=[s][\color{dkgreen}]{//}
 % }
 \lstset{language=C++,
-    basicstyle=\ttfamily,
-    keywordstyle=\color{blue}\ttfamily,
-    stringstyle=\color{red}\ttfamily,
-    commentstyle=\color{green}\ttfamily,
-    morecomment=[l][\color{magenta}]{\#}
+aboveskip=3mm,
+belowskip=3mm,
+showstringspaces=false,
+columns=flexible,
+basicstyle={\small\ttfamily},
+numbers=none,
+numberstyle=\tiny\color{gray},
+keywordstyle=\color{mauve},
+commentstyle=\color{dkgreen},
+stringstyle=\color{blue},
+breaklines=true,
+breakatwhitespace=true,
+tabsize=3,
     morekeywords={
-        Messenger,Elegoo_TFTLCD,TouchScreen,VKeys % TODO hier müssen noch die restlichen Keywords eingepflegt werden
+        Messenger,Elegoo_TFTLCD,TouchScreen,VKeys,ScreenParse,int,TSPoint % TODO hier müssen noch die restlichen Keywords eingepflegt werden
     }
 }
 
@@ -222,6 +230,7 @@ Im Folgenden werden alle Schwierigkeiten aufgelistet und erklärt, die während 
 
 \newpage
 \section{Anlagen}
+\subsection{Auflistung der Komponenten}
 \begin{small}
 
 \begin{table}[H]
@@ -328,6 +337,37 @@ Links zur genutzten Hardware sind in Kapitel~\ref{ch:hardwarelinks} aufgeführt.
 \end{table}
 Links zur genutzten Software sind in Kapitel~\ref{ch:softwarelinks} aufgeführt.
 
+\subsection{Diagramme}
+
+
+
+\subsection{Bilder}
+
+
+
+\subsection{Quellcode Auszüge}
+\textbf{Konvertierung Touchscreen zu Screen Koordinaten}
+\begin{lstlisting}
+/**
+ * @brief 
+ * Parses Coordinates from touchpoint to screen coordinates
+ * 
+ * @param p TSPoint, Point the user touched on display
+ * @return ScreenParse Struct containing parsed screen coordinates
+ */
+ScreenParse Messenger::parseCoords(TSPoint p) {
+    ScreenParse parse;
+    
+    // Touch X: [120,940], Screen X: [0,240]
+    // Parse X
+    parse.x = (int) ((p.x - 120) / 3.5);
+
+    // Touch Y: [70,920], Screen Y: [0,320]
+    // Parse Y
+    parse.y = (int) ((p.y - 70) / 2.66);
+    return parse;
+}
+\end{lstlisting}\label{lst:screenparse}
 
 \end{small}
 \newpage
