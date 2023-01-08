@@ -173,8 +173,9 @@ void Messenger::optsMenu(void) {
     menu.header = "Optionen";
     menu.entries[0] = String("Farben");
     menu.entries[1] = String("Tastatur");
-    menu.entries[2] = String("Zurueck");
-    menu.entries[3] = String("\0");
+    menu.entries[2] = String("Distanz");
+    menu.entries[3] = String("Zurueck");
+    menu.entries[4] = String("\0");
 
     drawMenu(menu);
     delay(100);
@@ -192,7 +193,7 @@ void Messenger::optsMenu(void) {
         // If touch was recognized
         if (p.z > _minTouch) {
             // Get selected menu poin
-            selection = getSelection(menu.menuStart, menu.menuThickness, menu.menuOffset, 3, parseCoords(p));
+            selection = getSelection(menu.menuStart, menu.menuThickness, menu.menuOffset, 4, parseCoords(p));
 
             Serial.println("Selection: " + String(selection));
             
@@ -200,7 +201,8 @@ void Messenger::optsMenu(void) {
                 case -1: break;
                 case 1: colorMenu(); return;
                 case 2: keysMenu(); return;
-                case 3: return;
+                case 3: distanceMenu(); return;
+                case 4: return;
                 default: break;
             }
         }
@@ -208,6 +210,57 @@ void Messenger::optsMenu(void) {
     }
 
     Serial.println("Returning from optsMenu");
+}
+
+void Messenger::distanceMenu(void) {
+    pinMode(A2, OUTPUT);
+    pinMode(A3, OUTPUT);
+    Menu menu;
+    menu.menuStart = 60;
+    menu.menuThickness = 30;
+    menu.menuOffset = 10;
+    menu.header = "Distanz";
+    menu.entries[0] = String("Sehr nah");
+    menu.entries[1] = String("Nah");
+    menu.entries[2] = String("Weit");
+    menu.entries[3] = String("Sehr weit");
+    menu.entries[4] = String("Zurueck");
+    menu.entries[5] = String("\0");
+
+    drawMenu(menu);
+    delay(100);
+
+    while (true) {
+        String inc = receiveMessage();
+        if (inc != "\0") Serial.println(inc);
+        int selection = -1;
+        
+        // Get touchpoint
+        digitalWrite(13, HIGH);
+        TSPoint p = _ts->getPoint();
+        digitalWrite(13, LOW);
+
+        // If touch was recognized
+        if (p.z > _minTouch) {
+            // Get selected menu poin
+            selection = getSelection(menu.menuStart, menu.menuThickness, menu.menuOffset, 5, parseCoords(p));
+
+            Serial.println("Selection: " + String(selection));
+            
+            switch (selection) {
+                case -1: break;
+                case 1: _radio->setPALevel("MIN"); return;
+                case 2: _radio->setPALevel("LOW"); return;
+                case 3: _radio->setPALevel("HIGH"); return;
+                case 4: _radio->setPALevel("MAX"); return;
+                case 5: return;
+                default: break;
+            }
+        }
+        delay(10);
+    }
+
+    Serial.println("Returning from Distance");
 }
 
 /**
@@ -280,7 +333,7 @@ String Messenger::keyStyleMenu(void) {
     menu.menuStart = 60;
     menu.menuThickness = 40;
     menu.menuOffset = 20;
-    menu.header = "Tastatur";
+    menu.header = "Layout";
     menu.entries[0] = String("QWERTZ");
     menu.entries[1] = String("QWERTY");
     menu.entries[2] = String("ABCDE");

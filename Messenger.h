@@ -92,7 +92,8 @@ class Messenger {
         
         void    optsMenu(void),
                 colorMenu(void),
-                keysMenu(void);
+                keysMenu(void),
+                distanceMenu(void);
 
         String  keyStyleMenu(void);
 

@@ -51,6 +51,9 @@ void Radio::setPALevel(String level) {
     } else {
         _level = RF24_PA_MIN;
     }
+
+    _antenna.setPALevel(_level);
+    Serial.println("Internal PA-Level: " + String(getPALevel()));
 }
 
 /**
