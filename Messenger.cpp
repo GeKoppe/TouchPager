@@ -216,7 +216,7 @@ void Messenger::distanceMenu(void) {
     pinMode(A2, OUTPUT);
     pinMode(A3, OUTPUT);
     Menu menu;
-    menu.menuStart = 60;
+    menu.menuStart = 80;
     menu.menuThickness = 30;
     menu.menuOffset = 10;
     menu.header = "Distanz";
@@ -600,6 +600,11 @@ void Messenger::readMenu(void) {
  * Method for drawing the read menu on screen
  */
 void Messenger::drawReadMenu(void) {
+    int msgNo = 0;
+
+    for (int i = 0; i < 3; i++) {
+        if (_messages[i] != String("\0")) msgNo++;
+    }
     // Set pinmodes
     pinMode(A2, OUTPUT);
     pinMode(A3, OUTPUT);
@@ -616,6 +621,8 @@ void Messenger::drawReadMenu(void) {
     _screen->drawRect(_screen->width() - _menuBorderOffset - 100, 240, 100, 50, _boxColor);
 
     // Fill function buttons
+    _screen->setCursor(_menuBorderOffset, 160);
+    if (msgNo > 0) _screen->print(String(msgNo) + " Nachr.; Nr. 1");
     _screen->setCursor(_menuBorderOffset + 40, 195);
     _screen->print("<");
 
@@ -643,7 +650,7 @@ void Messenger::switchMessageToRead(int *msgCounter, bool plus, bool afterDelete
     pinMode(A3, OUTPUT);
 
     // Overprint old message and set text configuration
-    _screen->fillRect(0,0,_screen->width(), 170, _background);
+    _screen->fillRect(0,0,_screen->width(), 175, _background);
     _screen->setCursor(0,0);
     _screen->setTextColor(_textColor);
     _screen->setTextSize(_textSize);
@@ -652,12 +659,9 @@ void Messenger::switchMessageToRead(int *msgCounter, bool plus, bool afterDelete
     int tempCounter = *msgCounter;
     int noMessages = 0;
 
-    // Modify tempcounter
-    plus ? tempCounter++ : tempCounter--;
-
     // Check, how many empty messages are in cache
     for (int i = 0; i < 3; i++) {
-        if (String(_messages[i]) != String("\0")) noMessages++;
+        if (String(_messages[i]) == String("\0")) noMessages++;
     }
 
     // If message cache is empty, set msgCounter back to 0 and print, that there are no messages
@@ -667,6 +671,15 @@ void Messenger::switchMessageToRead(int *msgCounter, bool plus, bool afterDelete
         return;
     }
 
+    // Modify tempcounter
+    plus ? tempCounter++ : tempCounter--;
+    if (tempCounter > 2) {
+        tempCounter = 2;
+    } else if (tempCounter < 0) {
+        tempCounter = 0;
+    }
+
+    Serial.println("Tempcounter: " + String(tempCounter));
     // If method was called after deletion, do it a little differently
     if (afterDelete) {
         for (int i = 0; i < 3; i++) {
@@ -678,14 +691,25 @@ void Messenger::switchMessageToRead(int *msgCounter, bool plus, bool afterDelete
         }
     }
 
+    Serial.println("Tempcounter after deletecheck: " + String(tempCounter));
+
     // Handle tempcounter being outside of array indices
     if (tempCounter > 2 || tempCounter < 0) return;
 
-    if (String(_messages[tempCounter]) == String("\0")) return;
+    if (String(_messages[tempCounter]) == String("\0")) tempCounter = 0;
 
+    Serial.println("Tempcounter after boundcheck: " + String(tempCounter));
+    
     // Set msg counter and print message
     *msgCounter = tempCounter;
-    _screen->print(_messages[*msgCounter]);
+
+    if (_messages[*msgCounter] == String("\0")) return;
+    else {
+        _screen->print(_messages[*msgCounter]);
+        _screen->setCursor(_menuBorderOffset, 160);
+        _screen->setTextSize(_textSize - 1);
+        _screen->print(String(3 - noMessages) + " Nachr.; Nr. " + String(tempCounter + 1));
+    }
 }
 
 /**
@@ -797,7 +821,7 @@ void Messenger::printMessageOnDisplay(String msg) {
     pinMode(A3, OUTPUT);
 
     // Print a filled rect over old message
-    _screen->fillRect(0,0,_screen->width(), 90, _background);
+    _screen->fillRect(0,0,_screen->width(), 140, _background);
     
     // Set config values for text and print it
     _screen->setCursor(0,0);
