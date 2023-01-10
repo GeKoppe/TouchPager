@@ -207,13 +207,16 @@ Im Folgenden werden alle Schwierigkeiten aufgelistet und erklärt, die während 
 \end{enumerate}
 
 \subsubsection{Zeitliche Planung}
-Ein Netzplan mit detaillierter Zeitplanung findet sich im Kapitel~\ref{ch:diags} Abbildung~\ref{diag:netzplan}.
+Ein Netzplan mit detaillierter Zeitplanung findet sich im Kapitel~\ref{ch:diags} Abbildung~\ref{diag:netzplan}. Der Plan lässt sich weiterhin unterteilen in die
+Planungsphase (Schritte 1-6) und die Umsetzungsphase (alle weiteren Schritte), abgebildet in Kapitel~\ref{ch:diags} Abbildung~\ref{diag:netzplan_planung} 
+und Abbildung~\ref{diag:netzplan_umsetzung}.
 \\
 Da vor der Umsetzung des Projekts keine Erfahrung im Umgang mit der Arduino Plattform bestand, wurden bei der Planung der gesamten Planungsphase (Netzplan Schritte 1-6) 
 viel Zeit eingeräumt, durch die fehlendes Wissen und Einarbeitung kompensiert werden sollten. Des Weiteren wurden 6, respektive 8 Stunden geplant, damit die 
 Umsetzenden sich mit den einzelnen Komponenten vertraut machen konnten (Netzplan Schritte 4 und 5). Nach erfolgreicher Einarbeitung wurden weitere 2 Stunden
-für die Konzeptionierung des Quellcodes eingeplant\footnote{Ergebnis zu sehen in Kapitel~\ref{ch:diags} Abbildung~\ref{diag:classdiag}.}. Die zeitliche 
-Planung der Umsetzung wurde erst nach der Planungsphase durchgeführt, da diese abhängig vom, in der Planung entstandenen, Design des Quellcodes war.
+für die Konzeptionierung des Quellcodes eingeplant\footnote{Ergebnis abgebildet in Kapitel~\ref{ch:diags} Abbildung~\ref{diag:classdiag}.}. Die zeitliche 
+Planung der Umsetzung wurde erst nach der Planungsphase durchgeführt, da diese abhängig vom, in der Planung entstandenen, Design des Quellcodes war.\footnote{Alle bis hier 
+beschriebenen Schritte sind in Kapitel~\ref{ch:diags} Abbildung~\ref{diag:netzplan_planung} abgebildet}
 \\
 Aufgrund des entstandenen Quellcode Designs konnte die Entwicklung der einzelnen Klassen parallel ablaufen und nur die Klasse \glqq Messenger\grqq{} war davon abhängig,
 dass die anderen Klassen bereits fertig gestellt waren. Entsprechend wurde die Entwicklung der Klassen \glqq VKeys\grqq , \glqq Radio\grqq{} und \glqq ColorChooser\grqq{}
@@ -223,11 +226,14 @@ Komplexität, eingeplant.
 Im Anschluss wurde die Messenger-Klasse mit dem größten zeitlichen Aufwand von 14 Stunden Entwicklung und 5 Stunden Testen eingeplant, da diese die Kommunikation
 aller Komponenten sicherstellen soll.
 \\
-Abschließend wurden noch 5 Stunden für Tests des fertigen Systems und abschließendes Debuggen eingeplant, sowie das Schreiben dieser Dokumentation.
+Abschließend wurden noch 5 Stunden für Tests des fertigen Systems und abschließendes Debuggen eingeplant, sowie das Schreiben dieser Dokumentation.\footnote{Alle bis hier 
+beschriebenen Schritte sind in Kapitel~\ref{ch:diags} Abbildung~\ref{diag:netzplan_umsetzung} abgebildet}
 
 \subsubsection{Arbeitsaufteilung}
 
 \section{Durchführung}
+Im Folgenden wird die Umsetzung des Projekts beschrieben. Alle im Text benannten Methoden finden sich in Kapitel~\ref{ch:codeschnipsel} unter dem jeweiligen Subkapitel
+der Klasse, zu der die Methode gehört.
 \subsection{Quellcode Design}
 
 
@@ -353,7 +359,21 @@ Links zur genutzten Software sind in Kapitel~\ref{ch:softwarelinks} aufgeführt.
 \begin{figure}[H]
     \begin{center}
         \includegraphics[scale=0.21]{Bilder/Netzplan.png}
-        \caption{Netzplan der Projektplanung}\label{diag:netzplan}
+        \caption{Netzplan des Projekts}\label{diag:netzplan}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.4]{Bilder/netzplan_planung.png}
+        \caption{Netzplan der Projektplanung}\label{diag:netzplan_planung}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.35]{Bilder/netzplan_umsetzung.png}
+        \caption{Netzplan der Projektumsetzung}\label{diag:netzplan_umsetzung}
     \end{center}
 \end{figure}
 
@@ -370,7 +390,7 @@ Links zur genutzten Software sind in Kapitel~\ref{ch:softwarelinks} aufgeführt.
 
 
 \newpage
-\subsection{Git Repository und Quellcode Auszüge}
+\subsection{Git Repository und Quellcode Auszüge}\label{ch:codeschnipsel}
 Das Repository mit dem gesamten Quellcode diesees Projektes befindet sich unter
 \\
 \url{https://github.com/LeichtMatrosee/TouchPager}
@@ -436,7 +456,7 @@ String Radio::receiveMessage(void) {
 }
 \end{lstlisting}
 
-\begin{flushright}\textbf{Wechsel zwischen senden und lauschen}\label{code:switch}\end{flushright}
+\begin{flushleft}\textbf{Wechsel zwischen senden und lauschen}\label{code:switch}\end{flushleft}
 \begin{lstlisting}
 /**
  * @brief 
@@ -462,9 +482,9 @@ void Radio::switchState() {
 \end{lstlisting}
 
 \subsubsection{Klasse: VKeys}
-\begin{flushright}
+\begin{flushleft}
     \textbf{Erkennung Tastatur Knopf}\label{code:keys}
-\end{flushright}
+\end{flushleft}
 \begin{lstlisting}
 /**
  * @brief 
