@@ -129,7 +129,16 @@ void VKeys::switchKeys() {
 
 /**************************************************** PRIVATE **************************************************/
 
+/**
+ * @brief 
+ * Returns selected char by calculating, which column and row was pressed from passed x and y coords
+ * 
+ * @param x X coordinate from touchscreen selection
+ * @param y Y coordinate from touchscreen selection
+ * @return String Selected character parsed to a string, BACK if back button was selected and DONE, if done button was selected
+ */
 String VKeys::getCharFromCoords(int16_t x, int16_t y) {
+    //TODO Check, what the hell is returned in this method and why. For Some reason, a fucking 2 is returned at one point.
     int row, column;
 
     // Complete Y: [70,920], range 850, keyboard [70,475], keyboard range of 405, 4 rows so 405/4 = 101.25
