@@ -900,7 +900,7 @@ String Messenger::writeMessage(void) {
 
             // If delete was pressed, delete last char from message
             if (newChar == "~") {
-                msg = msg.substring(0,msg.length()-2);
+                msg = msg.substring(0,msg.length()-1);
                 printMessageOnDisplay(msg);
             } else if (newChar == "s") {
                 // small s means, that we want to switch to special keys (numbers and non-alpha-numeric)
@@ -978,15 +978,15 @@ void Messenger::cacheMessage(String msg) {
         return;
     } else {
         // If there are 3 messages, clear the last message
-        _messages[2] = "\0";
+        _messages[0] = "\0";
 
         // Push every other message one to the back
-        for (int i = 0; i < 2; i++) {
-            _messages[i + 1] = _messages[i];
+        for (int i = 1; i < 3; i++) {
+            _messages[i - 1] = _messages[i];
         }
 
         // Put new Message as first in the array
-        _messages[0] = msg;
+        _messages[2] = msg;
         return;
     }
 }

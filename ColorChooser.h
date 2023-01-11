@@ -1,3 +1,15 @@
+/**
+ * @class ColorChooser
+ * @author Gerrit Koppe, Thilo Drehlmann
+ * 
+ * @brief
+ * Class to implement a Menu for choosing a color.
+ * Public method ColorChooser::choose prints the menu to display and returns the color the user clicked on. 
+ * 
+ * @version 1
+ * @date 2022
+ */
+
 #ifndef colorchooser
 #define colorchooser
 
