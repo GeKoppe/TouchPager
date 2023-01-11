@@ -839,7 +839,8 @@ void Messenger::printMessageOnDisplay(String msg) {
  */
 String Messenger::writeMessage(void) {
     // Initialize the keypad (draw it on screen)
-    _keys->init();
+    if (_keys->getSpecial()) _keys->switchKeys();
+    else _keys->init();
 
     // Initialize variables and get initial touchpoint
     String msg = "", oldChar = "";
