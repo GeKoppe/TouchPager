@@ -123,6 +123,8 @@ class Messenger {
         
         String receiveMessage();
 
+        void checkNearby(void);
+
         // CACHE
         void    cacheMessage(String msg),
                 clearMessageCache(),

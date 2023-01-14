@@ -158,6 +158,25 @@ int Messenger::mainMenu(void) {
     Serial.println("Returning from mainMenu");
 }
 
+void Messenger::checkNearby(void) {
+    String availableMsg = "Es sind ";
+    bool devicesAvailable = _radio->checkNearbyDevices();
+
+    availableMsg += (!devicesAvailable ? String("keine") : String(""));
+
+    availableMsg += " Geraete verfuegbar.";
+
+    pinMode(A2, OUTPUT);
+    pinMode(A3, OUTPUT);
+
+    _screen->setTextColor(_textColor);
+    _screen->setTextSize(_textSize);
+    _screen->setCursor(0,0);
+    _screen->print(availableMsg);
+
+    delay(3000);
+}
+
 /**
  * @brief 
  * Options menu

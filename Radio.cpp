@@ -90,39 +90,17 @@ bool Radio::available(void) {
  * @return false otherwise
  */
 bool Radio::checkNearbyDevices(void) {
-    char buffer[128];
-    String msg;
+    String msg[5];
 
-    // Switch from listening to sending
-    if (_listening) switchState();
-    
-    // Convert _acknowledge message to char array
-    convertStringToCharArray(_acknowledge, buffer);
-
-    // Send acknowledge message 3 times
-    for (int i = 0; i < 3; i++) {
-        _antenna.write(buffer, sizeof(buffer));
-        delay(10);
+    for (int i = 0; i < 5; i++) {
+        sendMessage(_acknowledge);
+        msg[i] = receiveMessage();
     }
-
-    // Switch back to listening
-    switchState();
-
-    // Wait for payload being available
-    int counter = 0;
-    while (!_antenna.available()) {
-        counter++;
-        if (counter > 9) return false;
-        delay(10);
-        continue;
-    }
-
-    // Read payload and convert it back to String
-    _antenna.read(buffer, sizeof(buffer));
-    msg = convertCharArrayToString(buffer);
 
     // If payload was the acknowlege String, that means there are devices nearby.
-    if (msg == _acknowledge) return true;
+    for (int i = 0; i < 5; i++) {
+        if (msg[i] == _acknowledge) return true; 
+    }
 
     return false;
 }
@@ -159,6 +137,7 @@ String Radio::receiveMessage(void) {
 
     // THIS IS DEPRECATED AND USELESS 
     if (msg == String(_acknowledge)) {
+        sendMessage(_acknowledge);
         return "\0";
     }
 

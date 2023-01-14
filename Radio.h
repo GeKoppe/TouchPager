@@ -31,6 +31,7 @@ class Radio {
         void        init();
 
         bool        sendMessage(String msg);
+        bool        checkNearbyDevices(void);
 
     private:
         uint16_t    _ce, _csn, _readingPipe, _paLevel;
@@ -43,8 +44,6 @@ class Radio {
         String      _acknowledge = "4269";
 
         RF24        _antenna;
-
-        bool        checkNearbyDevices(void);
         void        acknowledge(void);
 
         void        convertStringToCharArray(String s, char a[256]);
