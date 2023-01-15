@@ -120,7 +120,7 @@ und abschließend das Ergebnis der Durchführung präsentiert.
 Das Thema des Projektes ist es, eine bidirektionale Kommunikation zwischen zwei Geräten auf Arduino-Basis zu gewährleisten. Es soll die Möglichkeit bestehen,
 Nachrichten zu verfassen, zu versenden und ebenso Nachrichten zu empfangen, die von einem anderen Arduino Gerät versendet wurden.
 
-\subsection{Definition der Ziele, erwartetes Ergebnis}
+\subsection{Definition der Ziele, erwartetes Ergebnis}\label{ch:goals}
 Im Folgenden werden die allgemein Ziele des Projektes näher definiert.
 \\
 \\
@@ -237,16 +237,70 @@ beschriebenen Schritte sind in Kapitel~\ref{ch:diags} Abbildung~\ref{diag:netzpl
 \section{Durchführung}
 Im Folgenden wird die Umsetzung des Projekts beschrieben. Alle im Text benannten Methoden finden sich in Kapitel~\ref{ch:codeschnipsel} unter dem jeweiligen Subkapitel
 der Klasse, zu der die Methode gehört.
-\\
-\\
+
 \subsection{Schaltplan und Bau des Projekts}
-Zunächst wurde die Hardware zusammengebaut. Da der Touchscreen als Shield entworfen ist, konnte dieser einfach auf den Arduino Mega gesteckt werden. 
-Die Transceiver benötigten wiederum eine 5V Stromversorgung, sowie den SPI-Bus\footnote{Vgl. Glossar~\ref{def:SPI}: SPI} des Arduinos
+Zunächst wurde die Hardware zusammengebaut. Da der Touchscreen als Shield entworfen ist, konnte dieser einfach auf den Arduino Mega gesteckt werden.
+\\
+Die Transceiver benötigten wiederum eine 5V Stromversorgung, sowie den SPI-Bus\footnote{Vgl. Glossar~\ref{def:SPI}: SPI} des Arduinos. Der SPI-Bus des Arduino Mega
+2560 R3 besteht aus den Pins D50-D53\footnote{Vgl. Diagramm~\ref{diag:pinout}}, welche nicht durch den Touchscreen-Shield verwendet werden, weshalb hier keine Probleme
+entstehen. Für die 5V Stromversorgung wird einer der beiden 5V-Pins in der Pin-Reihe D22-D53 verwendet, da diese noch nicht durch den Touchscreen-Shield verwendet werden.
+\\
+Somit kann das Projekt ohne Benutzung weiterer Komponenten gebaut werden. 
 
 \subsection{Konzeptionierung des Quellcode-Architektur}
+Nachdem das Projekt erfolgreich aufgebaut wurde, musste der Quellcode geschrieben werden. Da die Stromkreise der beiden Komponenten komplett getrennt sind,
+musste die Kommunikation dieser per Quellcode erfolgen.
+Zunächst wurden die Funktionalitäten definiert, die das Projekt bieten muss. Diese wurden anschließend thematisch aufgeteilt und einzelnen Klassen zugeordnet.
+Die benötigten Funktionalitäten wurden direkt aus den Zielen in Kapitel~\ref{ch:goals} abgeleitet. Die entsprechenden Ziele werden im Folgenden durch Fußnoten
+referenziert. Ziele können durch mehrere Klassen realisiert werden und können eventuell mehrfach aufgeführt werden.
+\\
+So wurden alle Funktionalitäten, welche mit dem Versenden und Empfangen von Nachrichten zu tun haben, in einer Klasse gekapselt, welche wir \glqq Radio\grqq{} genannt haben.
+Diese Klasse sollte sowohl für das Versenden und Empfangen von, durch den User eingegebenen, Nachrichten, als auch für die Überprüfung auf Geräte in der Nähe und die
+Implementierung der RF24 API verantwortlich sein.\footnote{Vgl. Kapitel~\ref{ch:goals}, Ziele: 2,3,4,b,c}
+\\
+Eine weitere Aufgabe sollte die Implementierung einer Möglichkeit zur Eingabe von Nachrichten sein. Hier wurde sich dafür entschieden, eine virtuelle Tastatur auf dem
+Touchscreen anzuzeigen. Die Anzeige dieser Tastatur, sowie das Erkennen das eingegebenen Buchstaben, sollten in der Klasse \glqq VKeys\grqq{} gekapselt 
+werden.\footnote{Vgl. Kapitel~\ref{ch:goals}, Ziel: 1}
+\\
+Des weiteren sollte eine eigene Klasse zur Auswahl von Farben erstellt werden, welche immer dann instanziiert werden sollte, wenn der User einen Menüpunkt auswählt,
+mit dem das Aussehen des User Interface verändert werden kann. Diese Klasse wurde \glqq ColorChooser\grqq{} bennant und sollte alle möglichen Farben anzeigen 
+und erkennen, welche Farbe ausgewählt wurde.\footnote{Vgl. Kapitel~\ref{ch:goals}, Ziel: a}
+\\
+Letztendlich musste noch eine Klasse konzeptioniert werden, die für das User Interface verantwortlich sein sollte. Außerdem wurde sich entschieden, diese Klasse
+zu verwenden, um alle anderen Klassen zu implementieren und die gesamte Logik zentral zu steuern. Diese Klasse wurde \glqq Messenger\grqq{} benannt. Diese Klasse
+sollte außerdem für die Menüführung und das Zwischenspeichern von Nachrichten verwendet werden.\footnote{Vgl. Kapitel~\ref{ch:goals}, Ziele: 2,5,6,7,c}
+\\
+Aus der Konzeptionierung ergab sich dann ein Klassendiagramm, welches in vereinfachter Version in Abbildung~\ref{diag:classdiag} dargestellt ist.
+
+\subsection{Entwicklung VKeys}
+\subsubsection{Umsetzung}
+
+
+\subsubsection{Schwierigkeiten}
 
 
 
+\subsubsection{Ergebnis}
+
+\subsection{Entwicklung Radio}
+\subsubsection{Umsetzung}
+
+
+\subsubsection{Schwierigkeiten}
+
+
+
+\subsubsection{Ergebnis}
+
+\subsection{Entwicklung Messenger}
+\subsubsection{Umsetzung}
+
+
+\subsubsection{Schwierigkeiten}
+
+
+
+\subsubsection{Ergebnis}
 
 \section{Projektergebnis}
 \subsection{Erreichte Ziele}
@@ -407,6 +461,13 @@ Links zur genutzten Software sind in Kapitel~\ref{ch:softwarelinks} aufgeführt.
     \begin{center}
         \includegraphics[scale=0.35]{Bilder/Menüführung.png}
         \caption{Aufbau der Menümethoden}\label{diag:menu_pap}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=2.5]{Bilder/Arduino-Mega-Pinout.jpg}
+        \caption{Pinout Beschreibung des Arduino Mega 2560 R3, Quelle: Internetquelle~\ref{itm:pinout}}\label{diag:pinout}
     \end{center}
 \end{figure}
 
@@ -626,6 +687,7 @@ zum Teil oder vollständig abdeckt.\footnote{Vgl. Internetquelle~\ref{itm:shield
     \item Storage Insider: Was ist Multithreading - Online unter \url{https://www.storage-insider.de/was-ist-multithreading-a-1017586/} $\left[\text{07.01.2023}\right]$ \label{itm:multithread}
     \item Computer Hope: Arduino Shield - Online unter \url{} $\left[\text{07.01.2023}\right]$ \label{itm:shield}
     \item Mikrocontroller.net: Serial Peripheral Interface - Online unter \url{https://www.mikrocontroller.net/articles/Serial_Peripheral_Interface} $\left[\text{15.01.2023}\right]$ \label{itm:SPI}
+    \item Electronics Hub: Arduino Mega Pinout - Online unter \url{https://www.electronicshub.org/wp-content/uploads/2021/01/Arduino-Mega-Pinout.jpg} $\left[\text{15.01.2023}\right]$ \label{itm:pinout}
 \end{enumerate}
 
 \subsection{Links genutzter Hardware}\label{ch:hardwarelinks}
