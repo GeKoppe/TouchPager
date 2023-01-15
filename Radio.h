@@ -39,7 +39,7 @@ class Radio {
         uint8_t     _level = RF24_PA_MIN;
 
         bool        _listening = true;
-        bool        _acknowledged = false;
+        bool        _ackHappened = false;
 
         String      _jam = "1337";
         String      _acknowledge = "4269";

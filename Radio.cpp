@@ -90,6 +90,7 @@ bool Radio::available(void) {
  * @return false otherwise
  */
 bool Radio::checkNearbyDevices(void) {
+    _ackHappened = false;
     bool msg[5] = {false, false, false, false, false};
 
     for (int i = 0; i < 5; i++) {
@@ -137,7 +138,7 @@ String Radio::receiveMessage(void) {
     // Convert received message to String
     // msg = convertCharArrayToString(buffer);
 
-    // THIS IS DEPRECATED AND USELESS 
+    // If the test string was received, acknowledge it and return \0
     if (msg == String(_test)) {
         acknowledge();
         return "\0";
@@ -149,8 +150,9 @@ String Radio::receiveMessage(void) {
         return String(_jam);
     }
 
+    // If acknowledge string was received, change marker in class fields to true so it can be checked by other methods and return \0
     if (msg == String(_acknowledge)) {
-        _acknowledged = true;
+        _ackHappened = true;
         return "\0";
     }
 
@@ -253,8 +255,8 @@ String Radio::convertCharArrayToString(char a[128]) {
 }
 
 bool Radio::wasAcknowledged() {
-    bool ack = _acknowledged;
-    _acknowledged = false;
+    bool ack = _ackHappened;
+    _ackHappened = false;
     
     return ack;
 }
