@@ -46,7 +46,7 @@ breakatwhitespace=true,
 tabsize=3,
     morekeywords={
         Messenger,Elegoo_TFTLCD,TouchScreen,VKeys,ScreenParse,int,TSPoint,String,ColorChooser,
-        ColorChoser,Radio % TODO hier müssen noch die restlichen Keywords eingepflegt werden
+        ColorChoser,Radio,Serial,Menu % TODO hier müssen noch die restlichen Keywords eingepflegt werden
     }
 }
 
@@ -195,19 +195,22 @@ Als erstes sollen grundlegende Funktionalitäten entwickelt werden, wie zum Beis
 
 \subsubsection{Erwartete Schwierigkeiten}
 Im Folgenden werden alle Schwierigkeiten aufgelistet und erklärt, die während der Umsetzung des Projekts erwartet werden.
-\begin{enumerate}
-    \item \textit{Fehlersuche bei fehlerhafter Übertragung}: Da dieses Projekt darauf basiert, Funksignale zu versenden und zu empfangen und die Umsetzenden keine Gerätschaft
-            besitzen, Funkwellen und Signalstärken dieser zu messen, wird es schwierig, den Fehler zu identifizieren, sollte eine Übertragung fehlschlagen.
-    \item \textit{Distanzregulierung}: Die Transceiver können in verschiedenen Signalstärken senden, die programmatisch eingestellt werden müssen.
-            Wird eine zu hohe Signalstärke konfiguriert, leidet darunter allerdings die Übertragungsqualität bei niedrigen Distanzen. Hier muss ein gutes Mittelmaß
-            gefunden werden.
-    \item \textit{Wechsel zwischen Empfang und Senden}: Da die Nachrichten bidirektional versendet werden sollen, die Transceiver aber nur halbduplex arbeiten,
-            muss ein rechtzeitiger Wechsel der Antenne zwischen Senden und Empfang garantiert werden. Sollten beide Geräte gleichzeitig Senden, werden beide Nachrichten
-            verloren gehen.
-    \item \textit{Empfang garantieren}: Da die Möglichkeit bestehen soll, gleich 
-    \item \textit{Kein Multithreading}: Da Arduinos nicht Multithreading-fähig\footnote{vgl. Glossar~\ref{def:multithreading}: Multithreading} sind, wird eine Schwierigkeit
-            darin bestehen, permanent gleichzeitig die Nutzung des Geräts und den Empfang eingehender Nachrichten zu gewährleisten.
-\end{enumerate}
+\\
+1. \textit{Fehlersuche bei fehlerhafter Übertragung}: Da dieses Projekt darauf basiert, Funksignale zu versenden und zu empfangen und die Umsetzenden keine Gerätschaft
+besitzen, Funkwellen und Signalstärken dieser zu messen, wird es schwierig, den Fehler zu identifizieren, sollte eine Übertragung fehlschlagen.
+\\
+2. \textit{Distanzregulierung}: Die Transceiver können in verschiedenen Signalstärken senden, die programmatisch eingestellt werden müssen.
+Wird eine zu hohe Signalstärke konfiguriert, leidet darunter allerdings die Übertragungsqualität bei niedrigen Distanzen. Hier muss ein gutes Mittelmaß
+gefunden werden.
+\\
+3. \textit{Wechsel zwischen Empfang und Senden}: Da die Nachrichten bidirektional versendet werden sollen, die Transceiver aber nur halbduplex arbeiten,
+muss ein rechtzeitiger Wechsel der Antenne zwischen Senden und Empfang garantiert werden. Sollten beide Geräte gleichzeitig Senden, werden beide Nachrichten
+verloren gehen.
+\\
+4. \textit{Empfang garantieren}: Da die Möglichkeit bestehen soll, gleich 
+\\
+5. \textit{Kein Multithreading}: Da Arduinos nicht Multithreading-fähig\footnote{vgl. Glossar~\ref{def:multithreading}: Multithreading} sind, wird eine Schwierigkeit
+darin bestehen, permanent gleichzeitig die Nutzung des Geräts und den Empfang eingehender Nachrichten zu gewährleisten.
 
 \subsubsection{Zeitliche Planung}
 Ein Netzplan mit detaillierter Zeitplanung findet sich im Kapitel~\ref{ch:diags} Abbildung~\ref{diag:netzplan}. Der Plan lässt sich weiterhin unterteilen in die
@@ -299,7 +302,15 @@ der Messenger-Klasse vorkamen und eine Beschreibung somit redundant wäre.
 \\
 \textit{Klasse Radio}
 \\
-Zunächst 
+Zunächst wurden Methoden für das Senden\footnote{Vgl. Kapitel~\ref{code:sending}, Codeausschnitt \glqq Senden von Nachrichten\grqq{}} und das
+Empfangen\footnote{Vgl. Kapitel~\ref{code:receive}, Codeausschnitt \glqq Empfangen von Nachrichten\grqq{}} von Nachrichten programmiert. In diesen
+soll automatisch zum entsprechenden Modus (lauschen oder senden) gewechselt werden, da die Transceiver nur halbduplex arbeiten.
+\\
+Um dem Ziel b in Kapitel~\ref{ch:goals} gerecht zu werden, musste die Methode zum Empfangen von Nachrichten erweitert werden, da jede Überprüfung auf
+eingehende Nachrichten über eine Methode laufen sollte. Um dies zu realisieren, wurden Kommandosequenzen in der Radio-Klasse definiert. Wird eine dieser
+Kommandosequenzen empfangen, soll die eingegangene Nachricht nicht als Text weiterverarbeitet werden. Stattdessen soll das Gerät Funktionen 
+aufrufen, wie zum Beispiel dem sendenden Gerät zurückmelden, dass es empfangsbereit ist. Ist die eingehende Nachricht keine Kommandosequenz,
+so soll sie einfach als Text verarbeitet werden.\footnote{Gesamter Prozess des Empfangens in Kapitel~\ref{ch:diags}, Abbildung~\ref{diag:receive_pap} visualisiert}
 
 
 
@@ -546,6 +557,63 @@ ScreenParse Messenger::parseCoords(TSPoint p) {
 }
 \end{lstlisting}
 
+\begin{flushleft}\textbf{Beispiel Menüführung: Optionenmenü}\end{flushleft}
+\begin{lstlisting}
+/**
+ * @brief 
+ * Options menu
+ * 
+ */
+void Messenger::optsMenu(void) {
+    pinMode(A2, OUTPUT);
+    pinMode(A3, OUTPUT);
+    Menu menu;
+    menu.menuStart = 60;
+    menu.menuThickness = 40;
+    menu.menuOffset = 20;
+    menu.header = "Optionen";
+    menu.entries[0] = String("Farben");
+    menu.entries[1] = String("Tastatur");
+    menu.entries[2] = String("Distanz");
+    menu.entries[3] = String("Zurueck");
+    menu.entries[4] = String("\0");
+
+    drawMenu(menu);
+    delay(100);
+
+    while (true) {
+        String inc = receiveMessage();
+        if (inc != "\0") Serial.println(inc);
+        int selection = -1;
+        
+        // Get touchpoint
+        digitalWrite(13, HIGH);
+        TSPoint p = _ts->getPoint();
+        digitalWrite(13, LOW);
+
+        // If touch was recognized
+        if (p.z > _minTouch) {
+            // Get selected menu poin
+            selection = getSelection(menu.menuStart, menu.menuThickness, menu.menuOffset, 4, parseCoords(p));
+
+            Serial.println("Selection: " + String(selection));
+            
+            switch (selection) {
+                case -1: break;
+                case 1: colorMenu(); return;
+                case 2: keysMenu(); return;
+                case 3: distanceMenu(); return;
+                case 4: return;
+                default: break;
+            }
+        }
+        delay(10);
+    }
+
+    Serial.println("Returning from optsMenu");
+}
+\end{lstlisting}
+
 \subsubsection{Klasse: Radio}
 \textbf{Empfangen von Nachrichten}\label{code:receive}
 \begin{lstlisting}
@@ -581,7 +649,52 @@ String Radio::receiveMessage(void) {
 }
 \end{lstlisting}
 
-\textbf{Konvertierung String zu Char-Array}\label{code:transpose_s_to_arr}
+\begin{flushleft}\textbf{Senden von Nachrichten}\label{code:sending}\end{flushleft}
+\begin{lstlisting}
+/**
+* @brief 
+* Sends message given in param
+* 
+* @param msg Message to be sent
+* @return true If sending was successful
+* @return false otherwise
+*/
+bool Radio::sendMessage(String msg) {
+    String sendTest = "";
+    bool tx_ok, tx_fail, rx_ready, test = true;
+    char buffer[128];
+    msg.toCharArray(buffer, msg.length() + 1);
+    
+    Serial.println("Sending message: " + msg);
+    Serial.println("Listening State: " + String((_listening ? "listening" : "writing")));
+
+    if (_listening) switchState();
+    
+    Serial.println("Listening State: " + String((_listening ? "listening" : "writing")));
+
+    // convertStringToCharArray(msg, buffer);
+    for (int i = 0; i < msg.length(); i++) {
+        sendTest += String(buffer[i]);
+    }
+    Serial.println("Sending: Char Arr after conversion: " + sendTest);
+    
+    test = _antenna.write(&buffer, sizeof(buffer));
+
+    if (!test) {
+        Serial.println("Sending unseccessful");
+        _antenna.whatHappened(tx_ok, tx_fail, rx_ready);
+        Serial.println("OK: " + String((tx_ok ? "Yes" : "No")) + ", FAIL: " + String((tx_fail ? "Yes" : "No")) + ", READY: " + String((rx_ready ? "Yes" : "No")));
+        switchState();
+        return false;
+    }
+
+    Serial.println("Returning from sending");
+    switchState();
+    return true;
+}
+\end{lstlisting}
+
+\begin{flushleft}\textbf{Konvertierung String zu Char-Array}\label{code:transpose_s_to_arr}\end{flushleft}
 \begin{lstlisting}
 /**
  * @brief
@@ -677,7 +790,7 @@ String VKeys::getCharFromCoords(int16_t x, int16_t y) {
 \end{lstlisting}
 
 \subsubsection{Klasse: ColorChooser}
-\textbf{Erkennen der ausgewählten Farbe}\label{code:color}
+\begin{flushleft}\textbf{Erkennen der ausgewählten Farbe}\label{code:color}\end{flushleft}
 \begin{lstlisting}
 /**
  * @brief 
