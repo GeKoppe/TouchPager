@@ -90,16 +90,18 @@ bool Radio::available(void) {
  * @return false otherwise
  */
 bool Radio::checkNearbyDevices(void) {
-    String msg[5];
+    bool msg[5] = {false, false, false, false, false};
 
     for (int i = 0; i < 5; i++) {
         sendMessage(_acknowledge);
-        msg[i] = receiveMessage();
+        receiveMessage();
+
+        msg[i] = wasAcknowledged();
     }
 
     // If payload was the acknowlege String, that means there are devices nearby.
     for (int i = 0; i < 5; i++) {
-        if (msg[i] == _acknowledge) return true; 
+        if (msg[i]) return true; 
     }
 
     return false;
@@ -136,8 +138,8 @@ String Radio::receiveMessage(void) {
     // msg = convertCharArrayToString(buffer);
 
     // THIS IS DEPRECATED AND USELESS 
-    if (msg == String(_acknowledge)) {
-        sendMessage(_acknowledge);
+    if (msg == String(_test)) {
+        acknowledge();
         return "\0";
     }
 
@@ -145,6 +147,11 @@ String Radio::receiveMessage(void) {
     if (msg == String(_jam)) {
         acknowledge();
         return String(_jam);
+    }
+
+    if (msg == String(_acknowledge)) {
+        _acknowledged = true;
+        return "\0";
     }
 
     return msg;
@@ -156,19 +163,7 @@ String Radio::receiveMessage(void) {
  * 
  */
 void Radio::acknowledge(void) {
-    char buffer[128];
-
-    // Switch from listening state to sending state
-    if (_listening) switchState();
-
-    // convert the acknowledge payload to a char array
-    convertStringToCharArray(_acknowledge, buffer);
-
-    // Send acknowledgement 3 times, to make sure partner gets the message
-    for (int i = 0; i < 3; i++) {
-        _antenna.write(buffer, sizeof(buffer));
-        delay(10);
-    }
+    sendMessage(_acknowledge);
 }
 
 /**
@@ -255,4 +250,11 @@ String Radio::convertCharArrayToString(char a[128]) {
     Serial.println("String after conversion: " + s);
 
     return s;
+}
+
+bool Radio::wasAcknowledged() {
+    bool ack = _acknowledged;
+    _acknowledged = false;
+    
+    return ack;
 }

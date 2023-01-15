@@ -39,15 +39,19 @@ class Radio {
         uint8_t     _level = RF24_PA_MIN;
 
         bool        _listening = true;
+        bool        _acknowledged = false;
 
         String      _jam = "1337";
         String      _acknowledge = "4269";
+        String      _test = "42069";
 
         RF24        _antenna;
         void        acknowledge(void);
 
         void        convertStringToCharArray(String s, char a[256]);
         String      convertCharArrayToString(char a[256]);
+
+        bool        wasAcknowledged();
 };
 
 #endif
