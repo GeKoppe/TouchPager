@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<FRAME GUID="2FB25471-B62C-4EE6-BD43-F819C095ACF8" FORMAT="0000" APP_VERSION="2.2.0.8" CHECKSUM="DC028A85E809F2CE">
-  <PROJECT FORMAT="1.00" NAME="TouchPager" AUTHOR="Gerrit Koppe" CREATED="2023.01.15 12:18:23" MODIFIED="2023.01.15 12:28:29">
+<FRAME GUID="2FB25471-B62C-4EE6-BD43-F819C095ACF8" FORMAT="0000" APP_VERSION="2.2.0.8" CHECKSUM="E8F66F805F083166">
+  <PROJECT FORMAT="1.00" NAME="TouchPager" AUTHOR="Gerrit Koppe" CREATED="2023.01.15 12:18:23" MODIFIED="2023.01.15 14:41:21">
     <DIAGRAMS>
-      <DIAGRAM FORMAT="1.00" ID="0" NAME="Hauptprogramm 1" CREATED="2023.01.15 12:18:30" MODIFIED="2023.01.15 12:18:30">
-        <LAYOUT FORMAT="1.00" COLUMNS="1" ROWS="3">
+      <DIAGRAM FORMAT="1.00" ID="0" NAME="Nachrichten empfangen" CREATED="2023.01.15 12:18:30" MODIFIED="2023.01.15 14:41:21">
+        <LAYOUT FORMAT="1.00" COLUMNS="3" ROWS="10">
           <ENTRIES>
             <ENTRY COLUMN="0" ROW="0" ANCHOR="True">
               <FIGURE SUBTYPE="PapTitle" FORMAT="1.00" ID="0">
-                <TEXT><![CDATA[Hauptprogramm 1]]></TEXT>
+                <TEXT><![CDATA[Nachrichten empfangen]]></TEXT>
               </FIGURE>
             </ENTRY>
             <ENTRY COLUMN="0" ROW="1">
@@ -16,14 +16,84 @@
               </FIGURE>
             </ENTRY>
             <ENTRY COLUMN="0" ROW="2">
+              <FIGURE SUBTYPE="PapActivity" FORMAT="1.00" ID="4">
+                <TEXT><![CDATA[Variablen deklarieren:
+buffer: char[128]
+msg: String]]></TEXT>
+              </FIGURE>
+            </ENTRY>
+            <ENTRY COLUMN="0" ROW="3">
+              <FIGURE SUBTYPE="PapActivity" FORMAT="1.00" ID="6">
+                <TEXT><![CDATA[Transceiver auf lauschen umschalten]]></TEXT>
+              </FIGURE>
+            </ENTRY>
+            <ENTRY COLUMN="0" ROW="4">
+              <FIGURE SUBTYPE="PapCondition" FORMAT="1.00" ID="8">
+                <TEXT><![CDATA[Nachricht verfügbar?]]></TEXT>
+              </FIGURE>
+            </ENTRY>
+            <ENTRY COLUMN="0" ROW="7">
+              <FIGURE SUBTYPE="PapActivity" FORMAT="1.00" ID="18">
+                <TEXT><![CDATA[\0 zurückgeben]]></TEXT>
+              </FIGURE>
+            </ENTRY>
+            <ENTRY COLUMN="0" ROW="8">
+              <FIGURE SUBTYPE="PapConnector" FORMAT="1.00" ID="25">
+                <TEXT><![CDATA[]]></TEXT>
+              </FIGURE>
+            </ENTRY>
+            <ENTRY COLUMN="0" ROW="9">
               <FIGURE SUBTYPE="PapEnd" FORMAT="1.00" ID="2">
                 <TEXT><![CDATA[Ende]]></TEXT>
+              </FIGURE>
+            </ENTRY>
+            <ENTRY COLUMN="1" ROW="4">
+              <FIGURE SUBTYPE="PapActivity" FORMAT="1.00" ID="10">
+                <TEXT><![CDATA[Nachricht in buffer speichern]]></TEXT>
+              </FIGURE>
+            </ENTRY>
+            <ENTRY COLUMN="1" ROW="5">
+              <FIGURE SUBTYPE="PapActivity" FORMAT="1.00" ID="12">
+                <TEXT><![CDATA[Nachricht aus buffer in msg speichern]]></TEXT>
+              </FIGURE>
+            </ENTRY>
+            <ENTRY COLUMN="1" ROW="6">
+              <FIGURE SUBTYPE="PapCondition" FORMAT="1.00" ID="14">
+                <TEXT><![CDATA[Ist msg eine Kommandosequenz?]]></TEXT>
+              </FIGURE>
+            </ENTRY>
+            <ENTRY COLUMN="1" ROW="7">
+              <FIGURE SUBTYPE="PapActivity" FORMAT="1.00" ID="15">
+                <TEXT><![CDATA[Entsprechende Funktion ausführen]]></TEXT>
+              </FIGURE>
+            </ENTRY>
+            <ENTRY COLUMN="2" ROW="6">
+              <FIGURE SUBTYPE="PapActivity" FORMAT="1.00" ID="21">
+                <TEXT><![CDATA[Nachricht zurückgeben]]></TEXT>
+              </FIGURE>
+            </ENTRY>
+            <ENTRY COLUMN="2" ROW="8">
+              <FIGURE SUBTYPE="PapConnector" FORMAT="1.00" ID="23">
+                <TEXT><![CDATA[]]></TEXT>
               </FIGURE>
             </ENTRY>
           </ENTRIES>
         </LAYOUT>
         <CONNECTIONS>
-          <CONNECTION FORMAT="1.00" ID="3" FROM="1" TO="2" TEXT="" />
+          <CONNECTION FORMAT="1.00" ID="3" FROM="1" TO="4" TEXT="" />
+          <CONNECTION FORMAT="1.00" ID="5" FROM="4" TO="6" TEXT="" />
+          <CONNECTION FORMAT="1.00" ID="7" FROM="6" TO="8" TEXT="" />
+          <CONNECTION FORMAT="1.00" ID="9" FROM="8" TO="18" TEXT="nein" />
+          <CONNECTION FORMAT="1.00" ID="11" FROM="8" TO="10" TEXT="ja" />
+          <CONNECTION FORMAT="1.00" ID="13" FROM="10" TO="12" TEXT="" />
+          <CONNECTION FORMAT="1.00" ID="16" FROM="14" TO="15" TEXT="ja" />
+          <CONNECTION FORMAT="1.00" ID="17" FROM="12" TO="14" TEXT="" />
+          <CONNECTION FORMAT="1.00" ID="26" FROM="25" TO="2" TEXT="" />
+          <CONNECTION FORMAT="1.00" ID="20" FROM="15" TO="18" TEXT="" />
+          <CONNECTION FORMAT="1.00" ID="22" FROM="14" TO="21" TEXT="nein" />
+          <CONNECTION FORMAT="1.00" ID="24" FROM="21" TO="23" TEXT="" />
+          <CONNECTION FORMAT="1.00" ID="19" FROM="18" TO="25" TEXT="" />
+          <CONNECTION FORMAT="1.00" ID="27" FROM="23" TO="25" TEXT="" />
         </CONNECTIONS>
       </DIAGRAM>
       <DIAGRAM FORMAT="1.00" ID="1" NAME="Menüführung" CREATED="2023.01.15 12:18:35" MODIFIED="2023.01.15 12:18:35">

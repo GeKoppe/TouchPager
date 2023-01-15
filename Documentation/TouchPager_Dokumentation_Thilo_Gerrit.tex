@@ -142,7 +142,7 @@ Im Folgenden werden die allgemein Ziele des Projektes näher definiert.
 Außerdem gibt es folgende, optionale Ziele:
 \\
 \\
-a. Das User Interface soll farblich angepasst werden können.
+a. Das User Interface soll anpassbar sein (Farben, Tastaturlayout).
 \\
 b. Es soll möglich sein, zu überprüfen, ob empfangsbereite Geräte in der Nähe sind.
 \\
@@ -245,7 +245,7 @@ Die Transceiver benötigten wiederum eine 5V Stromversorgung, sowie den SPI-Bus\
 2560 R3 besteht aus den Pins D50-D53\footnote{Vgl. Diagramm~\ref{diag:pinout}}, welche nicht durch den Touchscreen-Shield verwendet werden, weshalb hier keine Probleme
 entstehen. Für die 5V Stromversorgung wird einer der beiden 5V-Pins in der Pin-Reihe D22-D53 verwendet, da diese noch nicht durch den Touchscreen-Shield verwendet werden.
 \\
-Somit kann das Projekt ohne Benutzung weiterer Komponenten gebaut werden. 
+Somit kann das Projekt ohne Benutzung weiterer Komponenten gebaut werden. Ein Bild des aufgebauten Projekts befindet sich in Kapitel~\ref{ch:pics}, Abbildung~\ref{pic:project_done}.
 
 \subsection{Konzeptionierung des Quellcode-Architektur}
 Nachdem das Projekt erfolgreich aufgebaut wurde, musste der Quellcode geschrieben werden. Da die Stromkreise der beiden Komponenten komplett getrennt sind,
@@ -260,7 +260,7 @@ Implementierung der RF24 API verantwortlich sein.\footnote{Vgl. Kapitel~\ref{ch:
 \\
 Eine weitere Aufgabe sollte die Implementierung einer Möglichkeit zur Eingabe von Nachrichten sein. Hier wurde sich dafür entschieden, eine virtuelle Tastatur auf dem
 Touchscreen anzuzeigen. Die Anzeige dieser Tastatur, sowie das Erkennen das eingegebenen Buchstaben, sollten in der Klasse \glqq VKeys\grqq{} gekapselt 
-werden.\footnote{Vgl. Kapitel~\ref{ch:goals}, Ziel: 1}
+werden.\footnote{Vgl. Kapitel~\ref{ch:goals}, Ziel: 1,a}
 \\
 Des weiteren sollte eine eigene Klasse zur Auswahl von Farben erstellt werden, welche immer dann instanziiert werden sollte, wenn der User einen Menüpunkt auswählt,
 mit dem das Aussehen des User Interface verändert werden kann. Diese Klasse wurde \glqq ColorChooser\grqq{} bennant und sollte alle möglichen Farben anzeigen 
@@ -272,35 +272,53 @@ sollte außerdem für die Menüführung und das Zwischenspeichern von Nachrichte
 \\
 Aus der Konzeptionierung ergab sich dann ein Klassendiagramm, welches in vereinfachter Version in Abbildung~\ref{diag:classdiag} dargestellt ist.
 
-\subsection{Entwicklung VKeys}
-\subsubsection{Umsetzung}
+\subsection{Umsetzung des Quellcodes}
+Im Folgenden wird im Kapitel~\ref{ch:umsetzung_umsetzung} die Implementierung der einzelnen Funktionen beschrieben, während alle dabei aufgetretenen Schwierigkeiten
+im Kapitel~\ref{ch:hard_stuff} beschrieben werden.
+\subsubsection{Umsetzung}\label{ch:umsetzung_umsetzung}
+\textit{Klasse VKeys}
+\\
+Zunächst wurde die Klasse VKeys umgesetzt, da diese nicht nur eine der wichtigsten Funktionalitäten beinhalten sollte, sondern auch gut dazu diente, 
+sich mit der Funktionsweise des Touchscreens vertraut zu machen. 
+\\
+Als erstes wurde das Tastaturlayout definiert, wobei sich hier im Standard für das QWERTZ Layout entschieden wurde, wobei später, gemäß Ziel a in Kapitel~\ref{ch:goals}
+auch andere Layouts (QWERTY, ABCDE) auswählbar sein sollen. Die Definition der Layouts wurde innerhalb der Klasse durch 2-dimensionale Arrays vorgenommen.
+\\
+Anschließend wurde eine Methode entwickelt, die die Tastatur auf dem Bildschirm anzeigt, wobei hier der angezeigte Zeichensatz dem aktuell ausgewählten entsprechen soll.
+Die Funktionalität der Tastatur wurde wiederum über eine weitere Methode realisiert, die Koordinaten x und y annimmt und anhand dieser analysiert, welcher Knopf
+durch den / die UserIn gedrückt wurde\footnote{Vgl. Kapitel~\ref{code:keys}, Codeausschnitt \glqq Erkennung Tastatur Knopf\grqq}. Während der Umsetzung dieser Methode
+wurde sich außerdem entschieden, im gesamten Projekt ein \glqq\textbackslash 0\grqq{} aus einer Methode zurückzugeben, wenn signalisiert werden soll, dass der
+Aufruf der Methode kein Ergebnis liefern konnte (falsche Eingabe, keine Nachricht verfügbar etc.). 
+\\
+\\
+\textit{Klasse ColorChooser}
+\\
+Die Entwicklung der ColorChooser Klasse lief parallel ab, wird hier aber nicht näher beschrieben, da alle Prozesse und Schwierigkeiten dieser Klasse auch in ähnlicher Form in 
+der Messenger-Klasse vorkamen und eine Beschreibung somit redundant wäre.
+\\
+\\
+\textit{Klasse Radio}
+\\
+Zunächst 
 
 
-\subsubsection{Schwierigkeiten}
 
 
-
-\subsubsection{Ergebnis}
-
-\subsection{Entwicklung Radio}
-\subsubsection{Umsetzung}
-
-
-\subsubsection{Schwierigkeiten}
-
-
-
-\subsubsection{Ergebnis}
-
-\subsection{Entwicklung Messenger}
-\subsubsection{Umsetzung}
-
-
-\subsubsection{Schwierigkeiten}
-
-
-
-\subsubsection{Ergebnis}
+\subsubsection{Schwierigkeiten}\label{ch:hard_stuff}
+Eine Schwierigkeit bei der Umsetzung war, dass Touchscreen und Display, obwohl es die selbe physische Komponente ist, programmatisch zwei 
+verschiedene Koordinatensystem haben. Somit musste zunächst durch Ausprobieren herausgefunden werden, dass das Display (x,y)-Koordinaten im Bereich
+($\left[\text{0},\text{240}\right],\left[\text{0},\text{320}\right]$) und der Touchscreen (x,y)-Koordinaten im Bereich 
+($\left[\text{120},\text{940}\right],\left[\text{70},\text{920}\right]$) besitzt. Noch dazu ist die Y-Achse der beiden Komponenten zueinander invertiert sind
+(Display-Y: 0, Touchscreen-Y: 920 und Display-Y: 320, Touchscreen-Y: 70). Dieser Sachverhalt ist in Kapitel~\ref{ch:diags}, Abbildung~\ref{diag:diskrepanz}
+graphisch dargestellt. Um diese Diskrepanz zu überbrücken, musste eine Methode zum Übersetzen der Koordinaten von Touchscreen zu Display geschrieben werden, um 
+Usereingaben trotzdem korrekt zu verarbeiten.\footnote{Vgl. Kapitel~\ref{code:screenparse}, Codeausschnitt \glqq Konvertierung Touchscreen zu Screen Koordinaten\grqq{}} 
+\\
+\\
+Eine weitere Schwierigkeit bestand in der Typisierung der zu übertragenden Nachrichten. Es wurde, der Übersichtlichkeit und Einfachheit halber, die meiste Zeit mit
+dem Datentyp String gearbeitet, um Zeichenketten zwischen Methoden zu übergeben. Da dieser Datentyp aber keine Informationen beinhaltet, sondern nur einen Pointer
+zu einem char-Array, kann ein String nicht übertragen werden. Um dieses Problem zu umgehen, musste der String vor der Übertragung zu einem char-Array konvertiert
+werden und nach dem Empfangen wieder zurück zu einem String. Hierfür wurden in der Radio-Klasse Methoden geschrieben, die automatisch aufgerufen werden, sobald
+eine Nachricht versendet oder empfangen wird.\footnote{Vgl. Kapitel~\ref{code:transpose_s_to_arr}, Codeausschnitt \glqq Konvertierung String zu Char-Array\grqq{}}
 
 \section{Projektergebnis}
 \subsection{Erreichte Ziele}
@@ -466,14 +484,34 @@ Links zur genutzten Software sind in Kapitel~\ref{ch:softwarelinks} aufgeführt.
 
 \begin{figure}[H]
     \begin{center}
+        \includegraphics[scale=0.35]{Bilder/Nachrichten_empfangen.png}
+        \caption{Ablauf des Nachrichtenempfangs}\label{diag:receive_pap}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
         \includegraphics[scale=2.5]{Bilder/Arduino-Mega-Pinout.jpg}
         \caption{Pinout Beschreibung des Arduino Mega 2560 R3, Quelle: Internetquelle~\ref{itm:pinout}}\label{diag:pinout}
     \end{center}
 \end{figure}
 
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.5]{Bilder/touch_grafik_koord.png}
+        \caption{Darstellung der Koordinaten von Touchscreen und Display}\label{diag:diskrepanz}
+    \end{center}
+\end{figure}
 
 
-\subsection{Bilder}
+
+\subsection{Bilder}\label{ch:pics}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.15]{Bilder/projekt_fertig.jpeg}
+        \caption{Bild des aufgebauten Projekts}\label{pic:project_done}
+    \end{center}
+\end{figure}
 
 
 \newpage
@@ -540,6 +578,33 @@ String Radio::receiveMessage(void) {
     Serial.println("Receiving: Received char Array: " + msg);
 
     return msg;
+}
+\end{lstlisting}
+
+\textbf{Konvertierung String zu Char-Array}\label{code:transpose_s_to_arr}
+\begin{lstlisting}
+/**
+ * @brief
+ * Converts a given String s to a char array and saves it to given pointer a
+ * 
+ * @param s Strung to be converted to char array
+ * @param a Pointer to char array
+ */
+void Radio::convertStringToCharArray(String s, char a[128]) {
+    int counter = 0;
+
+    // Iterate through entire String and add character to char array
+    for (int i = 0; i < s.length(); i++) {
+        a[i] = s.charAt(i);
+        counter++;
+    }
+
+    // Fill up char array with empty values
+    for (int i = counter; i < 128; i++) {
+        a[i] = '\0';
+    }
+
+    Serial.println("Char Arr after conversion: " + String(a));
 }
 \end{lstlisting}
 
