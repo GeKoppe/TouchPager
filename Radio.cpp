@@ -254,6 +254,13 @@ String Radio::convertCharArrayToString(char a[128]) {
     return s;
 }
 
+/**
+ * @brief 
+ * Returns the class internal field that marks acknowledgement happened and switches it back to false
+ * 
+ * @return true If an acknowledgement message has been received earlier
+ * @return false otherwise
+ */
 bool Radio::wasAcknowledged() {
     bool ack = _ackHappened;
     _ackHappened = false;

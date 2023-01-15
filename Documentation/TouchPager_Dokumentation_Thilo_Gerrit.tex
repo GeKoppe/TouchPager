@@ -237,7 +237,14 @@ beschriebenen Schritte sind in Kapitel~\ref{ch:diags} Abbildung~\ref{diag:netzpl
 \section{Durchführung}
 Im Folgenden wird die Umsetzung des Projekts beschrieben. Alle im Text benannten Methoden finden sich in Kapitel~\ref{ch:codeschnipsel} unter dem jeweiligen Subkapitel
 der Klasse, zu der die Methode gehört.
-\subsection{Quellcode Design}
+\\
+\\
+\subsection{Schaltplan und Bau des Projekts}
+Zunächst wurde die Hardware zusammengebaut. Da der Touchscreen als Shield entworfen ist, konnte dieser einfach auf den Arduino Mega gesteckt werden. 
+Die Transceiver benötigten wiederum eine 5V Stromversorgung, sowie den SPI-Bus\footnote{Vgl. Glossar~\ref{def:SPI}: SPI} des Arduinos
+
+\subsection{Konzeptionierung des Quellcode-Architektur}
+
 
 
 
@@ -384,8 +391,22 @@ Links zur genutzten Software sind in Kapitel~\ref{ch:softwarelinks} aufgeführt.
 
 \begin{figure}[H]
     \begin{center}
+        \includegraphics[scale=0.7]{Bilder/netzplan_legende.png}
+        \caption{Legende der Netzplan Knoten}\label{diag:netzplan_legende}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
         \includegraphics[scale=0.5]{Bilder/Class_Diagram.png}
         \caption{Vereinfachtes Klassendiagramm des Arduino Programms}\label{diag:classdiag}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.35]{Bilder/Menüführung.png}
+        \caption{Aufbau der Menümethoden}\label{diag:menu_pap}
     \end{center}
 \end{figure}
 
@@ -587,6 +608,12 @@ uint16_t ColorChooser::getSelection(Coords coords) {
 \\
 Unter Multithreading versteht man in der Informatik den Prozess, ein Programm in mehrere Teilstränge aufzuteilen, die parallel 
 ausgeführt werden.\footnote{Vgl. Internetquelle~\ref{itm:multithread}}
+\\
+\\
+\textbf{SPI-Bus\label{def:SPI}}
+\\
+SPI steht für Serial Peripheral Interface und ist ein, aus drei Leitungen bestehendes, Bussystem nach dem Master-Slave Prinzip, mit dem die Kommunikation
+verschiedener Komponenten gesteuert werden kann.\footnote{Vgl. Internetquelle~\ref{itm:SPI}}
 \subsection{Arduino Begriffe}
 \textbf{Shield\label{def:shield}}
 \\
@@ -598,6 +625,7 @@ zum Teil oder vollständig abdeckt.\footnote{Vgl. Internetquelle~\ref{itm:shield
 \begin{enumerate}
     \item Storage Insider: Was ist Multithreading - Online unter \url{https://www.storage-insider.de/was-ist-multithreading-a-1017586/} $\left[\text{07.01.2023}\right]$ \label{itm:multithread}
     \item Computer Hope: Arduino Shield - Online unter \url{} $\left[\text{07.01.2023}\right]$ \label{itm:shield}
+    \item Mikrocontroller.net: Serial Peripheral Interface - Online unter \url{https://www.mikrocontroller.net/articles/Serial_Peripheral_Interface} $\left[\text{15.01.2023}\right]$ \label{itm:SPI}
 \end{enumerate}
 
 \subsection{Links genutzter Hardware}\label{ch:hardwarelinks}
