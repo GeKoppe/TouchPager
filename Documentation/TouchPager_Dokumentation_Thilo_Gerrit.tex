@@ -250,7 +250,7 @@ entstehen. Für die 5V Stromversorgung wird einer der beiden 5V-Pins in der Pin-
 \\
 Somit kann das Projekt ohne Benutzung weiterer Komponenten gebaut werden. Ein Bild des aufgebauten Projekts befindet sich in Kapitel~\ref{ch:pics}, Abbildung~\ref{pic:project_done}.
 
-\subsection{Konzeptionierung des Quellcode-Architektur}
+\subsection{Konzeptionierung der Quellcode-Architektur}
 Nachdem das Projekt erfolgreich aufgebaut wurde, musste der Quellcode geschrieben werden. Da die Stromkreise der beiden Komponenten komplett getrennt sind,
 musste die Kommunikation dieser per Quellcode erfolgen.
 Zunächst wurden die Funktionalitäten definiert, die das Projekt bieten muss. Diese wurden anschließend thematisch aufgeteilt und einzelnen Klassen zugeordnet.
@@ -263,7 +263,7 @@ Implementierung der RF24 API verantwortlich sein.\footnote{Vgl. Kapitel~\ref{ch:
 \\
 Eine weitere Aufgabe sollte die Implementierung einer Möglichkeit zur Eingabe von Nachrichten sein. Hier wurde sich dafür entschieden, eine virtuelle Tastatur auf dem
 Touchscreen anzuzeigen. Die Anzeige dieser Tastatur, sowie das Erkennen das eingegebenen Buchstaben, sollten in der Klasse \glqq VKeys\grqq{} gekapselt 
-werden.\footnote{Vgl. Kapitel~\ref{ch:goals}, Ziel: 1,a}
+werden.\footnote{Vgl. Kapitel~\ref{ch:goals}, Ziele: 1,a}
 \\
 Des weiteren sollte eine eigene Klasse zur Auswahl von Farben erstellt werden, welche immer dann instanziiert werden sollte, wenn der User einen Menüpunkt auswählt,
 mit dem das Aussehen des User Interface verändert werden kann. Diese Klasse wurde \glqq ColorChooser\grqq{} bennant und sollte alle möglichen Farben anzeigen 
@@ -287,11 +287,12 @@ sich mit der Funktionsweise des Touchscreens vertraut zu machen.
 Als erstes wurde das Tastaturlayout definiert, wobei sich hier im Standard für das QWERTZ Layout entschieden wurde, wobei später, gemäß Ziel a in Kapitel~\ref{ch:goals}
 auch andere Layouts (QWERTY, ABCDE) auswählbar sein sollen. Die Definition der Layouts wurde innerhalb der Klasse durch 2-dimensionale Arrays vorgenommen.
 \\
-Anschließend wurde eine Methode entwickelt, die die Tastatur auf dem Bildschirm anzeigt, wobei hier der angezeigte Zeichensatz dem aktuell ausgewählten entsprechen soll.
-Die Funktionalität der Tastatur wurde wiederum über eine weitere Methode realisiert, die Koordinaten x und y annimmt und anhand dieser analysiert, welcher Knopf
-durch den / die UserIn gedrückt wurde\footnote{Vgl. Kapitel~\ref{code:keys}, Codeausschnitt \glqq Erkennung Tastatur Knopf\grqq}. Während der Umsetzung dieser Methode
-wurde sich außerdem entschieden, im gesamten Projekt ein \glqq\textbackslash 0\grqq{} aus einer Methode zurückzugeben, wenn signalisiert werden soll, dass der
-Aufruf der Methode kein Ergebnis liefern konnte (falsche Eingabe, keine Nachricht verfügbar etc.). 
+Anschließend wurde eine Methode entwickelt, die die Tastatur auf dem Bildschirm anzeigt, wobei hier der angezeigte Zeichensatz dem aktuell ausgewählten Tastaturlayout 
+entsprechen soll. Die Funktionalität der Tastatur wurde wiederum über eine weitere Methode realisiert, die Koordinaten x und y annimmt und anhand dieser analysiert, 
+welcher Knopf durch den / die UserIn gedrückt wurde\footnote{Vgl. Kapitel~\ref{code:keys}, Codeausschnitt \glqq Erkennung Tastatur Knopf\grqq}. Während der Umsetzung 
+dieser Methode wurde sich außerdem entschieden, im gesamten Projekt ein \glqq\textbackslash 0\grqq{} aus einer Methode zurückzugeben, wenn signalisiert werden soll, dass der
+Aufruf der Methode kein Ergebnis liefern konnte (falsche Eingabe, keine Nachricht verfügbar etc.). Ein Bild der fertigen Tastatur findet sich in Kapitel~\ref{ch:pics},
+Abbildung~\ref{pic:keys_standard}.
 \\
 \\
 \textit{Klasse ColorChooser}
@@ -311,8 +312,14 @@ eingehende Nachrichten über eine Methode laufen sollte. Um dies zu realisieren,
 Kommandosequenzen empfangen, soll die eingegangene Nachricht nicht als Text weiterverarbeitet werden. Stattdessen soll das Gerät Funktionen 
 aufrufen, wie zum Beispiel dem sendenden Gerät zurückmelden, dass es empfangsbereit ist. Ist die eingehende Nachricht keine Kommandosequenz,
 so soll sie einfach als Text verarbeitet werden.\footnote{Gesamter Prozess des Empfangens in Kapitel~\ref{ch:diags}, Abbildung~\ref{diag:receive_pap} visualisiert}
-
-
+\\
+Nach einiger Zeit des Testens wurde die Länge der Nachrichten auf 128 Zeichen begrenzt, da die Größe des Displays nicht mehr Zeichen zulässt und die Übertragung
+bei mehr Zeichen unzuverlässig wird.
+\\
+\\
+\textit{Klasse Messenger}
+\\
+Zunächst wurde die Menüführung allgemein konzeptioniert, da diese immer gleich funktionieren sollte. 
 
 
 \subsubsection{Schwierigkeiten}\label{ch:hard_stuff}
@@ -510,7 +517,7 @@ Links zur genutzten Software sind in Kapitel~\ref{ch:softwarelinks} aufgeführt.
 \begin{figure}[H]
     \begin{center}
         \includegraphics[scale=0.5]{Bilder/touch_grafik_koord.png}
-        \caption{Darstellung der Koordinaten von Touchscreen und Display}\label{diag:diskrepanz}
+        \caption{Darstellung der Koordinaten von Touchscreen und Display (x,y)}\label{diag:diskrepanz}
     \end{center}
 \end{figure}
 
@@ -524,6 +531,26 @@ Links zur genutzten Software sind in Kapitel~\ref{ch:softwarelinks} aufgeführt.
     \end{center}
 \end{figure}
 
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.13]{Bilder/MainMenu_standard.jpeg}
+        \caption{Standard-Hauptmenü des Projekts}\label{pic:main_standard}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.13]{Bilder/MainMenu_Light.jpeg}
+        \caption{Hauptmenü des Projekts mit Lightmode}\label{pic:main_light}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.13]{Bilder/Keys_standard.jpeg}
+        \caption{Virtuelle Tastatur des Projekts}\label{pic:keys_standard}
+    \end{center}
+\end{figure}
 
 \newpage
 \subsection{Git Repository und Quellcode Auszüge}\label{ch:codeschnipsel}
