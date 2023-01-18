@@ -160,13 +160,6 @@ int Messenger::mainMenu(void) {
 }
 
 void Messenger::checkNearby(void) {
-    String availableMsg = "Es sind ";
-    bool devicesAvailable = _radio->checkNearbyDevices() || _radio->getAck();
-
-    availableMsg += (!devicesAvailable ? String("keine\n") : String(""));
-
-    availableMsg += " Geraete\nverfuegbar.";
-
     pinMode(A2, OUTPUT);
     pinMode(A3, OUTPUT);
 
@@ -175,6 +168,18 @@ void Messenger::checkNearby(void) {
     _screen->setTextColor(_textColor);
     _screen->setTextSize(_textSize);
     _screen->setCursor(0,0);
+    _screen->print("Ueberpruefe...");
+
+    String availableMsg = "Es sind ";
+    bool devicesAvailable = _radio->checkNearbyDevices() || _radio->getAck();
+
+    availableMsg += (!devicesAvailable ? String("keine\n") : String(""));
+
+    availableMsg += " Geraete\nverfuegbar.";
+
+    _screen->setTextColor(_textColor);
+    _screen->setTextSize(_textSize);
+    _screen->setCursor(0,160);
     _screen->print(availableMsg);
 
     delay(3000);
