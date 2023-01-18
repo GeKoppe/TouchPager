@@ -98,6 +98,7 @@ bool Radio::checkNearbyDevices(void) {
         receiveMessage();
 
         msg[i] = wasAcknowledged();
+        Serial.println("Msg " + String(i) + ": " + String((msg[i] ? "True" : "False")));
     }
 
     // If payload was the acknowlege String, that means there are devices nearby.

@@ -117,7 +117,7 @@ int Messenger::mainMenu(void) {
     menu.entries[0] = String("Schreiben");
     menu.entries[1] = String("Lesen");
     menu.entries[2] = String("Optionen");
-    menu.entries[3] = String("Verfuegbarkeit");
+    menu.entries[3] = String("Verfuegbar");
     menu.entries[4] = String("\0");
 
     // Draw menu
@@ -139,7 +139,7 @@ int Messenger::mainMenu(void) {
         // If touch was recognized
         if (p.z > _minTouch) {
             // Get selected menu poin
-            selection = getSelection(menu.menuStart, menu.menuThickness, menu.menuOffset, 3, parseCoords(p));;
+            selection = getSelection(menu.menuStart, menu.menuThickness, menu.menuOffset, 4, parseCoords(p));;
 
             Serial.println("Selection: " + String(selection));
             
@@ -169,6 +169,8 @@ void Messenger::checkNearby(void) {
 
     pinMode(A2, OUTPUT);
     pinMode(A3, OUTPUT);
+
+    _screen->fillScreen(_background);
 
     _screen->setTextColor(_textColor);
     _screen->setTextSize(_textSize);
