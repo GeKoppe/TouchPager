@@ -276,67 +276,51 @@ sollte außerdem für die Menüführung und das Zwischenspeichern von Nachrichte
 Aus der Konzeptionierung ergab sich dann ein Klassendiagramm, welches in vereinfachter Version in Abbildung~\ref{diag:classdiag} dargestellt ist.
 
 \subsection{Umsetzung des Quellcodes}
-Im Folgenden wird im Kapitel~\ref{ch:umsetzung_umsetzung} die Implementierung der einzelnen Funktionen beschrieben, während alle dabei aufgetretenen Schwierigkeiten
-im Kapitel~\ref{ch:hard_stuff} beschrieben werden.
-\subsubsection{Umsetzung}\label{ch:umsetzung_umsetzung}
-\textit{Klasse VKeys}
+Im Folgenden werden die Implementierung der einzelnen Funktionalitäten, sowie die dabei aufgetretenen
+Schwierigkeiten beschrieben. Wird bei der Beschreibung der Umsetzung ein Netzplan referenziert, so ist der Netzplan in Abbildung~\ref{diag:netzplan_umsetzung} gemeint.
 \\
-Zunächst wurde die Klasse VKeys umgesetzt, da diese nicht nur eine der wichtigsten Funktionalitäten beinhalten sollte, sondern auch gut dazu diente, 
-sich mit der Funktionsweise des Touchscreens vertraut zu machen. 
+Da die konzeptionierte Architektur vorsah, eine Hauptklasse zu entwerfen, die wiederum 3 weitere Klassen verwendet, wurde sich entschieden, bei der Entwicklung des
+Quellcodes den Bottom-Up Ansatz\footnote{Vgl. Glossar~\ref{def:bottom_up}: Bottom-Up} zu verwenden und zunächst die 3 verwendeten Klassen (\glqq VKeys\grqq{}, \glqq ColorChooser\grqq{} und \glqq Radio\grqq{})
+zu entwickeln. Wie im Netzplan zu erkennen, wurden diese parallel entwickelt.
 \\
-Als erstes wurde das Tastaturlayout definiert, wobei sich hier im Standard für das QWERTZ Layout entschieden wurde, wobei später, gemäß Ziel a in Kapitel~\ref{ch:goals}
-auch andere Layouts (QWERTY, ABCDE) auswählbar sein sollen. Die Definition der Layouts wurde innerhalb der Klasse durch 2-dimensionale Arrays vorgenommen.
-\\
-Anschließend wurde eine Methode entwickelt, die die Tastatur auf dem Bildschirm anzeigt, wobei hier der angezeigte Zeichensatz dem aktuell ausgewählten Tastaturlayout 
-entsprechen soll. Die Funktionalität der Tastatur wurde wiederum über eine weitere Methode realisiert, die Koordinaten x und y annimmt und anhand dieser analysiert, 
-welcher Knopf durch den / die UserIn gedrückt wurde\footnote{Vgl. Kapitel~\ref{code:keys}, Codeausschnitt \glqq Erkennung Tastatur Knopf\grqq}. Während der Umsetzung 
-dieser Methode wurde sich außerdem entschieden, im gesamten Projekt ein \glqq\textbackslash 0\grqq{} aus einer Methode zurückzugeben, wenn signalisiert werden soll, dass der
-Aufruf der Methode kein Ergebnis liefern konnte (falsche Eingabe, keine Nachricht verfügbar etc.). Ein Bild der fertigen Tastatur findet sich in Kapitel~\ref{ch:pics},
-Abbildung~\ref{pic:keys_standard}.
-\\
-\\
-\textit{Klasse ColorChooser}
-\\
-Die Entwicklung der ColorChooser Klasse lief parallel ab, wird hier aber nicht näher beschrieben, da alle Prozesse und Schwierigkeiten dieser Klasse auch in ähnlicher Form in 
-der Messenger-Klasse vorkamen und eine Beschreibung somit redundant wäre.
-\\
-\\
-\textit{Klasse Radio}
-\\
-Zunächst wurden Methoden für das Senden\footnote{Vgl. Kapitel~\ref{code:sending}, Codeausschnitt \glqq Senden von Nachrichten\grqq{}} und das
-Empfangen\footnote{Vgl. Kapitel~\ref{code:receive}, Codeausschnitt \glqq Empfangen von Nachrichten\grqq{}} von Nachrichten programmiert. In diesen
-soll automatisch zum entsprechenden Modus (lauschen oder senden) gewechselt werden, da die Transceiver nur halbduplex arbeiten.
-\\
-Um dem Ziel b in Kapitel~\ref{ch:goals} gerecht zu werden, musste die Methode zum Empfangen von Nachrichten erweitert werden, da jede Überprüfung auf
-eingehende Nachrichten über eine Methode laufen sollte. Um dies zu realisieren, wurden Kommandosequenzen in der Radio-Klasse definiert. Wird eine dieser
-Kommandosequenzen empfangen, soll die eingegangene Nachricht nicht als Text weiterverarbeitet werden. Stattdessen soll das Gerät Funktionen 
-aufrufen, wie zum Beispiel dem sendenden Gerät zurückmelden, dass es empfangsbereit ist. Ist die eingehende Nachricht keine Kommandosequenz,
-so soll sie einfach als Text verarbeitet werden.\footnote{Gesamter Prozess des Empfangens in Kapitel~\ref{ch:diags}, Abbildung~\ref{diag:receive_pap} visualisiert}
-\\
-Nach einiger Zeit des Testens wurde die Länge der Nachrichten auf 128 Zeichen begrenzt, da die Größe des Displays nicht mehr Zeichen zulässt und die Übertragung
-bei mehr Zeichen unzuverlässig wird.
-\\
-\\
-\textit{Klasse Messenger}
-\\
-Zunächst wurde die Menüführung allgemein konzeptioniert, da diese immer gleich funktionieren sollte. 
-
-
-\subsubsection{Schwierigkeiten}\label{ch:hard_stuff}
-Eine Schwierigkeit bei der Umsetzung war, dass Touchscreen und Display, obwohl es die selbe physische Komponente ist, programmatisch zwei 
+Sowohl bei der Entwicklung von \glqq ColorChooser\grqq{}, als auch bei der von \glqq VKeys\grqq{} ist aufgefallen, dass Touchscreen und Display, obwohl es die selbe physische Komponente ist, programmatisch zwei 
 verschiedene Koordinatensystem haben. Somit musste zunächst durch Ausprobieren herausgefunden werden, dass das Display (x,y)-Koordinaten im Bereich
 ($\left[\text{0},\text{240}\right],\left[\text{0},\text{320}\right]$) und der Touchscreen (x,y)-Koordinaten im Bereich 
 ($\left[\text{120},\text{940}\right],\left[\text{70},\text{920}\right]$) besitzt. Noch dazu ist die Y-Achse der beiden Komponenten zueinander invertiert sind
 (Display-Y: 0, Touchscreen-Y: 920 und Display-Y: 320, Touchscreen-Y: 70). Dieser Sachverhalt ist in Kapitel~\ref{ch:diags}, Abbildung~\ref{diag:diskrepanz}
 graphisch dargestellt. Um diese Diskrepanz zu überbrücken, musste eine Methode zum Übersetzen der Koordinaten von Touchscreen zu Display geschrieben werden, um 
-Usereingaben trotzdem korrekt zu verarbeiten.\footnote{Vgl. Kapitel~\ref{code:screenparse}, Codeausschnitt \glqq Konvertierung Touchscreen zu Screen Koordinaten\grqq{}} 
+Usereingaben trotzdem korrekt zu verarbeiten.\footnote{Vgl. Kapitel~\ref{code:screenparse}, Codeausschnitt \glqq Konvertierung Touchscreen zu Screen Koordinaten\grqq{}}
 \\
+% TODO Bild des ColorChoosers einbauen und hier referenzieren
+Abgesehen von der genannten Schwierigkeit, konnten beide Klassen aber im geplanten Zeitrahmen entwickelt werden. Im Weiteren wird hier aber hauptsächlich die VKeys
+Klasse beschrieben, da \glqq ColorChooser\grqq{} haupsächlich entwickelt wurde, um sich in einer kleinen Klasse mit dem TouchScreen vertraut zu machen. 
+\\
+Genutzt wurde bei der Entwicklung von \glqq VKeys\grqq{} hauptsächlich die von Elegoo mitgelieferte
+Schnittstelle zum Display, die in den Bibliotheken \glqq Touchscreen\grqq{} und \glqq Elegoo\_TFTLCD\grqq{} gekapselt wurde\footnote{Links zu den Bibliotheken in Kapitel~\ref{ch:softwarelinks}}.
+Für beide Klassen wurde jeweils eine Methode geschrieben, um die TouchScreen-Berührung zu interpretieren und, anhand der eingegebenen Koordinaten, den Wert der gewählten thispagestyle
+zurückzugeben\footnote{Vgl. Kapitel~\ref{code:keys}, Codeausschnitt \glqq Erkennung Tastatur Knopf\grqq{}}
+(z.B.: Wenn bei der virtuellen Tastatur der Touchscreen an der Stelle berührt wird, an der das \glqq A\grqq{} gedruckt ist, gibt die Methode auch \glqq A\grqq{} zurück).
+Des Weiteren wurde für beide Klassen eine Methode geschrieben, die ihr jeweiliges Interface auf den Bildschirm druckt.\footnote{Vgl. Abbildung~\ref{pic:keys_standard}}.
+\\
+Ebenfalls parallel wurde die Klasse \glqq Radio\grqq{} entwickelt, die alle Funktionalitäten zur Kommunikation der beiden Geräte beinhalten sollte. Um die Transceiver 
+ansteuern zu können, wurde die RF24 Treiber Bibliothek von TMRh20 verwendet\footnote{Kapitel~\ref{ch:softwarelinks}, Link~\ref{link:rf24}}. Hier wurden zunächst die 
+Methoden zum Senden\footnote{Konzept der Methode in Abbildung~\ref{diag:send_pap}} und zum Empfangen\footnote{Konzept der Methode in Abbildung~\ref{diag:receive_pap}}
+der Nachrichten entwickelt. Beim Empfangen der Nachrichten musste darauf geachtet werden, dass diese Methode später auch genutzt werden sollte, um Kommandos zu empfangen,
+wie zum Beispiel die Anfrage auf Verfügbarkeit, welche wiederum nicht die empfangene Nachricht zurückgeben sollte, sondern die Verfügbarkeit zurückmelden.
 \\
 Eine weitere Schwierigkeit bestand in der Typisierung der zu übertragenden Nachrichten. Es wurde, der Übersichtlichkeit und Einfachheit halber, die meiste Zeit mit
 dem Datentyp String gearbeitet, um Zeichenketten zwischen Methoden zu übergeben. Da dieser Datentyp aber keine Informationen beinhaltet, sondern nur einen Pointer
 zu einem char-Array, kann ein String nicht übertragen werden. Um dieses Problem zu umgehen, musste der String vor der Übertragung zu einem char-Array konvertiert
 werden und nach dem Empfangen wieder zurück zu einem String. Hierfür wurden in der Radio-Klasse Methoden geschrieben, die automatisch aufgerufen werden, sobald
-eine Nachricht versendet oder empfangen wird.\footnote{Vgl. Kapitel~\ref{code:transpose_s_to_arr}, Codeausschnitt \glqq Konvertierung String zu Char-Array\grqq{}}
+eine Nachricht versendet oder empfangen wird\footnote{Vgl. Kapitel~\ref{code:transpose_s_to_arr}, Codeausschnitt \glqq Konvertierung String zu Char-Array\grqq{}}.
+\\
+Schlussendlich wurde für die \glqq Radio\grqq{} Klasse noch die Methode geschrieben, um auf verfügbare Geräte zu überprüfen. Diese sollte eine vordefinierte Kommandosequenz senden
+und anschließend abwarten, ob eine weitere vordefinierte Kommandosequenz zurückgesendet 
+wird\footnote{Vgl. Abbildung~\ref{diag:available_pap}, Quellcode in Kapitel~\ref{code:available}, Codeausschnitt \glqq Überprüfung auf verfügbare Geräte\grqq{}}.
+\\
+Alle bis zu diesem Punkt entwickelten Klassen wurden einzeln getestet.
+\\
+Zuletzt wurde die Klasse \glqq Messenger\grqq{} entwickelt, die alle Funktionalitäten des Projekts kapseln sollte.
 
 \section{Projektergebnis}
 \subsection{Erreichte Ziele}
@@ -508,6 +492,20 @@ Links zur genutzten Software sind in Kapitel~\ref{ch:softwarelinks} aufgeführt.
 
 \begin{figure}[H]
     \begin{center}
+        \includegraphics[scale=0.35]{Bilder/Nachricht senden (String msg).png}
+        \caption{Ablauf des Sendens von Nachrichten}\label{diag:send_pap}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.35]{Bilder/Verfügbarkeit.png}
+        \caption{Ablauf des Testens auf verfügbare Geräte}\label{diag:available_pap}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
         \includegraphics[scale=2.5]{Bilder/Arduino-Mega-Pinout.jpg}
         \caption{Pinout Beschreibung des Arduino Mega 2560 R3, Quelle: Internetquelle~\ref{itm:pinout}}\label{diag:pinout}
     \end{center}
@@ -644,11 +642,11 @@ void Messenger::optsMenu(void) {
 \textbf{Empfangen von Nachrichten}\label{code:receive}
 \begin{lstlisting}
 /**
- * @brief 
- * Receives message from radio frequency
- * 
- * @return String received message or \0, if nothing was gotten
- */
+* @brief 
+* Receives message from radio frequency
+* 
+* @return String received message or \0, if nothing was gotten
+*/
 String Radio::receiveMessage(void) {
     char buffer[128] = "";
     String msg = "";
@@ -657,19 +655,35 @@ String Radio::receiveMessage(void) {
     if (!_listening) switchState();
 
     // If no message is available, return universal break character
-    if (!_antenna.available()) return "\0";
+    if (!_antenna.available()) {
+        //Serial.println("Receiving: No Antenna available");
+        return "\0";
+    }
     Serial.println("Receiving: Antenna available");
 
     // Read available payload
     _antenna.read(&buffer, sizeof(buffer));
 
-    // Convert payload (char array) to string for easier handling
     for (int i = 0; i < 128; i++) {
         msg += String(buffer[i]);
         if (buffer[i] == '\0') break;
     }
 
     Serial.println("Receiving: Received char Array: " + msg);
+
+    // If the test string was received, acknowledge it and return \0
+    if (msg == String(_test)) {
+        Serial.println("Receiving: Test string, now acknowledging.");
+        acknowledge();
+        return "\0";
+    }
+
+    // If acknowledge string was received, change marker in class fields to true so it can be checked by other methods and return \0
+    if (msg == String(_acknowledge)) {
+        Serial.println("Receiving: Acknowledge String");
+        _ackHappened = true;
+        return "\0";
+    }
 
     return msg;
 }
@@ -717,6 +731,40 @@ bool Radio::sendMessage(String msg) {
     Serial.println("Returning from sending");
     switchState();
     return true;
+}
+\end{lstlisting}
+
+\begin{flushleft}\textbf{Überprüfung auf verfügbare Geräte}\label{code:available}\end{flushleft}
+\begin{lstlisting}
+/**
+* @brief 
+* Checks, whether there are devices available nearby
+* 
+* @return true If there are devices available nearby 
+* @return false otherwise
+*/
+bool Radio::checkNearbyDevices(void) {
+    _ackHappened = false;
+    bool msg[5] = {false, false, false, false, false};
+
+    for (int i = 0; i < 5; i++) {
+        sendMessage(_test);
+        receiveMessage();
+
+        msg[i] = wasAcknowledged();
+        Serial.println("Msg " + String(i) + ": " + String((msg[i] ? "True" : "False")));
+        delay(1000);
+    }
+
+    // If payload was the acknowlege String, that means there are devices nearby.
+    for (int i = 0; i < 5; i++) {
+        if (msg[i]) return true; 
+    }
+    
+    Serial.println("_ack: " + String((_ackHappened ? "True" : "False")));
+    
+    _ackHappened = false;
+    return false;
 }
 \end{lstlisting}
 
@@ -879,6 +927,13 @@ ausgeführt werden.\footnote{Vgl. Internetquelle~\ref{itm:multithread}}
 \\
 SPI steht für Serial Peripheral Interface und ist ein, aus drei Leitungen bestehendes, Bussystem nach dem Master-Slave Prinzip, mit dem die Kommunikation
 verschiedener Komponenten gesteuert werden kann.\footnote{Vgl. Internetquelle~\ref{itm:SPI}}
+\\
+\\
+\textbf{Bottom-Up\label{def:bottom_up}}
+\\
+Der Bottom-Up Ansatz beschreibt in der Software-Entwicklung die Vorgehensweise, zunächst Teilfunktionen oder einzelne Klassen zu entwickeln und diese, nach ihrer
+Fertigstellung, zu einem System zusammenzuführen. Im Gegensatz hierzu wird bei der Top-Down Methode zunächst das System definiert, ohne im Detail
+auf einzelne Funktionen einzugehen.\footnote{Vgl. Internetquelle~\ref{itm:bottom_up}} 
 \subsection{Arduino Begriffe}
 \textbf{Shield\label{def:shield}}
 \\
@@ -892,6 +947,8 @@ zum Teil oder vollständig abdeckt.\footnote{Vgl. Internetquelle~\ref{itm:shield
     \item Computer Hope: Arduino Shield - Online unter \url{} $\left[\text{07.01.2023}\right]$ \label{itm:shield}
     \item Mikrocontroller.net: Serial Peripheral Interface - Online unter \url{https://www.mikrocontroller.net/articles/Serial_Peripheral_Interface} $\left[\text{15.01.2023}\right]$ \label{itm:SPI}
     \item Electronics Hub: Arduino Mega Pinout - Online unter \url{https://www.electronicshub.org/wp-content/uploads/2021/01/Arduino-Mega-Pinout.jpg} $\left[\text{15.01.2023}\right]$ \label{itm:pinout}
+    \item Geeks for Geeks: Difference between Bottom-Up Model and Top-Down Model - Online unter \url{https://www.geeksforgeeks.org/difference-between-bottom-up-model-and-top-down-model/} 
+    $\left[\text{18.01.2023}\right]$ \label{itm:bottom_up}
 \end{enumerate}
 
 \subsection{Links genutzter Hardware}\label{ch:hardwarelinks}
