@@ -24,6 +24,8 @@ class Radio {
 
         bool        getListening (void) { return _listening; };
 
+        bool        getAck (void) { return _ackHappened; };
+
         void        switchState(void);
 
         String      receiveMessage(void);

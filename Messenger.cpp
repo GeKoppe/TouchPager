@@ -161,7 +161,7 @@ int Messenger::mainMenu(void) {
 
 void Messenger::checkNearby(void) {
     String availableMsg = "Es sind ";
-    bool devicesAvailable = _radio->checkNearbyDevices();
+    bool devicesAvailable = _radio->checkNearbyDevices() || _radio->getAck();
 
     availableMsg += (!devicesAvailable ? String("keine\n") : String(""));
 

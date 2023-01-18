@@ -99,13 +99,17 @@ bool Radio::checkNearbyDevices(void) {
 
         msg[i] = wasAcknowledged();
         Serial.println("Msg " + String(i) + ": " + String((msg[i] ? "True" : "False")));
+        delay(1000);
     }
 
     // If payload was the acknowlege String, that means there are devices nearby.
     for (int i = 0; i < 5; i++) {
         if (msg[i]) return true; 
     }
-
+    
+    Serial.println("_ack: " + String((_ackHappened ? "True" : "False")));
+    
+    _ackHappened = false;
     return false;
 }
 
@@ -123,7 +127,10 @@ String Radio::receiveMessage(void) {
     if (!_listening) switchState();
 
     // If no message is available, return universal break character
-    if (!_antenna.available()) return "\0";
+    if (!_antenna.available()) {
+        //Serial.println("Receiving: No Antenna available");
+        return "\0";
+    }
     Serial.println("Receiving: Antenna available");
 
     // Read available payload
