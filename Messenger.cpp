@@ -244,7 +244,7 @@ void Messenger::distanceMenu(void) {
     pinMode(A3, OUTPUT);
     Menu menu;
     menu.menuStart = 80;
-    menu.menuThickness = 30;
+    menu.menuThickness = 35;
     menu.menuOffset = 10;
     menu.header = "Distanz";
     menu.entries[0] = String("Sehr nah");
