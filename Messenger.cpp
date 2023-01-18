@@ -110,14 +110,14 @@ int Messenger::mainMenu(void) {
     // Build menu defintion
     Menu menu;
     menu.menuStart = 100;
-    menu.menuThickness = 60;
+    menu.menuThickness = 40;
     menu.menuOffset = 10;
     menu.header = "Messenger";
     menu.extraText = checkCache();
     menu.entries[0] = String("Schreiben");
     menu.entries[1] = String("Lesen");
     menu.entries[2] = String("Optionen");
-    menu.entries[3] = String("\0");
+    menu.entries[3] = String("Verfuegbarkeit");
     menu.entries[4] = String("\0");
 
     // Draw menu
@@ -149,6 +149,7 @@ int Messenger::mainMenu(void) {
                 case 1: return WRITEMESSAGE;
                 case 2: return READ;
                 case 3: return OPTS;
+                case 4: checkNearby(); return MAINMENU;
                 default: break;
             }
         }
