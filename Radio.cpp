@@ -127,21 +127,19 @@ String Radio::receiveMessage(void) {
     if (!_listening) switchState();
 
     // If no message is available, return universal break character
-    if (!_antenna.available()) return "\0";
-    
+    if (!_antenna.available()) {
+        //Serial.println("Receiving: No Antenna available");
+        return "\0";
+    }
     Serial.println("Receiving: Antenna available");
 
     // Read available payload
     _antenna.read(&buffer, sizeof(buffer));
 
     for (int i = 0; i < 128; i++) {
-        //if (buffer[i] > 255 || buffer[i] < 0) continue;
-
         msg += String(buffer[i]);
         if (buffer[i] == '\0') break;
     }
-
-    msg += String("\0");
 
     Serial.println("Receiving: Received char Array: " + msg);
 
