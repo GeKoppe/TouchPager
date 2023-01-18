@@ -163,9 +163,9 @@ void Messenger::checkNearby(void) {
     String availableMsg = "Es sind ";
     bool devicesAvailable = _radio->checkNearbyDevices();
 
-    availableMsg += (!devicesAvailable ? String("keine") : String(""));
+    availableMsg += (!devicesAvailable ? String("keine\n") : String(""));
 
-    availableMsg += " Geraete verfuegbar.";
+    availableMsg += " Geraete\nverfuegbar.";
 
     pinMode(A2, OUTPUT);
     pinMode(A3, OUTPUT);

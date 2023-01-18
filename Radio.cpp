@@ -94,7 +94,7 @@ bool Radio::checkNearbyDevices(void) {
     bool msg[5] = {false, false, false, false, false};
 
     for (int i = 0; i < 5; i++) {
-        sendMessage(_acknowledge);
+        sendMessage(_test);
         receiveMessage();
 
         msg[i] = wasAcknowledged();
@@ -141,6 +141,7 @@ String Radio::receiveMessage(void) {
 
     // If the test string was received, acknowledge it and return \0
     if (msg == String(_test)) {
+        Serial.println("Receiving: Test string, now acknowledging.");
         acknowledge();
         return "\0";
     }
@@ -153,6 +154,7 @@ String Radio::receiveMessage(void) {
 
     // If acknowledge string was received, change marker in class fields to true so it can be checked by other methods and return \0
     if (msg == String(_acknowledge)) {
+        Serial.println("Receiving: Acknowledge String");
         _ackHappened = true;
         return "\0";
     }
