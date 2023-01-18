@@ -168,18 +168,18 @@ void Messenger::checkNearby(void) {
     _screen->setTextColor(_textColor);
     _screen->setTextSize(_textSize);
     _screen->setCursor(0,0);
-    _screen->print("Ueberpruefe...");
+    _screen->print("Ueberpruefe\n...");
 
-    String availableMsg = "Es sind ";
+    String availableMsg = "Es sind\n";
     bool devicesAvailable = _radio->checkNearbyDevices() || _radio->getAck();
 
     availableMsg += (!devicesAvailable ? String("keine\n") : String(""));
 
-    availableMsg += " Geraete\nverfuegbar.";
+    availableMsg += "Geraete\nverfuegbar.";
 
     _screen->setTextColor(_textColor);
     _screen->setTextSize(_textSize);
-    _screen->setCursor(0,160);
+    _screen->setCursor(0,120);
     _screen->print(availableMsg);
 
     delay(3000);
