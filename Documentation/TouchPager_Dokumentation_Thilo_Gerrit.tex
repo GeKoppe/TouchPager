@@ -6,7 +6,6 @@
 \usepackage{mathptmx}
 \renewcommand{\familydefault}{\sfdefault}
 \usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2cm]{geometry}
-\usepackage[singlespacing]{setspace}
 
 % \usepackage{hyperref}
 \usepackage{amsmath}
@@ -101,6 +100,11 @@ tabsize=3,
     \\
     \vspace{0.5cm}
     \begin{Large}
+        Lernfeld 7: Cyberphysische Systeme ergänzen
+    \end{Large}
+    \\
+    \vspace{0.5cm}
+    \begin{Large}
         \today
     \end{Large}
 \end{center}
@@ -115,7 +119,7 @@ In dieser Dokumentation wird die Umsetzung eines bidirektionalen Pagers auf Basi
 Anschließend wird auf die Planung der Ressourcen und des Ablaufs, sowie auf die benötigten Komponenten eingegangen. Im Anschluss wird das Vorgehen während des Projektes dokumentiert
 und abschließend das Ergebnis der Durchführung präsentiert.
 
-\section{Formulierung des Themas}
+\section{Ausgangssituation / Formulierung des Themas}
 \subsection{Beschreibung des Projektes}
 Das Thema des Projektes ist es, eine bidirektionale Kommunikation zwischen zwei Geräten auf Arduino-Basis zu gewährleisten. Es soll die Möglichkeit bestehen,
 Nachrichten zu verfassen, zu versenden und ebenso Nachrichten zu empfangen, die von einem anderen Arduino Gerät versendet wurden.
@@ -138,9 +142,7 @@ Im Folgenden werden die allgemein Ziele des Projektes näher definiert.
 \\
 7. Es soll möglich sein, den Zwischenspeicher der Nachrichten über einen eigenen Menüpunkt abzurufen und die empfangenen Nachrichten zu verwalten.
 \\
-\\
 Außerdem gibt es folgende, optionale Ziele:
-\\
 \\
 a. Das User Interface soll anpassbar sein (Farben, Tastaturlayout).
 \\
@@ -240,6 +242,8 @@ Die Transceiver benötigten wiederum eine 5V Stromversorgung, sowie den SPI-Bus\
 entstehen. Für die 5V Stromversorgung wird einer der beiden 5V-Pins in der Pin-Reihe D22-D53 verwendet, da diese noch nicht durch den Touchscreen-Shield verwendet werden.
 \\
 Somit kann das Projekt ohne Benutzung weiterer Komponenten gebaut werden. Ein Bild des aufgebauten Projekts befindet sich in Kapitel~\ref{ch:pics}, Abbildung~\ref{pic:project_done}.
+\\
+Der Schaltplan des Projekts ist in Abbildung~\ref{diag:schaltplan} dargestellt.
 
 \subsection{Konzeptionierung der Quellcode-Architektur}
 Nachdem das Projekt erfolgreich aufgebaut wurde, musste der Quellcode geschrieben werden. Da die Stromkreise der beiden Komponenten komplett getrennt sind,
@@ -334,20 +338,65 @@ Des Weiteren wurde ein Menüpunkt eingefügt, mit welchem manuell auf verfügbar
 des \glqq Radio\grqq -Objekts 
 aufruft\footnote{Vgl. Abbildung~\ref{diag:available_pap}, Quellcode in Kapitel~\ref{code:available}, Codeausschnitt \glqq Überprüfung auf verfügbare Geräte\grqq{}}.
 \\
-
+Der Zwischenspeicher wurde über einen privaten String-Array realisiert, in den jede empfangene Nachricht geschrieben wird. Hier wurde sich entschieden, dem Speicher nur
+eine Größe von 3 Nachrichten zu geben, um den Speicherplatz des Arduinos zu schonen. Wird eine Nachricht empfangen und der Array ist bereits gefüllt, so wird die älteste Nachricht
+gelöscht, um Platz für die neue Nachricht zu machen\footnote{Vgl. Kapitel~\ref{code:cache}, Codeausschnitt \glqq Nachrichten zwischenspeichern\grqq{}}. Dieser Zwischenspeicher
+kann im Hauptmenü unter \glqq Lesen\grqq{} ausgelesen werden und es besteht die Möglichkeit, alte Nachrichten manuell zu löschen.
+\\
+Nachdem die \glqq Messenger\grqq -Klasse entwickelt war und alle weiteren Klassen in diese implementiert wurden, wurde das gesamte Projekt noch abschließend getestet
+und jeglicher Fehler behoben, der bei der Implementierung aufgetreten war.
 
 
 \section{Projektergebnis}
 \subsection{Qualitätskontrolle}
-Testfälle: in verschiedenen Distanzen mit jeder Stärke mindestens 3 Nachrichten senden. Hier Graphen erstellen?
-
+Ein wichtiges Qualitätsmerkmal des Projekts ist die korrekte und zuverlässige Übertragung eingegebener Nachrichten. Um dies zu testen, wurden mit jeder der konfigurierbaren
+Einstellungen der Signalstärke der RF24-API (Min, Low, High und Max) 5 mal die gleiche Nachricht in verschiedenen Distanzen gesendet und gezählt, wie viele der Nachrichten
+korrekt übertragen wurden\footnote{Vgl. Abbildung~\ref{diag:qualitytest}}. Hier muss allerdings erwähnt werden, dass die Übertragung in einem Gebäude mit groß ausgebautem
+WLAN Netz getestet wurde, dementsprechend also sowohl Wände, als auch WLAN-Interferenzen das Testergebnis beeinträchtigt haben könnten. Des Weiteren war die Stichprobe relativ
+klein.
+\\
+Es ist aber zu erkennen, dass jede der Signalstärkeneinstellungen in mindestens einer der getesteten Distanzen jede Nachricht korrekt übertragen hat, die Qualität der Übertragung
+also gut ist.
+\\
+Leider werden, da die Transceiver innerhalb des 2.4GHz Bands arbeiten, auch teilweise Interferenzen als Nachrichten erkannt, was durch die Umsetzung nicht abgefangen wurde.
+\\
+Des Weiteren sind die Arduinos aktuell noch auf ein Netzteil angewiesen, da ansonsten die Übertragung fehlschlägt, da die 5V Pins des Arduino Mega die Transceiver
+nicht korrekt zu versorgen scheinen, was durch die Umsetzenden nicht behoben werden konnte. Auch eine angeschlossene Batterie hat leider keine Abhilfe geschaffen.
+Sind die Netzteile nicht angeschlossen, ist die Übertragung gar nicht möglich oder der Transceiver gibt unregelmäßig Signale an den Arduino weiter, welche wiederum als
+unleserliche Zeichenketten interpretiert werden\footnote{Hier ist keine Abbildung vorhanden, da kein Bild des Displays mit einer solchen Nachricht gemacht wurde.}. Dieses
+Verhalten wird auch durch einen Wackelkontakt des Kabels am 5V Pinout ausgelöst, was wiederum durch Löten der Komponenten behoben werden könnte, allerdings nicht umgesetzt ist.
 \subsection{Soll-Ist-Vergleich}
-Erreichte Ziele: Alle
+Im Folgenden wird überprüft, ob die in Kapitel~\ref{ch:goals} erreicht wurden.
+\\
+Ziel 1 wird durch die Klasse \glqq VKeys\grqq{} abgebildet und in der Klasse \grqq Messenger\glqq{} implementiert\footnote{Vgl. Abbildung~\ref{pic:keys_standard}}. 
+Es ist auch möglich, Sonderzeichen zu schreiben\footnote{Vgl. Abbildung~\ref{pic:keys_special}}, das Ziel ist also erfüllt.
+\\
+Die Ziele 2, 3 und 4 werden durch die Klasse \glqq Radio\grqq{} abgebildet und ebenfalls durch die Klasse \glqq Messenger\grqq{} implementiert. Die Qualität der Übertragung
+wurde getestet und das Ergebnis ist zufriedenstellend\footnote{Vgl. Abbildung~\ref{diag:qualitytest}}. Dieses Ziel ist somit ebenfalls erreicht.
+\\
+Ziel 5 wird durch die Klasse \glqq Messenger\grqq{} abgebildet und implementiert. Das graphische User-Interface hat außerdem eine 
+Menüführung\footnote{Vgl. Abbildung~\ref{pic:main_standard}}. Entsprechend kann das Ziel als erreicht bewertet werden.
+\\
+Ziel 6 wird ebenfalls durch die Klasse \glqq Messenger\grqq{} abgebildet und implementiert. Es existiert ein Zwischenspeicher für insgesamt 3 Nachrichten, aus dem
+die älteste Nachricht entfernt wird, sollte eine weitere Nachricht empfangen werden. Dieses Ziel ist somit abgebildet
+\\
+Ziel 7 wird auch durch die Klasse \glqq Messenger\grqq{} abgebildet und implementiert. Es wurde im Hauptmenü ein eigener Menüpunkt zum Lesen der Nachrichten implementiert,
+der wiederum in ein eigenes Menü führt\footnote{Vgl. Abbildung~\ref{pic:read_menu}}, das Ziel ist also erfüllt.
+\\
+Auch die optionalen Ziele wurden alle erfüllt. Es ist möglich, das User Interface farblich anzupassen\footnote{Vgl. Abbildung~\ref{pic:menu_green} und Abbildung~\ref{pic:main_light}},
+es ist möglich, manuell zu prüfen, ob empfangsbereite Geräte in der Nähe sind und es kann über die Optionen die Sendedistanz eingestellt werden.
+\\
+Zusammenfassend kann also gesagt werden, dass jedes Ziel erfüllt wurde, die Geräte allerdings nicht mobil sind, da noch keine Lösung für das benötigte Netzteil gefunden wurde,
+wodurch eine der Grundideen des Projekts leider nicht realisiert wurde.
 
 \subsection{Ausblick}
-Bro du kannst basically alles damit machen, das Ding kann noch extrem viel mehr, einfach weil touch.
+Es wurde noch keine Halterung / kein Case für das Projekt gebaut, wodurch es aktuell noch nicht robust ist. Sollte das Projekt fortgesetzt werden, wäre dies der nächste Schritt.
 \\
-Case wäre cool
+Eine interessante Erweiterung für das Projekt wäre außerdem die Entwicklung eines eigenen Formats der Nachrichten oder einem eigenen Protokoll der Übertragung, 
+um sicherzustellen, dass nur Nachrichten, die tatsächlich von Geräten mit der entwickelten Technologie, verarbeitet werden und somit Interferenzen ignoriert werden.
+So könnten außerdem, zu den Nachrichten gehörende, Metadaten (Uhrzeit, Geräte-ID etc.) übertragen werden, wodurch die Kommunikation deutlich präziser wird und auch nur,
+sollten mehrere Geräte gleichen Typs in der Umgebung verfügbar sein, ein bestimmtes Gerät angesprochen werden. Ein solches Protokoll würde auch das Senden von Kommandosequenzen
+vereinfachen.
 
 
 \newpage
@@ -364,11 +413,7 @@ Case wäre cool
         \hline\hline
         Arduino Mega 2560 
         & 
-        \begin{itemize}
-            \item Zentrale Schnittstelle aller Komponenten
-            \item Verwaltung der Logik / Programmierbarkeit
-            \item 
-        \end{itemize} 
+        - Zentrale Schnittstelle aller Komponenten\newline - Programmierbarkeit, Verwaltung der Logik
         & 
         2 x 21,99€
         \\
@@ -464,6 +509,13 @@ Links zur genutzten Software sind in Kapitel~\ref{ch:softwarelinks} aufgeführt.
 \subsection{Diagramme}\label{ch:diags}
 \begin{figure}[H]
     \begin{center}
+        \includegraphics[scale=0.7]{Bilder/netzplan_legende.png}
+        \caption{Legende der Netzplan Knoten}\label{diag:netzplan_legende}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
         \includegraphics[scale=0.21]{Bilder/Netzplan.png}
         \caption{Netzplan des Projekts}\label{diag:netzplan}
     \end{center}
@@ -485,10 +537,11 @@ Links zur genutzten Software sind in Kapitel~\ref{ch:softwarelinks} aufgeführt.
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[scale=0.7]{Bilder/netzplan_legende.png}
-        \caption{Legende der Netzplan Knoten}\label{diag:netzplan_legende}
+        \includegraphics[scale=0.4]{Bilder/schaltplan.png}
+        \caption{Schaltplan des Projekts}\label{diag:schaltplan}
     \end{center}
 \end{figure}
+
 
 \begin{figure}[H]
     \begin{center}
@@ -538,6 +591,12 @@ Links zur genutzten Software sind in Kapitel~\ref{ch:softwarelinks} aufgeführt.
     \end{center}
 \end{figure}
 
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.75]{Bilder/testfall.png}
+        \caption{Ergebnis Nachrichtenübertragung. X: Distanz in Metern; Y: Korrekt übertragene Nachrichten von 5 gesendeten.}\label{diag:qualitytest}
+    \end{center}
+\end{figure}
 
 
 \subsection{Bilder}\label{ch:pics}
@@ -564,8 +623,29 @@ Links zur genutzten Software sind in Kapitel~\ref{ch:softwarelinks} aufgeführt.
 
 \begin{figure}[H]
     \begin{center}
+        \includegraphics[scale=0.13]{Bilder/MainMenu_green_text.jpeg}
+        \caption{Virtuelle Tastatur des Projekts}\label{pic:menu_green}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
         \includegraphics[scale=0.13]{Bilder/Keys_standard.jpeg}
         \caption{Virtuelle Tastatur des Projekts}\label{pic:keys_standard}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.13]{Bilder/special_keys.jpeg}
+        \caption{Virtuelle Tastatur des Projekts}\label{pic:keys_special}
+    \end{center}
+\end{figure}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[scale=0.13]{Bilder/read_menu.jpeg}
+        \caption{Virtuelle Tastatur des Projekts}\label{pic:read_menu}
     \end{center}
 \end{figure}
 
@@ -653,6 +733,53 @@ void Messenger::optsMenu(void) {
     }
 
     Serial.println("Returning from optsMenu");
+}
+\end{lstlisting}
+
+\begin{flushleft}
+    \textbf{Nachrichten zwischenspeichern}\label{code:cache}
+\end{flushleft}
+\begin{lstlisting}
+/**
+* @brief 
+* Caches incoming messages in message cache
+* 
+* @param msg String to be cached
+*/
+void Messenger::cacheMessage(String msg) {
+    // Check, how many messages are in cache
+    int counter = 0;
+    for (int i = 0; i < 3; i++) {
+        if (_messages[i] != "\0") {
+            counter++;
+            continue;
+        } else {
+            break;
+        }
+    }
+
+    // If message already is in cache, return
+    for (int i = 0; i < counter; i++) {
+        if (msg == _messages[i]) return;
+    }
+
+    // If there are less than 3 messages, just cache the newest message on last position
+    if (counter < 3) {
+        _messages[counter] = msg;
+        return;
+    } else {
+        // If there are 3 messages, clear the last message
+        _messages[0] = "\0";
+
+        // Push every other message one to the back
+        for (int i = 1; i < 3; i++) {
+            _messages[i - 1] = _messages[i];
+        }
+
+        // Put new Message as first in the array
+        _messages[2] = msg;
+        return;
+    }
 }
 \end{lstlisting}
 
