@@ -5,7 +5,8 @@
 
 \usepackage{mathptmx}
 \renewcommand{\familydefault}{\sfdefault}
-\usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2cm]{geometry}
+\usepackage[left=2.2cm, right=2.2cm, top=2.2cm, bottom=1.8cm]{geometry}
+\usepackage[onehalfspacing]{setspace}
 
 % \usepackage{hyperref}
 \usepackage{amsmath}
@@ -56,6 +57,7 @@ tabsize=3,
 \subsubsectionfont{\color{BBS}}
 
 \begin{document}
+% \begin{spacing}{1.3}
 \thispagestyle{empty}
 \ihead{
     \begin{footnotesize}
@@ -100,6 +102,11 @@ tabsize=3,
     \\
     \vspace{0.5cm}
     \begin{Large}
+        Klasse: IFA12
+    \end{Large}
+    \\
+    \vspace{0.5cm}
+    \begin{Large}
         Lernfeld 7: Cyberphysische Systeme ergänzen
     \end{Large}
     \\
@@ -114,10 +121,10 @@ tabsize=3,
 \newpage
 \clearpage
 \pagenumbering{arabic}
-\section{Einleitung}
-In dieser Dokumentation wird die Umsetzung eines bidirektionalen Pagers auf Basis der Arduino Plattform beschrieben. Zunächst werden Thema und Ziel des Projekts formuliert.
-Anschließend wird auf die Planung der Ressourcen und des Ablaufs, sowie auf die benötigten Komponenten eingegangen. Im Anschluss wird das Vorgehen während des Projektes dokumentiert
-und abschließend das Ergebnis der Durchführung präsentiert.
+% \section{Einleitung}
+% In dieser Dokumentation wird die Umsetzung eines bidirektionalen Pagers auf Basis der Arduino Plattform beschrieben. Zunächst werden Thema und Ziel des Projekts formuliert.
+% Anschließend wird auf die Planung der Ressourcen und des Ablaufs, sowie auf die benötigten Komponenten eingegangen. Im Anschluss wird das Vorgehen während des Projektes dokumentiert
+% und abschließend das Ergebnis der Durchführung präsentiert.
 
 \section{Ausgangssituation / Formulierung des Themas}
 \subsection{Beschreibung des Projektes}
@@ -125,9 +132,8 @@ Das Thema des Projektes ist es, eine bidirektionale Kommunikation zwischen zwei 
 Nachrichten zu verfassen, zu versenden und ebenso Nachrichten zu empfangen, die von einem anderen Arduino Gerät versendet wurden.
 
 \subsection{Definition der Ziele, erwartetes Ergebnis}\label{ch:goals}
-Im Folgenden werden die allgemein Ziele des Projektes näher definiert.
-\\
-\\
+% Im Folgenden werden die allgemein Ziele des Projektes näher definiert.
+% \\
 1. Es soll möglich sein, mittels eines Touchscreens und einer virtuellen Tastatur, Zeichenketten auf einem, an den Arduino angeschlossenen Touchscreen, zu schreiben.
 \\
 2. Die eingegebenen Zeichenketten sollen, mittels Funkwellen, an ein anderes Gerät übertragen werden können.
@@ -153,9 +159,10 @@ c. Es soll möglich sein, die Antenne zu konfigurieren (Distanz und Frequenz).
 
 \section{Ressourcen und Ablaufplanung}
 \subsection{Allgemeine und Ressourcenplanung}\label{ch:planning}
-Das Projekt besteht aus zwei Teilen, der drahtlosen Kommunikation zweier Arduino Geräte miteinander und dem User Interface / der menschlichen Schnittstelle mit der
-Hardware, über die Nachrichten angezeigt, aber auch eingegeben und versendet werden können. Für die Planung ist also zunächst relevant, welche Hardware Komponenten benötigt werden, 
-um beide Projektteile umzusetzen.
+% Das Projekt besteht aus zwei Teilen, der drahtlosen Kommunikation zweier Arduino Geräte miteinander und dem User Interface / der menschlichen Schnittstelle mit der
+% Hardware, über die Nachrichten angezeigt, aber auch eingegeben und versendet werden können. Für die Planung ist also zunächst relevant, welche Hardware Komponenten benötigt werden, 
+% um beide Projektteile umzusetzen.
+Zunächst ist für die Planung relevant, welche Hardware Komponenten sowohl für das Versenden von Nachrichten, als auch für die menschliche Schnittstelle verwendet werden sollen.
 \\
 Für die drahtlose Kommunikation kann auf verschiedene Technologien wie Bluetooth oder Radio-Frequenz zurückgegriffen werden. Da Bluetooth nur eine sehr eingeschränkte
 Reichweite besitzt und eine Kopplung der Geräte notwendig ist, wurde sich dafür entschieden, die drahtlose Übertragung per Radiofrequenz durchzuführen. Außerdem existieren
@@ -203,36 +210,35 @@ Komplexität, eingeplant.
 Im Anschluss wurde die Messenger-Klasse mit dem größten zeitlichen Aufwand von 14 Stunden Entwicklung und 5 Stunden Testen eingeplant, da diese die Kommunikation
 aller Komponenten sicherstellen soll.
 \\
-Abschließend wurden noch 5 Stunden für Tests des fertigen Systems und abschließendes Debuggen eingeplant, sowie das Schreiben dieser Dokumentation.\footnote{Alle bis hier 
+Abschließend wurde noch Zeit für Tests des fertigen Systems und abschließendes Debuggen, sowie das Schreiben dieser Dokumentation, eingeplant.\footnote{Alle bis hier 
 beschriebenen Schritte sind in Kapitel~\ref{ch:diags} Abbildung~\ref{diag:netzplan_umsetzung} abgebildet}
 
 \subsubsection{Erwartete Schwierigkeiten}\label{ch:hard_stuff_expected}
 Im Folgenden werden alle Schwierigkeiten aufgelistet und erklärt, die während der Umsetzung des Projekts erwartet werden.
+% \\
+% 1. \textit{Fehlersuche bei fehlerhafter Übertragung}: Da dieses Projekt darauf basiert, Funksignale zu versenden und zu empfangen und die Umsetzenden keine Gerätschaft
+% besitzen, Funkwellen und Signalstärken dieser zu messen, wird es schwierig, den Fehler zu identifizieren, sollte eine Übertragung fehlschlagen.
 \\
-1. \textit{Fehlersuche bei fehlerhafter Übertragung}: Da dieses Projekt darauf basiert, Funksignale zu versenden und zu empfangen und die Umsetzenden keine Gerätschaft
-besitzen, Funkwellen und Signalstärken dieser zu messen, wird es schwierig, den Fehler zu identifizieren, sollte eine Übertragung fehlschlagen.
-\\
-2. \textit{Distanzregulierung}: Die Transceiver können in verschiedenen Signalstärken senden, die programmatisch eingestellt werden müssen.
+1. \textit{Distanzregulierung}: Die Transceiver können in verschiedenen Signalstärken senden, die programmatisch eingestellt werden müssen.
 Wird eine zu hohe Signalstärke konfiguriert, leidet darunter allerdings die Übertragungsqualität bei niedrigen Distanzen. Hier muss ein gutes Mittelmaß
 gefunden werden.
 \\
-3. \textit{Wechsel zwischen Empfang und Senden}: Da die Nachrichten bidirektional versendet werden sollen, die Transceiver aber nur halbduplex arbeiten,
+2. \textit{Wechsel zwischen Empfang und Senden}: Da die Nachrichten bidirektional versendet werden sollen, die Transceiver aber nur halbduplex arbeiten,
 muss ein rechtzeitiger Wechsel der Antenne zwischen Senden und Empfang garantiert werden. Sollten beide Geräte gleichzeitig Senden, werden beide Nachrichten
 verloren gehen.
 \\
-4. \textit{Kein Multithreading}: Da Arduinos nicht Multithreading-fähig\footnote{vgl. Glossar~\ref{def:multithreading}: Multithreading} sind, wird eine Schwierigkeit
+3. \textit{Kein Multithreading}: Da Arduinos nicht Multithreading-fähig\footnote{vgl. Glossar~\ref{def:multithreading}: Multithreading} sind, wird eine Schwierigkeit
 darin bestehen, permanent gleichzeitig die Nutzung des Geräts und den Empfang eingehender Nachrichten zu gewährleisten.\label{itm:thread}
 
 \subsubsection{Arbeitsaufteilung}
 Die genaue Aufteilung der Aufgaben ist dem Netzplan in Abbildung~\ref{diag:netzplan} zu entnehmen.
 \\
 Die Projektschritte wurden allgemein alle gemeinsam unternommen, da die Hardware doppelt aufgebaut werden musste und der Quellcode in einem Git Repository verwaltet wurde,
-wodurch die Umsetzenden parallel an den gleichen Klassen arbeiten konnten. Um Zeit zu sparen, wurde nur bei Arbeitsschritten, die parallel ablaufen konnten (z.B. Schritte 7-12, vgl.
-Abbildung~\ref{diag:netzplan_umsetzung}) die Arbeit getrennt voneinander durchgeführt.
+wodurch die Umsetzenden parallel an den gleichen Klassen arbeiten konnten. Um Zeit zu sparen, wurde nur bei Arbeitsschritten, die parallel ablaufen konnten (z.B. Schritte 7-12) die Arbeit getrennt voneinander durchgeführt.
 
 \section{Durchführung}
-Im Folgenden wird die Umsetzung des Projekts beschrieben. Alle im Text benannten Methoden finden sich in Kapitel~\ref{ch:codeschnipsel} unter dem jeweiligen Subkapitel
-der Klasse, zu der die Methode gehört.
+% Im Folgenden wird die Umsetzung des Projekts beschrieben. Alle im Text benannten Methoden finden sich in Kapitel~\ref{ch:codeschnipsel} unter dem jeweiligen Subkapitel
+% der Klasse, zu der die Methode gehört.
 
 \subsection{Schaltplan und Bau des Projekts}
 Zunächst wurde die Hardware zusammengebaut. Da der Touchscreen als Shield entworfen ist, konnte dieser einfach auf den Arduino Mega gesteckt werden.
@@ -246,8 +252,8 @@ Somit kann das Projekt ohne Benutzung weiterer Komponenten gebaut werden. Ein Bi
 Der Schaltplan des Projekts ist in Abbildung~\ref{diag:schaltplan} dargestellt.
 
 \subsection{Konzeptionierung der Quellcode-Architektur}
-Nachdem das Projekt erfolgreich aufgebaut wurde, musste der Quellcode geschrieben werden. Da die Stromkreise der beiden Komponenten komplett getrennt sind,
-musste die Kommunikation dieser per Quellcode erfolgen.
+% Nachdem das Projekt erfolgreich aufgebaut wurde, musste der Quellcode geschrieben werden. Da die Stromkreise der beiden Komponenten komplett getrennt sind,
+% musste die Kommunikation dieser per Quellcode erfolgen.
 Zunächst wurden die Funktionalitäten definiert, die das Projekt bieten muss. Diese wurden anschließend thematisch aufgeteilt und einzelnen Klassen zugeordnet.
 Die benötigten Funktionalitäten wurden direkt aus den Zielen in Kapitel~\ref{ch:goals} abgeleitet. Die entsprechenden Ziele werden im Folgenden durch Fußnoten
 referenziert. Ziele können durch mehrere Klassen realisiert werden und können eventuell mehrfach aufgeführt werden.
@@ -271,9 +277,9 @@ sollte außerdem für die Menüführung und das Zwischenspeichern von Nachrichte
 Aus der Konzeptionierung ergab sich dann ein Klassendiagramm, welches in vereinfachter Version in Abbildung~\ref{diag:classdiag} dargestellt ist.
 
 \subsection{Umsetzung des Quellcodes}
-Im Folgenden werden die Implementierung der einzelnen Funktionalitäten, sowie die dabei aufgetretenen
-Schwierigkeiten beschrieben. Wird bei der Beschreibung der Umsetzung ein Netzplan referenziert, so ist der Netzplan in Abbildung~\ref{diag:netzplan_umsetzung} gemeint.
-\\
+% Im Folgenden werden die Implementierung der einzelnen Funktionalitäten, sowie die dabei aufgetretenen
+% Schwierigkeiten beschrieben. Wird bei der Beschreibung der Umsetzung ein Netzplan referenziert, so ist der Netzplan in Abbildung~\ref{diag:netzplan_umsetzung} gemeint.
+% \\
 Da die konzeptionierte Architektur vorsah, eine Hauptklasse zu entwerfen, die wiederum 3 weitere Klassen verwendet, wurde sich entschieden, bei der Entwicklung des
 Quellcodes den Bottom-Up Ansatz\footnote{Vgl. Glossar~\ref{def:bottom_up}: Bottom-Up} zu verwenden und zunächst die 3 verwendeten Klassen (\glqq VKeys\grqq{}, \glqq ColorChooser\grqq{} und \glqq Radio\grqq{})
 zu entwickeln. Wie im Netzplan zu erkennen, wurden diese parallel entwickelt.
@@ -291,10 +297,10 @@ Abgesehen von der genannten Schwierigkeit, konnten beide Klassen aber im geplant
 Klasse beschrieben, da \glqq ColorChooser\grqq{} haupsächlich entwickelt wurde, um sich in einer kleinen Klasse mit dem TouchScreen vertraut zu machen. 
 \\
 Genutzt wurde bei der Entwicklung von \glqq VKeys\grqq{} hauptsächlich die von Elegoo mitgelieferte
-Schnittstelle zum Display, die in den Bibliotheken \glqq TouchScreen\grqq{} und \glqq Elegoo\_TFTLCD\grqq{} gekapselt wurde\footnote{Links zu den Bibliotheken in Kapitel~\ref{ch:softwarelinks}}.
+Schnittstelle zum Display, die in den Bibliotheken \glqq TouchScreen\grqq{} und \glqq Elegoo\_TFTLCD\grqq{} gekapselt wurde%\footnote{Links zu den Bibliotheken in Kapitel~\ref{ch:softwarelinks}}.
 Für beide Klassen wurde jeweils eine Methode geschrieben, um die TouchScreen-Berührung zu interpretieren und, anhand der eingegebenen Koordinaten, den Wert der gewählten Taste
-zurückzugeben\footnote{Vgl. Kapitel~\ref{code:keys}, Codeausschnitt \glqq Erkennung Tastatur Knopf\grqq{}}
-(z.B.: Wenn bei der virtuellen Tastatur der Touchscreen an der Stelle berührt wird, an der das \glqq A\grqq{} gedruckt ist, gibt die Methode auch \glqq A\grqq{} zurück).
+zurückzugeben\footnote{Vgl. Kapitel~\ref{code:keys}, Codeausschnitt \glqq Erkennung Tastatur Knopf\grqq{}}.
+% (z.B.: Wenn bei der virtuellen Tastatur der Touchscreen an der Stelle berührt wird, an der das \glqq A\grqq{} gedruckt ist, gibt die Methode auch \glqq A\grqq{} zurück).
 Des Weiteren wurde für beide Klassen eine Methode geschrieben, die ihr jeweiliges Interface auf den Bildschirm druckt.\footnote{Vgl. Abbildung~\ref{pic:keys_standard}}.
 \\
 Ebenfalls parallel wurde die Klasse \glqq Radio\grqq{} entwickelt, die alle Funktionalitäten zur Kommunikation der beiden Geräte beinhalten sollte. Um die Transceiver 
@@ -310,7 +316,7 @@ zu einem char-Array, kann ein String nicht übertragen werden. Um dieses Problem
 werden und nach dem Empfangen wieder zurück zu einem String. Hierfür wurden in der Radio-Klasse Methoden geschrieben, die automatisch aufgerufen werden, sobald
 eine Nachricht versendet oder empfangen wird\footnote{Vgl. Kapitel~\ref{code:transpose_s_to_arr}, Codeausschnitt \glqq Konvertierung String zu Char-Array\grqq{}}.
 \\
-Um die erwartete Schwierigkeit 3 in Kapitel~\ref{ch:hard_stuff_expected} präventiv zu unterbinden, wurde sich entschieden, die Klasse so zu bauen, dass beim Verlassen
+Um die erwartete Schwierigkeit 2 in Kapitel~\ref{ch:hard_stuff_expected} präventiv zu unterbinden, wurde sich entschieden, die Klasse so zu bauen, dass beim Verlassen
 jeder Methode die Antenne wieder auf lauschen gestellt wird und das Senden nur kurzzeitig aktiviert wird, sollte eine Nachricht übertragen werden.
 \\
 Schlussendlich wurde für die \glqq Radio\grqq{} Klasse noch die Methode geschrieben, um auf verfügbare Geräte zu überprüfen. Diese sollte eine vordefinierte Kommandosequenz senden
@@ -326,7 +332,7 @@ Zunächst wurden der allgemeine Aufbau des User Interface, sowie die Logik der M
 sein soll, um einfachere Verwaltung des Codes zu gewährleisten\footnote{Vgl. Abbildung~\ref{diag:menu_pap}, Beispielcode eines Menüs in Kapitel~\ref{code:menu}, 
 Codeausschnitt \glqq Beispiel Menüführung: Optionenmenü\grqq{}}. Damit es immer möglich ist, Nachrichten zu empfangen, musste in jedem Menü der Klasse regelmäßig
 auf eingehende Nachrichten überprüft werden und, sollte eine Nachricht empfangen werden, diese Nachricht, entsprechend des Ziels 6 aus Kapitel~\ref{ch:goals},
-in einen Nachrichtenspeicher geschrieben werden. Da der Arduino nicht Multithreadfähig ist\footnote{Vgl. Kapitel~\ref{ch:hard_stuff_expected}, Punkt 4}, konnte der Prozess
+in einen Nachrichtenspeicher geschrieben werden. Da der Arduino nicht Multithreadfähig ist\footnote{Vgl. Kapitel~\ref{ch:hard_stuff_expected}, Punkt 3}, konnte der Prozess
 nicht parallel laufen, weswegen die Funktion in jedem einzelnen Menü eingebaut werden musste.
 \\
 Es wurde ein Hauptmenü entwickelt, aus dem heraus ausgewählt werden kann, ob eine Nachricht geschrieben, empfangene Nachrichten im Zwischenspeicher gelesen, das Gerät konfiguriert
@@ -352,8 +358,8 @@ und jeglicher Fehler behoben, der bei der Implementierung aufgetreten war.
 Ein wichtiges Qualitätsmerkmal des Projekts ist die korrekte und zuverlässige Übertragung eingegebener Nachrichten. Um dies zu testen, wurden mit jeder der konfigurierbaren
 Einstellungen der Signalstärke der RF24-API (Min, Low, High und Max) 5 mal die gleiche Nachricht in verschiedenen Distanzen gesendet und gezählt, wie viele der Nachrichten
 korrekt übertragen wurden\footnote{Vgl. Abbildung~\ref{diag:qualitytest}}. Hier muss allerdings erwähnt werden, dass die Übertragung in einem Gebäude mit groß ausgebautem
-WLAN Netz getestet wurde, dementsprechend also sowohl Wände, als auch WLAN-Interferenzen das Testergebnis beeinträchtigt haben könnten. Des Weiteren war die Stichprobe relativ
-klein.
+WLAN Netz getestet wurde, dementsprechend also sowohl Wände, als auch WLAN-Interferenzen das Testergebnis beeinträchtigt haben könnten. Des Weiteren waren die Stichprobe und die Dsitanzen 
+relativ klein.
 \\
 Es ist aber zu erkennen, dass jede der Signalstärkeneinstellungen in mindestens einer der getesteten Distanzen jede Nachricht korrekt übertragen hat, die Qualität der Übertragung
 also gut ist.
@@ -363,13 +369,13 @@ Leider werden, da die Transceiver innerhalb des 2.4GHz Bands arbeiten, auch teil
 Des Weiteren sind die Arduinos aktuell noch auf ein Netzteil angewiesen, da ansonsten die Übertragung fehlschlägt, da die 5V Pins des Arduino Mega die Transceiver
 nicht korrekt zu versorgen scheinen, was durch die Umsetzenden nicht behoben werden konnte. Auch eine angeschlossene Batterie hat leider keine Abhilfe geschaffen.
 Sind die Netzteile nicht angeschlossen, ist die Übertragung gar nicht möglich oder der Transceiver gibt unregelmäßig Signale an den Arduino weiter, welche wiederum als
-unleserliche Zeichenketten interpretiert werden\footnote{Hier ist keine Abbildung vorhanden, da kein Bild des Displays mit einer solchen Nachricht gemacht wurde.}. Dieses
+unleserliche Zeichenketten interpretiert werden. Dieses
 Verhalten wird auch durch einen Wackelkontakt des Kabels am 5V Pinout ausgelöst, was wiederum durch Löten der Komponenten behoben werden könnte, allerdings nicht umgesetzt ist.
 \subsection{Soll-Ist-Vergleich}
 Im Folgenden wird überprüft, ob die in Kapitel~\ref{ch:goals} erreicht wurden.
 \\
-Ziel 1 wird durch die Klasse \glqq VKeys\grqq{} abgebildet und in der Klasse \grqq Messenger\glqq{} implementiert\footnote{Vgl. Abbildung~\ref{pic:keys_standard}}. 
-Es ist auch möglich, Sonderzeichen zu schreiben\footnote{Vgl. Abbildung~\ref{pic:keys_special}}, das Ziel ist also erfüllt.
+Ziel 1 wird durch die Klasse \glqq VKeys\grqq{} abgebildet und in der Klasse \grqq Messenger\glqq{} implementiert. 
+Es ist auch möglich, Sonderzeichen zu schreiben, das Ziel ist also erfüllt\footnote{Vgl. Abbildungen~\ref{pic:keys_standard} und \ref{pic:keys_special}}.
 \\
 Die Ziele 2, 3 und 4 werden durch die Klasse \glqq Radio\grqq{} abgebildet und ebenfalls durch die Klasse \glqq Messenger\grqq{} implementiert. Die Qualität der Übertragung
 wurde getestet und das Ergebnis ist zufriedenstellend\footnote{Vgl. Abbildung~\ref{diag:qualitytest}}. Dieses Ziel ist somit ebenfalls erreicht.
@@ -545,6 +551,39 @@ Links zur genutzten Software sind in Kapitel~\ref{ch:softwarelinks} aufgeführt.
     \end{center}
 \end{figure}
 
+Da kein Tool gefunden wurde, das die im Projekt verwendeten Komponenten bereitstellt, wurde hier auf einen händisch erstellten Schaltplan zurückgegriffen.
+Der Touchscreen wird als Shield verwendet und in den Arduino Mega gesteckt. Die Pin-Aufteilung der Transceiver lautet wie folgt:
+
+\begin{figure}[H]
+    \begin{tabular}{|p{0.2\textwidth}|p{0.2\textwidth}|}
+        \hline
+        \textbf{Transceiver} & \textbf{Arduino}
+        \\
+        \hline\hline
+        V++ & 5V
+        \\
+        \hline
+        GND & GND
+        \\
+        \hline
+        MISO & D50
+        \\
+        \hline
+        MOSI & D51
+        \\
+        \hline
+        SCK & D52
+        \\
+        \hline
+        CE & D43
+        \\
+        \hline
+        CSN & D53
+        \\
+        \hline
+    \end{tabular}
+\end{figure}
+
 
 \begin{figure}[H]
     \begin{center}
@@ -627,7 +666,7 @@ Links zur genutzten Software sind in Kapitel~\ref{ch:softwarelinks} aufgeführt.
 \begin{figure}[H]
     \begin{center}
         \includegraphics[scale=0.13]{Bilder/MainMenu_green_text.jpeg}
-        \caption{Virtuelle Tastatur des Projekts}\label{pic:menu_green}
+        \caption{Farblich angepasstes Hauptmenü}\label{pic:menu_green}
     \end{center}
 \end{figure}
 
@@ -641,14 +680,14 @@ Links zur genutzten Software sind in Kapitel~\ref{ch:softwarelinks} aufgeführt.
 \begin{figure}[H]
     \begin{center}
         \includegraphics[scale=0.13]{Bilder/special_keys.jpeg}
-        \caption{Virtuelle Tastatur des Projekts}\label{pic:keys_special}
+        \caption{Virtuelle Tastatur des Projekts mit Sonderzeichen}\label{pic:keys_special}
     \end{center}
 \end{figure}
 
 \begin{figure}[H]
     \begin{center}
         \includegraphics[scale=0.13]{Bilder/read_menu.jpeg}
-        \caption{Virtuelle Tastatur des Projekts}\label{pic:read_menu}
+        \caption{Menü zum Lesen eingegangener Nachrichten}\label{pic:read_menu}
     \end{center}
 \end{figure}
 
@@ -1101,14 +1140,17 @@ zum Teil oder vollständig abdeckt.\footnote{Vgl. Internetquelle~\ref{itm:shield
 
 \subsection{Links genutzter Hardware}\label{ch:hardwarelinks}
 \begin{enumerate}
-    \item nRF24L01+ Transceiver: \url{https://www.amazon.de/nRF24L01-Antenne-kabellos-Transceiver-Arduino/dp/B07TYVSSBZ/}\label{itm:transceiverlink}
-    \item Elegoo Arduino Mega R3: \url{https://www.amazon.de/Elegoo-Kompatibler-Mikrocontroller-Mega2560R3-ATmega2560/dp/B071D4KP6B/}\label{itm:arduinolink}
-    \item Elegoo TFT Touchscreen: \url{https://www.amazon.de/ELEGOO-Touchscreen-Arduino-Bibliotheken-Mitgeliefert/dp/B01EUVJYME/}\label{itm:tftlink}
+    \item nRF24L01+ Transceiver: \newline\url{https://www.amazon.de/nRF24L01-Antenne-kabellos-Transceiver-Arduino/dp/B07TYVSSBZ/}\label{itm:transceiverlink}
+    \item Elegoo Arduino Mega R3: \newline\url{https://www.amazon.de/Elegoo-Kompatibler-Mikrocontroller-Mega2560R3-ATmega2560/dp/B071D4KP6B/}\label{itm:arduinolink}
+    \item Elegoo TFT Touchscreen: \newline\url{https://www.amazon.de/ELEGOO-Touchscreen-Arduino-Bibliotheken-Mitgeliefert/dp/B01EUVJYME/}\label{itm:tftlink}
 \end{enumerate}
 
 \subsection{Links genutzter Software}\label{ch:softwarelinks}
 \begin{enumerate}
-    \item RF24: Online unter \url{https://github.com/nRF24/RF24}\label{link:rf24}
+    \item nRF24L01.h, RF24.h: Online unter \url{https://github.com/nRF24/RF24}\label{link:rf24}
+    \item SPI.h, Arduino.h, Arduino IDE: Online unter \url{https://www.arduino.cc/en/software}\label{link:arduin_ide}
 \end{enumerate}
+Die Bibliotheken Elegoo GFX.h, Elegoo TFTLCD.h und TouchScreen.h wurden auf einer CD beim Kauf des Elegoo TFT LCD mitgeliefert.
 
+% \end{spacing}{1.3}
 \end{document}
