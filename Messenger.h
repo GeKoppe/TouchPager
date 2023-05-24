@@ -72,6 +72,8 @@ class Messenger {
         uint16_t _keyColor, _textColor, _background, _textSize, _boxColor;
         int _menuBorderOffset, _minTouch;
 
+        String _commType = "mqtt";
+
         byte adress[6];
         
         // PARTS

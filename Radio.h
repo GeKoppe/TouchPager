@@ -5,6 +5,7 @@
 #include <nRF24L01.h>
 #include <RF24.h>
 #include <Arduino.h>
+#include <SoftwareSerial.h>
 
 class Radio {
     public:
@@ -29,13 +30,21 @@ class Radio {
         void        switchState(void);
 
         String      receiveMessage(void);
+        String      receiveMessage(String type);
+        String      receiveMqttMessage(void);
+
+
         bool        available(void);
         void        init();
 
         bool        sendMessage(String msg);
+        bool        sendMessage(String msg, String type);
+        bool        sendMqttMessage(String msg);
         bool        checkNearbyDevices(void);
 
     private:
+        SoftwareSerial _espLine;
+        int         _serialTx, _serialRx, _serialBaud = 9600;
         uint16_t    _ce, _csn, _readingPipe, _paLevel;
         
         uint8_t     _level = RF24_PA_MIN;

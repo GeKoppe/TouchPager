@@ -2,6 +2,7 @@
 #include <nRF24L01.h>
 #include <RF24.h>
 #include <Arduino.h>
+#include <SoftwareSerial.h>
 
 // Local includes
 #include "Radio.h"
@@ -17,6 +18,9 @@ Radio::Radio(uint16_t ce, uint16_t csn) {
     _level = RF24_PA_MIN;
 
     _antenna = RF24(_ce, _csn);
+
+    _espLine = SoftwareSerial(_serialRx, _serialTx);
+    _espLine.begin(_serialBaud);
     Serial.println("We out of Radio Constructor");
 }
 
@@ -167,6 +171,68 @@ String Radio::receiveMessage(void) {
     }
 
     return msg;
+}
+
+String Radio::receiveMessage(String type) {
+    if (type == "mqtt") {
+        return receiveMqttMessage();
+    } else if (type == "radio") {
+        return receiveMessage();
+    }
+
+    return String("\0");
+}
+
+
+String Radio::receiveMqttMessage(void) {
+    _espLine.listen();
+    if (!_espLine.available()) return String("\0");
+
+    String received = "";
+    while (_espLine.available()) {
+        received += _espLine.read();
+    }
+    _espLine.stopListening();
+
+    // If the test string was received, acknowledge it and return \0
+    if (received == String(_test)) {
+        Serial.println("Receiving: Test string, now acknowledging.");
+        acknowledge();
+        return "\0";
+    }
+
+    // THIS MOST PROBABLY IS DEPRECATED AND USELESS AS WELL
+    if (received == String(_jam)) {
+        acknowledge();
+        return String(_jam);
+    }
+
+    // If acknowledge string was received, change marker in class fields to true so it can be checked by other methods and return \0
+    if (received == String(_acknowledge)) {
+        Serial.println("Receiving: Acknowledge String");
+        _ackHappened = true;
+        return "\0";
+    }
+
+    return received;
+}
+
+bool Radio::sendMessage(String msg, String type) {
+    if (type == "mqtt") {
+        return sendMqttMessage(msg);
+    } else if (type == "radio") {
+        return sendMessage(msg);
+    }
+
+    return false;
+}
+
+bool Radio::sendMqttMessage(String msg) {
+    int bytesSent = _espLine.write(msg);
+    if (bytesSent == 0) return false;
+    if (bytesSent < msg.length() * 0.8) return false;
+
+    return true;
 }
 
 /**

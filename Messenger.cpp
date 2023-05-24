@@ -56,7 +56,7 @@ void Messenger::init(void) {
 
         if (message != "") {
             // TODO get real message here and send it, this stuff is just for testing!
-            _radio->sendMessage(message);
+            _radio->sendMessage(message, _commType);
             message = "";
         }
     }
@@ -965,7 +965,7 @@ String Messenger::writeMessage(void) {
  */
 String Messenger::receiveMessage() {
     // Try to get message and return, if message is \0
-    String msg = _radio->receiveMessage();
+    String msg = _radio->receiveMessage(_commType);
     if (msg == "\0") return "\0";
 
     // Cache that message and return it
