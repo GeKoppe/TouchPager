@@ -1,6 +1,7 @@
 #include <Elegoo_GFX.h>    // Core graphics library
 #include <Elegoo_TFTLCD.h> // Hardware-specific library
 #include <TouchScreen.h>
+#include <SoftwareSerial.h>
 
 // #include "Arduino.h"
 // #include "Print.h"
@@ -9,16 +10,15 @@
 #include "ColorChooser.h"
 #include "Radio.h"
 
-
 #if defined(__SAM3X8E__)
-    #undef __FlashStringHelper::F(string_literal)
-    #define F(string_literal) string_literal
+#undef __FlashStringHelper::F(string_literal)
+#define F(string_literal) string_literal
 #endif
 
-#define YP A3  // must be an analog pin, use "An" notation!
-#define XM A2  // must be an analog pin, use "An" notation!
-#define YM 9   // can be a digital pin
-#define XP 8   // can be a digital pin
+#define YP A3 // must be an analog pin, use "An" notation!
+#define XM A2 // must be an analog pin, use "An" notation!
+#define YM 9  // can be a digital pin
+#define XP 8  // can be a digital pin
 
 #define TS_MINX 120
 #define TS_MAXX 900
@@ -35,39 +35,55 @@ TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 // optional
 #define LCD_RESET A4
 
-
+SoftwareSerial espLine(22,23);
 Elegoo_TFTLCD tft(LCD_CS, LCD_CD, LCD_WR, LCD_RD, LCD_RESET);
 VKeys keyboard = VKeys("QWERTZ", WHITE, BLACK, &tft);
-Radio radio = Radio(43, 53);
+Radio radio = Radio(43, 53, &espLine);
 Messenger msg = Messenger(&tft, &ts, &keyboard, &radio);
 
-
-void setup(void) {
+void setup(void)
+{
+    // pinMode(22, INPUT);
+    // pinMode(23, OUTPUT);
     radio.init();
     tft.reset();
     uint16_t identifier = tft.readID();
-    Serial.begin(9600);
+    Serial.begin(115200);
+    Serial1.begin(9600);
     Serial.println("We in Radio Constructor");
-    if(identifier == 0x9325) {
-      Serial.println(F("Found ILI9325 LCD driver"));
-    } else if(identifier == 0x9328) {
-      Serial.println(F("Found ILI9328 LCD driver"));
-    } else if(identifier == 0x4535) {
-      Serial.println(F("Found LGDP4535 LCD driver"));
-    }else if(identifier == 0x7575) {
-      Serial.println(F("Found HX8347G LCD driver"));
-    } else if(identifier == 0x9341) {
-      Serial.println(F("Found ILI9341 LCD driver"));
-    } else if(identifier == 0x8357) {
-      Serial.println(F("Found HX8357D LCD driver"));
-    } else if(identifier==0x0101)
-    {     
-        identifier=0x9341;
+    if (identifier == 0x9325)
+    {
+        Serial.println(F("Found ILI9325 LCD driver"));
+    }
+    else if (identifier == 0x9328)
+    {
+        Serial.println(F("Found ILI9328 LCD driver"));
+    }
+    else if (identifier == 0x4535)
+    {
+        Serial.println(F("Found LGDP4535 LCD driver"));
+    }
+    else if (identifier == 0x7575)
+    {
+        Serial.println(F("Found HX8347G LCD driver"));
+    }
+    else if (identifier == 0x9341)
+    {
+        Serial.println(F("Found ILI9341 LCD driver"));
+    }
+    else if (identifier == 0x8357)
+    {
+        Serial.println(F("Found HX8357D LCD driver"));
+    }
+    else if (identifier == 0x0101)
+    {
+        identifier = 0x9341;
         Serial.println(F("Found 0x9341 LCD driver"));
-    }else {
-      Serial.println(identifier, HEX);
-      identifier=0x9341;
-    
+    }
+    else
+    {
+        Serial.println(identifier, HEX);
+        identifier = 0x9341;
     }
 
     tft.begin(identifier);
@@ -75,8 +91,25 @@ void setup(void) {
     pinMode(13, OUTPUT);
 }
 
-void loop() {
+void loop()
+{
     Serial.println("Kinda started again");
     msg.init();
-}
+    // if (espLine.available() < 1) 
+    // {
+    //     Serial.print("No Message available");
+    //     return;
+    // }
+    // Serial.println("");
 
+    // Serial.println("Message available");
+    // Serial.println(espLine.read());
+    // if (Serial1.available() < 1) return;
+    // Serial.println("Message available");
+
+    // while (Serial1.available() > 0) 
+    // {
+    //     Serial.print(Serial1.readString());
+    // }
+    // Serial1.write("Worked");
+}
