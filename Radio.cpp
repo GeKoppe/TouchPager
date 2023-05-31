@@ -119,8 +119,8 @@ bool Radio::checkNearbyDevices(void)
 
     for (int i = 0; i < 5; i++)
     {
-        sendMessage(_test);
-        receiveMessage();
+        sendMessage(_test, "mqtt");
+        receiveMessage("mqtt");
 
         msg[i] = wasAcknowledged();
         Serial.println("Msg " + String(i) + ": " + String((msg[i] ? "True" : "False")));
