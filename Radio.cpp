@@ -276,7 +276,7 @@ bool Radio::sendMqttMessage(String msg)
     // Serial1.listen();
     if (bytesSent == 0)
     {
-        Serial.print("Could not send to serial portt");
+        Serial.print("Could not send to serial porat");
         return false;
     }
     if (bytesSent < msg.length() * 0.8)
@@ -292,7 +292,7 @@ bool Radio::sendMqttMessage(String msg)
  */
 void Radio::acknowledge(void)
 {
-    sendMessage(_acknowledge);
+    sendMessage(_acknowledge, "mqtt");
 }
 
 /**
