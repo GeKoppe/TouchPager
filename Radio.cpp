@@ -146,7 +146,7 @@ bool Radio::checkNearbyMqtt()
     _ackHappened = false;
     bool msg = false;
     sendMessage(_test, "mqtt");
-    delay(200);
+    delay(5000);
     receiveMessage("mqtt");
     msg = wasAcknowledged();
     Serial.println("Msg: " + String((msg ? "True" : "False")));
