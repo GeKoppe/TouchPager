@@ -1,12 +1,11 @@
 ---
 marp: true
+theme: uncover
+class: invert
 paginate: true
-theme: gaia
-title: Erweiterung Touchpager um MQTT
 ---
 
-
-
-# Erweiterung Touchpager um MQTT
-
+# ESP Pager
 Thilo Drehlmann, Gerrit Koppe
+
+---
