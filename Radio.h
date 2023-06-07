@@ -45,6 +45,7 @@ public:
     bool sendMessage(String msg, String type);
     bool sendMqttMessage(String msg);
     bool checkNearbyDevices(void);
+    bool checkNearbyMqtt();
 
 private:
     SoftwareSerial *_espLine;

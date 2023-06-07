@@ -114,6 +114,7 @@ bool Radio::available(void)
  */
 bool Radio::checkNearbyDevices(void)
 {
+    return checkNearbyMqtt();
     _ackHappened = false;
     bool msg[5] = {false, false, false, false, false};
 
@@ -133,6 +134,29 @@ bool Radio::checkNearbyDevices(void)
         if (msg[i])
             return true;
     }
+
+    Serial.println("_ack: " + String((_ackHappened ? "True" : "False")));
+
+    _ackHappened = false;
+    return false;
+}
+
+bool Radio::checkNearbyMqtt()
+{
+    _ackHappened = false;
+    bool msg = false;
+    sendMessage(_test, "mqtt");
+    delay(200);
+    receiveMessage("mqtt");
+    msg = wasAcknowledged();
+    Serial.println("Msg: " + String((msg ? "True" : "False")));
+    delay(1000);
+    
+
+    // If payload was the acknowlege String, that means there are devices nearby.
+    if (msg)
+        return true;
+    
 
     Serial.println("_ack: " + String((_ackHappened ? "True" : "False")));
 
