@@ -1,11 +1,12 @@
 ---
 marp: true
 theme: uncover
-class: invert
+class: invert 
 paginate: true
+title: MQTT Pager
 ---
 
-# ESP Pager
+# MQTT Pager
 Thilo Drehlmann, Gerrit Koppe
 
 ---
