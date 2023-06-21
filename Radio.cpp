@@ -19,11 +19,11 @@ Radio::Radio(uint16_t ce, uint16_t csn, SoftwareSerial *espLine)
     _level = RF24_PA_MIN;
 
     _antenna = RF24(_ce, _csn);
-    
+
     _espLine = espLine;
     Serial1.begin(9600);
     // Serial1.listen();
-    
+
     Serial.println("We out of Radio Constructor");
 }
 
@@ -151,12 +151,10 @@ bool Radio::checkNearbyMqtt()
     msg = wasAcknowledged();
     Serial.println("Msg: " + String((msg ? "True" : "False")));
     delay(1000);
-    
 
     // If payload was the acknowlege String, that means there are devices nearby.
     if (msg)
         return true;
-    
 
     Serial.println("_ack: " + String((_ackHappened ? "True" : "False")));
 
@@ -245,11 +243,11 @@ String Radio::receiveMessage(String type)
 String Radio::receiveMqttMessage(void)
 {
     // int bytesAvailable = Serial1.available();
-    if (Serial1.available() < 1) return "\0";
+    if (Serial1.available() < 1)
+        return "\0";
 
     Serial.println("Message available");
     String received = Serial1.readString();
-    
 
     // If the test string was received, acknowledge it and return \0
     if (received == String(_test))
@@ -277,6 +275,14 @@ String Radio::receiveMqttMessage(void)
     return received;
 }
 
+/**
+ * @brief Callback to sendMessage for specific message type (mqtt or rf)
+ *
+ * @param msg The message to be send
+ * @param type type of the message (mqtt or radio)
+ * @return true If the message was sent successfully
+ * @return false If an invalid type has been given to method
+ */
 bool Radio::sendMessage(String msg, String type)
 {
     if (type == "mqtt")
