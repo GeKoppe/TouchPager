@@ -5,9 +5,9 @@
 
 #define MSG_BUFFER_SIZE (150)
 
-const char* ssid = "Routy McRouteface";
-const char* pw = "09574281992860585641";
-const char* broker = "192.168.178.90";
+const char* ssid = "WLANrouterRPPT";
+const char* pw = "bbsbrinkstrasse";
+const char* broker = "192.168.1.2";
 const char* topic = "DREHKOPP/Message";
 String thisClient = "";
 
