@@ -38,7 +38,7 @@ Ziel des Projektes war es, die bestehende RF Kommunikation der beiden Arduinos a
 * Kommunikation zwischen ESP und Broker herstellen
   * Zunächst Unidirektional, dann Bidirektional
 * Datenübertragung zwischen Arduino und ESP herstellen
-* Funktionen des Arduinos überladen, sodass diese per UART mit dem ESP arbeiten können
+* Funktionen des Arduinos überladen, sodass diese mit dem ESP arbeiten können
 * Empfangene Daten vom Broker an Arduino weitergeben und anzeigen
 
 ---
@@ -54,9 +54,9 @@ Ziel des Projektes war es, die bestehende RF Kommunikation der beiden Arduinos a
 * Projekt sehr umfangreich für verfügbare Zeit
   * Wir hatten daheim keinen MQTT Broker
   * Mussten unsere Netzwerkkarte überbrücken und einen im HyperV virtualisierten Ubuntu Server ins Heimnetz statt ins Firmennetz zu leiten
-* IDE wollte Libraries nicht einbinden
+* SoftwareSerial Library vom Arduino lief nicht gut
+  * Wir hatten glücklicherweise den MEGA, mit Hardware Serial Ports
 * WLAN in der Schule quasi nicht existent
-* Access Point und Broker in der Schule oft nicht erreichbar
 
 ---
 
