@@ -44,18 +44,18 @@ Ziel des Projektes war es, die bestehende RF Kommunikation der beiden Arduinos a
 ---
 
 ### Kosten
-| Bauteil | Kosten |
-|----------|----------|
-| ESP8266    | 7,95€x2   |
+| Bauteil | Kosten  |
+| ------- | ------- |
+| ESP8266 | 7,95€x2 |
 
 ---
 
 ### Probleme bei der Durchführung
 * Projekt sehr umfangreich für verfügbare Zeit
   * Wir hatten daheim keinen MQTT Broker
-  * Mussten unsere Netzwerkkarte überbrücken und einen im HyperV virtualisierten Ubuntu Server ins Heimnetz statt ins Firmennetz zu leiten
+  * Einen eigenen Broker aufzusetzen erwies sich als schwieriger als gedacht, nahm viel Zeit in Anspruch
 * SoftwareSerial Library vom Arduino lief nicht gut
-  * Wir hatten glücklicherweise den MEGA, mit Hardware Serial Ports
+  * Wir hatten glücklicherweise den MEGA, mit genug Hardware Serial Ports
 * WLAN in der Schule quasi nicht existent
 
 ---
